@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>has anime been saved this week?</title>
+	
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+		<script src="jsfeed.js"></script>
+		<script src="animeSecrets.js"></script>
+		<script type="text/javascript">
+
+		  var _gaq = _gaq || [];
+		  _gaq.push(['_setAccount', 'UA-37987533-3']);
+		  _gaq.push(['_setDomainName', 'hasanimebeensavedthisweek.com']);
+		  _gaq.push(['_trackPageview']);
+
+		  (function() {
+			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		  })();
+
+		</script>
+	
+		<style type="text/css">
+			html, body {height: 100%;}
+			body {
+			  text-align: center;
+			  background-color: #eeeeee;
+			}
+			.answer {
+			  display: inline-block;
+			  margin-top: 20px;
+			  font-weight: bold;
+			  font-size: 120pt;
+			  font-family: Arial, sans-serif;
+			  text-decoration: none;
+			  color: black;
+			}
+			.mako {
+			  display: none;
+			  max-width: 120px;
+			  height: auto;
+			}			
+		</style>
+	</head>
+	<body>
+		<img class="answer mako" src="http://i.imgur.com/HNR6h13.png">
+		</img>
+		<div class="answer" id="answerText">
+			checking rss...
+		</div>
+		<img class="answer mako" src="http://i.imgur.com/ShLuqus.png">
+		</img>
+		<br/>
+		<div id="followup">
+		</div>
+		<br/>	
+		<div id="image">
+			<img src="http://i.imgur.com/XsOXgn5.gif">
+		</div>
+		
+		<div id="error">
+			make sure you enable javascript kthx :3
+		</div>
+	
+		<script type="text/javascript">
+			$(document).ready(function () {
+				animeSecrets();
+			});
+		</script>
+	</body>
+</html>
