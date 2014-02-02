@@ -17,17 +17,23 @@ function getParam ( sname ) {
 	return sval;
 }
 
-function genImage (url) {
-	return '<img src="' + url + '" />';
+function genImage (url, count) {
+	count = count ? count : 1;
+	var data = "";
+	for(var i = 0; i < count; i++)
+	{
+		data += '<img src="' + url + '" />';
+	}
+	return data;
 };	
 			
 function genLink (description, url) {
 	return '<span class="link"><a href="' + url + '">' + description + '</a></span>';
 };
 
-function genRandomImage (images) {		
+function getRandomImage (images) {		
 	var index = Math.floor(Math.random()*images.length);
-	return genImage(images[index]);
+	return images[index];
 };
 
 function checkRSS(callback, failureHandler) {
@@ -62,9 +68,11 @@ function checkRSS(callback, failureHandler) {
 		return;
   	}
 
-	var rssUrl = 'http://www.nyaa.se/?page=rss&user=265&term=Kill+la+Kill';
+	var underwaterRss = 'http://www.nyaa.se/?page=rss&user=265&term=Kill+la+Kill';
+	var googleGarbage = new Date().getTime();
+	var urlToQuery = underwaterRss + '&googleGarbage=' + googleGarbage;
 	
-	$.jQRSS(rssUrl, { count: 100 }, checkum);
+	$.jQRSS(urlToQuery, { count: 100 }, checkum);
 }
 
 function showSaved (isSaved) {
@@ -80,23 +88,35 @@ function showSaved (isSaved) {
 	var followup = $('#followup');
 	var imageHolder = $('#image');
 	var mako = $('.mako');		
-	var waitingImages = ['http://i.imgur.com/kXVbjxj.png',
-		'http://i.imgur.com/uKlWv5U.png',
-		'http://i.imgur.com/87UTib6.png'];	
-	var successImages = ['http://i.imgur.com/JocUhFU.png',
-		'http://i.imgur.com/o5eteZt.png'];
+	var waitingImages = [
+		genImage('http://i.imgur.com/Aio5V6d.png'), //ep16 this sucks
+		genImage('http://i.imgur.com/uKlWv5U.png'), //ep02 mako dead
+		genImage('http://i.imgur.com/87UTib6.png'), //ep13 ryuuko in bed
+		genImage('http://i.imgur.com/OyMOAhq.gif', 3) //ep16 mako sleeping in chair
+		];	
+	var successImages = [
+		genImage('http://i.imgur.com/JocUhFU.png'), //ep02 nosebleed
+		genImage('http://i.imgur.com/o5eteZt.png'), //ep02 confident smile
+		genImage('http://i.imgur.com/pTX2Bz4.png') //ed2 mako + elephant
+		];
 		
-	var underwaterLink = genLink('PRAISE BE TO UNDERWATER', 'http://underwater.nyaatorrents.org/?tag=KILL%20la%20KILL');
+	var underwaterBlurb = 
+		'PRAISE BE TO UNDERWATER'
+		+ lineBreak
+		+ genLink('blog', 'http://underwater.nyaatorrents.org/?tag=KILL%20la%20KILL')
+		+ ' '
+		+ genLink('nyaa', 'http://www.nyaa.se/?page=search&cats=0_0&filter=0&term=kill+la+kill&user=265')
+		;
 	
 	if(isSaved) {			
 		answer.html('YES');
-		followup.html(underwaterLink);
-		imageHolder.html(genRandomImage(successImages));
+		followup.html(underwaterBlurb);
+		imageHolder.html(getRandomImage(successImages));
 		mako.show();
 	}
 	else{
 		answer.html('not yet :<');
-		imageHolder.html(genRandomImage(waitingImages));
+		imageHolder.html(getRandomImage(waitingImages));
 	}
 };
 
