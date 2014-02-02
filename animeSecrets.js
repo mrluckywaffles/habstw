@@ -4,6 +4,8 @@
 //jsoff=true
 //rssoff=true
 
+//magic number for results images is the width gets resized to 700px
+
 function getParam ( sname ) {
 	var params = location.search.substr(location.search.indexOf("?")+1);
 	var sval = "";
@@ -19,10 +21,11 @@ function getParam ( sname ) {
 
 function genImage (url, count) {
 	count = count ? count : 1;
+	var px = 700/count;
 	var data = "";
 	for(var i = 0; i < count; i++)
 	{
-		data += '<img src="' + url + '" />';
+		data += '<img src="' + url + '" style=" width: ' + px + 'px; "/>';
 	}
 	return data;
 };	
