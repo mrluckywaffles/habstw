@@ -28,16 +28,16 @@ function genImage (url, count) {
 		data += '<img src="' + url + '" style=" width: ' + px + 'px; "/>';
 	}
 	return data;
-};	
+}	
 			
 function genLink (description, url) {
 	return '<span class="link"><a href="' + url + '">' + description + '</a></span>';
-};
+}
 
 function getRandomImage (images) {		
 	var index = Math.floor(Math.random()*images.length);
 	return images[index];
-};
+}
 
 function checkRSS(callback, failureHandler) {
 		
@@ -121,7 +121,7 @@ function showSaved (isSaved) {
 		answer.html('not yet :<');
 		imageHolder.html(getRandomImage(waitingImages));
 	}
-};
+}
 
 function rssFailed () {
 	$('#answerText').html('rss lookup failed');
