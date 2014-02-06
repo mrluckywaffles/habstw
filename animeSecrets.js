@@ -140,3 +140,5 @@ function animeSecrets () {
 	var isSaved = checkRSS(showSaved, rssFailed);
 	
 }
+
+$(window).on("ready",animeSecrets);
