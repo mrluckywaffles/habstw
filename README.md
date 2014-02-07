@@ -9,5 +9,5 @@ TODO:
 - pre-load images via js
 - also check HorribleSubs rss
 - add documentation/increased modularity
-- add contact info / link to github
+- add link to github
 - add audio! track6: http://k007.kiwi6.com/hotlink/52l19de7o3/06._G_at_LL.mp3
