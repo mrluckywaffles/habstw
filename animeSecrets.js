@@ -93,13 +93,13 @@ function showSaved (isSaved) {
 	var mako = $('.mako');		
 	var waitingImages = [
 		genImage('http://i.imgur.com/Aio5V6d.png'), //ep16 this sucks
-		genImage('http://i.imgur.com/uKlWv5U.png'), //ep02 mako dead
-		genImage('http://i.imgur.com/87UTib6.png'), //ep13 ryuuko in bed
+// 		genImage('http://i.imgur.com/uKlWv5U.png'), //ep02 mako dead
+// 		genImage('http://i.imgur.com/87UTib6.png'), //ep13 ryuuko in bed
 		genImage('http://i.imgur.com/OyMOAhq.gif', 3) //ep16 mako sleeping in chair
 		];	
 	var successImages = [
-		genImage('http://i.imgur.com/JocUhFU.png'), //ep02 nosebleed
-		genImage('http://i.imgur.com/o5eteZt.png'), //ep02 confident smile
+// 		genImage('http://i.imgur.com/JocUhFU.png'), //ep02 nosebleed
+// 		genImage('http://i.imgur.com/o5eteZt.png'), //ep02 confident smile
 		genImage('http://i.imgur.com/pTX2Bz4.png') //ed2 mako + elephant
 		];
 		
