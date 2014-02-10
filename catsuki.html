@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>CATSUKI-SAMA</title>
+	
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+		<script type="text/javascript">
+
+		  var _gaq = _gaq || [];
+		  _gaq.push(['_setAccount', 'UA-37987533-3']);
+		  _gaq.push(['_setDomainName', 'hasanimebeensavedthisweek.com']);
+		  _gaq.push(['_trackPageview']);
+
+		  (function() {
+			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		  })();
+
+		</script>
+	
+		<style type="text/css">
+			html, body {height: 100%;}
+			body {
+			  background-image: url('http://i.imgur.com/L8ZcT1E.jpg');
+			  cursor: pointer;
+			}
+		</style>
+	</head>
+	<body>
+		<audio id="sound" loop autoplay preload>
+			<source src="http://k007.kiwi6.com/hotlink/52l19de7o3/06._G_at_LL.mp3" type="audio/mpeg">
+		</audio>
+
+
+		<script type="text/javascript">
+				
+			var current = 0;
+			function fillCats(){
+				var catPercent = 100 / current;
+				$('body').css('background-size', catPercent+'%');
+			}
+				
+			function randomSize(){
+				var numCatsAcross = current;
+				while(numCatsAcross == current){
+					numCatsAcross = Math.floor(Math.random()*20) + 4;
+				}
+				current = numCatsAcross;
+				fillCats();
+			}
+		
+			function increasingSize(){
+				current--;
+				if(current < 1){
+					current = 40;
+				}
+				fillCats();
+			}
+		
+			function decreasingSize(){
+				current++;
+				if(current > 40){
+					current = 1;
+				}
+				fillCats();
+			}
+			
+			var allFuncs = [
+// 				randomSize,
+				increasingSize,
+				decreasingSize
+			];
+			
+			var currentFunc = 0;
+			function catFunc(){
+				allFuncs[currentFunc]();
+			};
+			
+			function incrementFunc(){			
+				if(currentFunc >= allFuncs.length - 1){
+					currentFunc = 0;
+				}
+				else{
+					currentFunc++;
+				}
+			};
+			
+			$('body').on('click', incrementFunc);
+		
+			$(document).ready(function(){
+				setInterval(catFunc, 50);
+			});
+		
+		</script>
+	</body>
+</html>
