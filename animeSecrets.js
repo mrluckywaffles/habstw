@@ -1,10 +1,13 @@
 //diff args you can use to debug/view different pages:
 //saved=true
 //saved=false
-//jsoff=true
 //rssoff=true
 
 //magic number for results images is the width gets resized to 700px
+		
+console.log("page ready");
+$('#error').empty();
+		
 		
 function genLink (description, url) {
 	return '<span class="link"><a href="' + url + '">' + description + '</a></span>';
@@ -206,15 +209,7 @@ function rssFailed () {
 //main func
 
 function animeSecrets () {
-	
-	console.log("page ready");
-	var param = getParam("jsoff");	
-	if(param === "true") { return; }
-
-	$('#error').empty();
-
-	var isSaved = checkRSS(allFeeds, showSaved, rssFailed);
-	
+	checkRSS(allFeeds, showSaved, rssFailed);	
 }
 
 console.log("js loaded");
