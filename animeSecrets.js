@@ -5,6 +5,85 @@
 //rssoff=true
 
 //magic number for results images is the width gets resized to 700px
+		
+function genLink (description, url) {
+	return '<span class="link"><a href="' + url + '">' + description + '</a></span>';
+}
+
+function getFreshRssUrl(url){
+	var googleGarbage = new Date().getTime();
+	return url + '&googleGarbage=' + googleGarbage;
+}
+
+function genFeed (rawRss, blurb) {
+	return { 
+		rss: getFreshRssUrl(rawRss),
+		blurb: blurb,
+		success: false
+	};
+}
+
+var lineBreak = '<br/>';
+var horribleRss = 'http://www.nyaa.se/?page=rss&user=64513&term=Kill+la+Kill+720p';
+var horribleBlurb = 
+	'<div>'
+	+ 'HORRIBLE IS OUT'
+	+ lineBreak
+	+ genLink('blog', 'http://horriblesubs.info/')
+	+ ' '
+	+ genLink('nyaa', 'http://www.nyaa.se/?page=search&cats=0_0&filter=0&term=kill+la+kill&user=64513')
+	+ '</div>'
+	;	
+var underwaterRss = 'http://www.nyaa.se/?page=rss&user=265&term=Kill+la+Kill';
+var underwaterBlurb = 
+	'<div>'
+	+ 'UNDERWATER IS OUT'
+	+ lineBreak
+	+ genLink('blog', 'http://underwater.nyaatorrents.org/?tag=KILL%20la%20KILL')
+	+ ' '
+	+ genLink('nyaa', 'http://www.nyaa.se/?page=search&cats=0_0&filter=0&term=kill+la+kill&user=265')
+	+ '</div>'
+	;	
+	
+var allFeeds = [
+	genFeed(horribleRss, horribleBlurb),
+	genFeed(underwaterRss, underwaterBlurb)
+];
+
+function genImage (url, count) {
+	count = count ? count : 1;
+	var px = 700/count;
+	var data = "";
+	for(var i = 0; i < count; i++)
+	{
+		data += '<img src="' + url + '" style=" width: ' + px + 'px; "/>';
+	}
+	return data;
+}	
+
+function genImageObj(url, count){
+	var preloadedImage = new Image();
+	preloadedImage.src = url;
+	var imageObj = {
+		url: url,
+ 		count: count,
+		imgTag: genImage(url, count)
+	};
+	return imageObj;
+}
+
+var waitingImages = [
+// 	genImageObj('http://i.imgur.com/Aio5V6d.png'), //ep16 this sucks
+// 		genImageObj('http://i.imgur.com/uKlWv5U.png'), //ep02 mako dead
+// 		genImageObj('http://i.imgur.com/87UTib6.png'), //ep13 ryuuko in bed
+	genImageObj('http://i.imgur.com/OyMOAhq.gif', 3), //ep16 mako sleeping in chair
+	genImageObj('http://i.imgur.com/wgDoGZ1.gif', 3) //ep14 mako sad w/ stick
+];	
+var successImages = [
+// 		genImageObj('http://i.imgur.com/JocUhFU.png'), //ep02 nosebleed
+// 		genImageObj('http://i.imgur.com/o5eteZt.png'), //ep02 confident smile
+	genImageObj('http://i.imgur.com/pTX2Bz4.png') //ed2 mako + elephant
+];
 
 function getParam ( sname ) {
 	var params = location.search.substr(location.search.indexOf("?")+1);
@@ -19,34 +98,23 @@ function getParam ( sname ) {
 	return sval;
 }
 
-function genImage (url, count) {
-	count = count ? count : 1;
-	var px = 700/count;
-	var data = "";
-	for(var i = 0; i < count; i++)
-	{
-		data += '<img src="' + url + '" style=" width: ' + px + 'px; "/>';
-	}
-	return data;
-}	
-			
-function genLink (description, url) {
-	return '<span class="link"><a href="' + url + '">' + description + '</a></span>';
-}
-
 function getRandomImage (images) {		
 	var index = Math.floor(Math.random()*images.length);
 	return images[index];
 }
 
-function checkRSS(callback, failureHandler) {
+function checkRSS(feeds, callback, failureHandler) {
+
+	var feedToSet = feeds[0];
+	if(!feedToSet){
+		callback();
+		return;
+	}
 		
 	var checkum = function (data){
 		var success = false;
-// 		console.log(data);		
 
 		if(!data){
-// 			console.log('shits null');
 			failureHandler();
 			return;
 		}
@@ -61,7 +129,10 @@ function checkRSS(callback, failureHandler) {
 			success = success || lastMonday < latestDate;				
 		}
 		
-		callback(success);
+		feedToSet.success = success;
+		
+		//loop!
+		checkRSS(feeds.slice(1), callback, failureHandler);
 	};
 	
 	var param = getParam("rssoff");	
@@ -71,74 +142,80 @@ function checkRSS(callback, failureHandler) {
 		return;
   	}
 
-	var underwaterRss = 'http://www.nyaa.se/?page=rss&user=265&term=Kill+la+Kill';
-	var googleGarbage = new Date().getTime();
-	var urlToQuery = underwaterRss + '&googleGarbage=' + googleGarbage;
+	var urlToQuery = feedToSet.rss;
 	
 	$.jQRSS(urlToQuery, { count: 100 }, checkum);
 }
 
-function showSaved (isSaved) {
+function forceSetAllFeeds(success){
+	for(var i = 0; i < allFeeds.length; i++){
+		allFeeds[i].success = success;
+	}
+}
 
-	//leave this in for debugging stuff	
-	var param = getParam("saved");	
-	if(param === "true"){ isSaved = true; }
-	if(param === "false"){ isSaved = false; }
-	//end debugging
-	
-	var lineBreak = '<br/>';
+function updateContent () {
+
 	var answer = $('#answerText');
 	var followup = $('#followup');
 	var imageHolder = $('#image');
-	var mako = $('.mako');		
-	var waitingImages = [
-		genImage('http://i.imgur.com/Aio5V6d.png'), //ep16 this sucks
-// 		genImage('http://i.imgur.com/uKlWv5U.png'), //ep02 mako dead
-// 		genImage('http://i.imgur.com/87UTib6.png'), //ep13 ryuuko in bed
-		genImage('http://i.imgur.com/OyMOAhq.gif', 3) //ep16 mako sleeping in chair
-		];	
-	var successImages = [
-// 		genImage('http://i.imgur.com/JocUhFU.png'), //ep02 nosebleed
-// 		genImage('http://i.imgur.com/o5eteZt.png'), //ep02 confident smile
-		genImage('http://i.imgur.com/pTX2Bz4.png') //ed2 mako + elephant
-		];
-		
-	var underwaterBlurb = 
-		'PRAISE BE TO UNDERWATER'
-		+ lineBreak
-		+ genLink('blog', 'http://underwater.nyaatorrents.org/?tag=KILL%20la%20KILL')
-		+ ' '
-		+ genLink('nyaa', 'http://www.nyaa.se/?page=search&cats=0_0&filter=0&term=kill+la+kill&user=265')
-		;
+	var mako = $('.mako');	
+
+	//leave this in for debugging stuff	
+	var param = getParam("saved");	
+	if(param === "true"){ forceSetAllFeeds(true); }
+	if(param === "false"){ forceSetAllFeeds(false); }
+	//end debugging
+	
+	var isSaved = false;
+	followup.empty();
+	for(var i = 0; i < allFeeds.length; i++){
+		var feed = allFeeds[i];
+		if(feed.success){
+			if(isSaved){
+				followup.append(lineBreak);
+			}
+			isSaved = true;
+			followup.append(allFeeds[i].blurb);
+		}
+	}
 	
 	if(isSaved) {			
 		answer.html('YES');
-		followup.html(underwaterBlurb);
-		imageHolder.html(getRandomImage(successImages));
+		imageHolder.html(getRandomImage(successImages).imgTag);
 		mako.show();
 	}
 	else{
 		answer.html('not yet :<');
-		imageHolder.html(getRandomImage(waitingImages));
+		imageHolder.html(getRandomImage(waitingImages).imgTag);
 	}
+}
+
+function showSaved () {
+	var contentDiv = $('#content');
+	contentDiv.fadeOut(500, function(){
+		updateContent();
+		contentDiv.fadeIn();
+	});
 }
 
 function rssFailed () {
 	$('#answerText').html('rss lookup failed');
-	$('#error').html('If the problem persists, please contact hasanimebeensavedthisweek@gmail.com');
+	$('#error').html('Try refreshing! If the problem persists, please contact hasanimebeensavedthisweek@gmail.com');
 }
 
 //main func
 
 function animeSecrets () {
 	
+	console.log("page ready");
 	var param = getParam("jsoff");	
 	if(param === "true") { return; }
 
 	$('#error').empty();
 
-	var isSaved = checkRSS(showSaved, rssFailed);
+	var isSaved = checkRSS(allFeeds, showSaved, rssFailed);
 	
 }
 
-$(window).on("ready",animeSecrets);
+console.log("js loaded");
+$(document).on("ready", animeSecrets);
