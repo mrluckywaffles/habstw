@@ -6,8 +6,4 @@ Easily adaptable to any feed: just swap out the url (and image urls) and maybe t
 
 TODO:
 
-- pre-load images via js
-- also check HorribleSubs rss
-- add documentation/increased modularity
 - add link to github
-- add audio! track6: http://k007.kiwi6.com/hotlink/52l19de7o3/06._G_at_LL.mp3
