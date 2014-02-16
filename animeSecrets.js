@@ -214,14 +214,49 @@ var tracks = [
 	'http://k007.kiwi6.com/hotlink/0assl81qy6/04._Blumenkranz.mp3',
 	'http://k007.kiwi6.com/hotlink/52l19de7o3/06._G_at_LL.mp3'
 ]
+
+function saveCookies(){
+	setCookie('song', song, 7);
+	setCookie('paused', paused, 7);
+}
+function incSong(){
+	song = (song + 1) % tracks.length;
+	saveCookies();	
+}
+function refreshMusic(){
+	if(paused){
+		music.pause();
+	} else {
+		music.play();
+	}
+}
+function setMusic(pause){
+	paused = pause;
+	refreshMusic();
+	saveCookies();
+}
+
 function loadSong(){
 	var songHtml = '<source src="' + tracks[song] + '" type="audio/mpeg">';
 	$('#sound').html(songHtml);
 }
 function nextSong(){
 	if(!paused){
-		song = (song + 1) % tracks.length;
+		incSong();
 		loadSong();
+	}
+}
+function loadCookies(){
+	var c_song = getCookie('song');
+	if(c_song){
+		song = c_song;
+	}
+	loadSong();
+	var c_paused = getCookie('paused');
+	if(c_paused){
+		setMusic(c_paused);
+	} else {
+		refreshMusic();
 	}
 }
 
@@ -238,15 +273,13 @@ function animeSecrets () {
 	$('.next').click(nextSong);
 	nextSong();
 	$('#play').click(function (){
-		music.play();
-		paused = false;
+		setMusic(false);
 	});
 	$('#pause').click(function (){
-		music.pause();
-		paused = true;
+		setMusic(true);
 	});
 
-// 	$('#pause').trigger('click');
+	loadCookies();
 	checkRSS(allFeeds, showSaved, rssFailed);	
 }
 
