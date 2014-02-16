@@ -191,6 +191,8 @@ function updateContent () {
 		answer.html('not yet :<');
 		imageHolder.html(getRandomImage(waitingImages).imgTag);
 	}
+	
+	refreshMusic();
 }
 
 function showSaved () {
@@ -211,8 +213,8 @@ var music = document.getElementById("sound");
 var paused = false;
 var song = 0;
 var tracks = [
-	'http://k007.kiwi6.com/hotlink/0assl81qy6/04._Blumenkranz.mp3',
-	'http://k007.kiwi6.com/hotlink/52l19de7o3/06._G_at_LL.mp3'
+	'http://k007.kiwi6.com/hotlink/52l19de7o3/06._G_at_LL.mp3',
+	'http://k007.kiwi6.com/hotlink/0assl81qy6/04._Blumenkranz.mp3'
 ]
 
 function saveCookies(){
@@ -239,25 +241,29 @@ function setMusic(pause){
 function loadSong(){
 	var songHtml = '<source src="' + tracks[song] + '" type="audio/mpeg">';
 	$('#sound').html(songHtml);
+	music.pause();
 }
 function nextSong(){
 	if(!paused){
 		incSong();
 		loadSong();
+		refreshMusic();
 	}
 }
 function loadCookies(){
 	var c_song = getCookie('song');
 	if(c_song){
-		song = c_song;
+		song = parseInt(c_song);
 	}
 	loadSong();
 	var c_paused = getCookie('paused');
 	if(c_paused){
-		setMusic(c_paused);
-	} else {
-		refreshMusic();
+		paused = c_paused == "true";
+		if(paused){
+			$('#pause').trigger('click');
+		}
 	}
+	music.pause();
 }
 
 //main func
@@ -271,7 +277,6 @@ function animeSecrets () {
 		$('.music').toggleClass('show');
 	});
 	$('.next').click(nextSong);
-	nextSong();
 	$('#play').click(function (){
 		setMusic(false);
 	});
