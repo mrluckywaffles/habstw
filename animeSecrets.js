@@ -206,9 +206,40 @@ function rssFailed () {
 	$('#error').html('Try refreshing! If the problem persists, please contact hasanimebeensavedthisweek@gmail.com');
 }
 
+
+var music = document.getElementById("sound");
+var song = 0;
+var tracks = [
+	'http://k007.kiwi6.com/hotlink/0assl81qy6/04._Blumenkranz.mp3',
+	'http://k007.kiwi6.com/hotlink/52l19de7o3/06._G_at_LL.mp3'
+]
+function nextSong(){
+	if(!music.muted){
+		song = (song + 1) % tracks.length;
+		var songHtml = '<source src="' + tracks[song] + '" type="audio/mpeg">';
+		$('#sound').html(songHtml);
+	}
+}
+
 //main func
 
 function animeSecrets () {
+
+	$('.toggleInfo').click(function(){
+		$('.info').toggleClass('show');
+	});
+	$('.toggleMusic').click(function(){
+		$('.music').toggleClass('show');
+	});
+	$('.next').click(nextSong);
+	nextSong();
+	$('#play').click(function (){
+		music.play();
+	});
+	$('#pause').click(function (){
+		music.pause();
+	});
+
 	checkRSS(allFeeds, showSaved, rssFailed);	
 }
 

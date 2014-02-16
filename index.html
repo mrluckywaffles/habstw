@@ -22,38 +22,98 @@
 		</script>
 	
 		<style type="text/css">
-			html, body {height: 100%;}
+			html, body {
+				height: 100%;
+			}
 			body {
-			  text-align: center;
-			  background-color: #eeeeee;
+			  	text-align: center;
+			  	background-color: #eeeeee;
+			  	font-family: Arial, sans-serif;
+			  	text-decoration: none;
+			  	color: black;
 			}
 			.answer {
-			  display: inline-block;
-			  margin-top: 20px;
-			  font-weight: bold;
-			  font-size: 120pt;
-			  font-family: Arial, sans-serif;
-			  text-decoration: none;
-			  color: black;
+			  	display: inline-block;
+			  	margin-top: 20px;
+			  	font-weight: bold;
+			  	font-size: 120pt;
 			}
 			.mako {
-			  display: none;
-			  max-width: 120px;
-			  height: auto;
-			}		
-			.contact {
-			  font-size: 12px;
-			  position: absolute;
-			  left: 5px;
-			  top: 10px;
+			  	display: none;
+			  	max-width: 120px;
+			  	height: auto;
+			}
+			.extra {
+				position: absolute;
+				background-color: #aaaaaa;
+				color: #eeeeee;
+				opacity: 0;
+				z-index: 0;
+			}
+			.divbutt {
+				right: 10px;
+				width: 30px;
+				height: 30px;	
+				
+				line-height: 32px;
+			  	font-weight: bold;
+			  	font-size: 20pt;
+			  	
+			  	cursor: default;
+			  	border:	#eeeeee 4px solid
+			}
+			.toggleInfo {
+				top: 10px;		
+			}
+			.toggleMusic {
+				top: 50px;
+			}
+			.next {
+				top: 90px;
+			}
+			.info-overlay {
+				top: 0px;
+				right: 0px;
+				
+				width: 500px;
+				height: 100%;
+				
+				-webkit-transition: opacity 0.2s ease-out;
+				-moz-transition: opacity 0.2s ease-out;
+				-ms-transition: opacity 0.2s ease-out;
+				transition: opacity 0.2s ease-out;
+			}
+			.show {			
+				opacity: 1;
+				z-index: 2;
+			}
+			.show.divbutt {
+				cursor: pointer;
 			}
 		</style>
 	</head>
-	<body>		
-		<div class="contact">
+	<body>	
+		<audio id="sound" loop autoplay preload>
+		</audio>
+		<div class="extra info info-overlay">		
 			<a href="mailto:hasanimebeensavedthisweek@gmail.com">
 				holla
 			</a>
+		</div>
+		<div class="extra info divbutt toggleInfo show">
+			+
+		</div>
+		<div class="extra info divbutt toggleInfo">
+			-
+		</div>
+		<div class="extra divbutt music toggleMusic show" id="pause">
+			II
+		</div>
+		<div class="extra divbutt music toggleMusic" id="play">
+			>
+		</div>
+		<div class="extra divbutt music next show">
+			>>
 		</div>
 		
 		<div id="content">
