@@ -208,16 +208,20 @@ function rssFailed () {
 
 
 var music = document.getElementById("sound");
+var paused = false;
 var song = 0;
 var tracks = [
 	'http://k007.kiwi6.com/hotlink/0assl81qy6/04._Blumenkranz.mp3',
 	'http://k007.kiwi6.com/hotlink/52l19de7o3/06._G_at_LL.mp3'
 ]
+function loadSong(){
+	var songHtml = '<source src="' + tracks[song] + '" type="audio/mpeg">';
+	$('#sound').html(songHtml);
+}
 function nextSong(){
-	if(!music.muted){
+	if(!paused){
 		song = (song + 1) % tracks.length;
-		var songHtml = '<source src="' + tracks[song] + '" type="audio/mpeg">';
-		$('#sound').html(songHtml);
+		loadSong();
 	}
 }
 
@@ -235,13 +239,15 @@ function animeSecrets () {
 	nextSong();
 	$('#play').click(function (){
 		music.play();
+		paused = false;
 	});
 	$('#pause').click(function (){
 		music.pause();
+		paused = true;
 	});
 
+// 	$('#pause').trigger('click');
 	checkRSS(allFeeds, showSaved, rssFailed);	
 }
 
-console.log("js loaded");
 $(document).on("ready", animeSecrets);
