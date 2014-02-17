@@ -6,8 +6,6 @@ Easily adaptable to any feed: just swap out the url (and image urls) and maybe t
 
 TODO:
 
-- add link to CATSUKI
-- add link to github
 - fix music bug in FF
 - auto refresh feeds every minute
   - indicate w/ small bobbing ryuuko loading icon in corner
