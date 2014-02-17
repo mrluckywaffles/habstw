@@ -191,6 +191,7 @@ function updateContent () {
 		imageHolder.html(getRandomImage(waitingImages).imgTag);
 	}
 	
+	//last ditch effort to try and make music work
 	refreshMusic();
 }
 
@@ -207,14 +208,18 @@ function rssFailed () {
 	$('#error').html('Try refreshing! If the problem persists, please contact hasanimebeensavedthisweek@gmail.com');
 }
 
-
-var music = document.getElementById("sound");
 var paused = false;
 var song = 0;
 var tracks = [
 	'http://k007.kiwi6.com/hotlink/52l19de7o3/06._G_at_LL.mp3',
-	'http://k007.kiwi6.com/hotlink/0assl81qy6/04._Blumenkranz.mp3'
+	'http://k007.kiwi6.com/hotlink/0assl81qy6/04._Blumenkranz.mp3',
+	'http://k007.kiwi6.com/hotlink/xufobc2psv/14._ha_LL.mp3'
 ]
+var audios = [];
+var music = function(){
+	return audios[song];
+}
+
 
 function saveCookies(){
 	setCookie('song', song, 7);
@@ -226,48 +231,50 @@ function incSong(){
 }
 function refreshMusic(){
 	if(paused){
-		music.pause();
+		music().pause();
 	} else {
-		music.play();
+		music().play();
 	}
 }
-function setMusic(pause){
+function setMusicAsPaused(pause){
 	paused = pause;
 	refreshMusic();
 	saveCookies();
 }
-
-function loadSong(){
-	var songHtml = '<source src="' + tracks[song] + '" type="audio/mpeg">';
-	$('#sound').html(songHtml);
-	music.pause();
-}
 function nextSong(){
 	if(!paused){
+		music().pause();
 		incSong();
-		loadSong();
-		refreshMusic();
+		music().currentTime=0;
+		music().play();
 	}
 }
 function loadCookies(){
 	var c_song = getCookie('song');
 	if(c_song){
 		song = parseInt(c_song);
-	}
-	loadSong();
+	} //else 0
 	var c_paused = getCookie('paused');
 	if(c_paused){
-		paused = c_paused == "true";
-		if(paused){
+		if(c_paused == "true"){
 			$('#pause').trigger('click');
+		} else {
+			setMusicAsPaused(false);
 		}
 	}
-	music.pause();
 }
 
 //main func
 
 function animeSecrets () {
+
+	for(var i = 0; i < tracks.length; i++){
+		audios[i] = document.createElement('audio');
+		audios[i].setAttribute('src', tracks[i]);
+		audios[i].setAttribute('preload', true);
+		audios[i].setAttribute('loop', true);
+		audios[i].pause();
+	}
 
 	$('.toggleInfo').click(function(){
 		$('.info').toggleClass('show');
@@ -277,10 +284,10 @@ function animeSecrets () {
 	});
 	$('.next').click(nextSong);
 	$('#play').click(function (){
-		setMusic(false);
+		setMusicAsPaused(false);
 	});
 	$('#pause').click(function (){
-		setMusic(true);
+		setMusicAsPaused(true);
 	});
 
 	loadCookies();
