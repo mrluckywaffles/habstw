@@ -1,5 +1,5 @@
 
-console.log("page ready");$('#error').empty();function genLink(description,url){return'<span class="link"><a href="'+url+'">'+description+'</a></span>';}
+$('#error').empty();function genLink(description,url){return'<span class="link"><a href="'+url+'">'+description+'</a></span>';}
 function getFreshRssUrl(url){var googleGarbage=new Date().getTime();return url+'&googleGarbage='+googleGarbage;}
 function genFeed(rawRss,blurb){return{rss:getFreshRssUrl(rawRss),blurb:blurb,success:false};}
 var lineBreak='<br/>';var horribleRss='http://www.nyaa.se/?page=rss&user=64513&term=Kill+la+Kill+720p';var horribleBlurb='<div>'

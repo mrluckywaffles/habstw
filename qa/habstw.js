@@ -4,8 +4,7 @@
 //rssoff=true
 
 //magic number for results images is the width gets resized to 700px
-		
-console.log("page ready");
+
 $('#error').empty();
 		
 		

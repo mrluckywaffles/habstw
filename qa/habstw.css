@@ -26,10 +26,13 @@ body {
 	opacity: 0;
 	z-index: 0;
 }
-.divbutt {
-	right: 10px;
+.smallbox {
 	width: 30px;
-	height: 30px;	
+	height: 30px;
+}
+.divbutt {
+	top: 10px;		
+	right: 10px;
 	
 	line-height: 32px;
 	font-weight: bold;
@@ -39,13 +42,18 @@ body {
 	border:	#eeeeee 4px solid
 }
 .toggleInfo {
-	top: 10px;		
 }
 .toggleMusic {
 	top: 50px;
 }
 .next {
 	top: 90px;
+}
+.github {
+	right: 50px;
+}
+.catsuki {
+	right: 90px;
 }
 .info-overlay {
 	top: 0px;
