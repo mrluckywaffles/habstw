@@ -6,7 +6,8 @@ Easily adaptable to any feed: just swap out the url (and image urls) and maybe t
 
 TODO:
 
-- fix music bug in FF
+- work out kinks in music. might be too demanding on resources right now :/
+  - re-encode songs to way lower bitrate?
 - auto refresh feeds every minute
   - indicate w/ small bobbing ryuuko loading icon in corner
   - doesnt reload page, only changes content when changes detected
