@@ -23,47 +23,28 @@ body {
 	position: absolute;
 	background-color: #aaaaaa;
 	color: #eeeeee;
-	opacity: 0;
-	z-index: 0;
+	top: 100%;		
+	right: 100%;
 }
 .smallbox {
 	width: 30px;
 	height: 30px;
 }
-.divbutt {
-	top: 10px;		
-	right: 10px;
-	
+.divbutt {	
 	line-height: 32px;
 	font-weight: bold;
 	font-size: 20pt;
+	cursor: pointer;
 	
-	cursor: default;
 	border:	#eeeeee 4px solid
 }
-.toggleInfo {
-}
-.toggleMusic {
-	top: 50px;
-}
-.next {
-	top: 90px;
-}
-.github {
-	right: 50px;
-}
-.catsuki {
-	right: 90px;
-}
-.info-overlay {
-	top: 0px;
-	right: 0px;
-	
+.info-overlay {	
 	width: 100%;
 	height: 100%;
 	
 	font-size: 20pt;
 	
+	opacity: 0;
 	-webkit-transition: opacity 0.2s ease-out;
 	-moz-transition: opacity 0.2s ease-out;
 	-ms-transition: opacity 0.2s ease-out;
@@ -89,13 +70,24 @@ body {
 	font-size: 100pt;
 	font-weight: bold;
 }
-.show {			
-	opacity: 1;
-	z-index: 2;
+.show.info-overlay {
+	top: 0px;
+	left: 0px;
+	opacity: 0.9;
 }
 .show.divbutt {
-	cursor: pointer;
+	top: 10px;		
+	right: 10px;
 }
-.show.info-overlay {
-	opacity: 0.9;
+.show.toggleMusic {
+	top: 50px;
+}
+.show.next {
+	top: 90px;
+}
+.show.github {
+	right: 50px;
+}
+.show.catsuki {
+	right: 90px;
 }
