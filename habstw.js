@@ -38,15 +38,15 @@ else{answer.html('not yet :<');imageHolder.html(getRandomImage(waitingImages).im
 refreshMusic();}
 function showSaved(){var contentDiv=$('#content');contentDiv.fadeOut(500,function(){updateContent();contentDiv.fadeIn();});}
 function rssFailed(){$('#answerText').html('rss lookup failed');$('#error').html('Try refreshing! If the problem persists, please contact hasanimebeensavedthisweek@gmail.com');}
-var music=document.getElementById("sound");var paused=false;var song=0;var tracks=['http://k007.kiwi6.com/hotlink/52l19de7o3/06._G_at_LL.mp3','http://k007.kiwi6.com/hotlink/0assl81qy6/04._Blumenkranz.mp3']
+var paused=false;var song=0;var tracks=['http://k007.kiwi6.com/hotlink/52l19de7o3/06._G_at_LL.mp3','http://k007.kiwi6.com/hotlink/0assl81qy6/04._Blumenkranz.mp3','http://k007.kiwi6.com/hotlink/xufobc2psv/14._ha_LL.mp3']
+var audios=[];var music=function(){return audios[song];}
 function saveCookies(){setCookie('song',song,7);setCookie('paused',paused,7);}
 function incSong(){song=(song+1)%tracks.length;saveCookies();}
-function refreshMusic(){if(paused){music.pause();}else{music.play();}}
-function setMusic(pause){paused=pause;refreshMusic();saveCookies();}
-function loadSong(){var songHtml='<source src="'+tracks[song]+'" type="audio/mpeg">';$('#sound').html(songHtml);music.pause();}
-function nextSong(){if(!paused){incSong();loadSong();refreshMusic();}}
+function refreshMusic(){if(paused){music().pause();}else{music().play();}}
+function setMusicAsPaused(pause){paused=pause;refreshMusic();saveCookies();}
+function nextSong(){if(!paused){music().pause();incSong();music().currentTime=0;music().play();}}
 function loadCookies(){var c_song=getCookie('song');if(c_song){song=parseInt(c_song);}
-loadSong();var c_paused=getCookie('paused');if(c_paused){paused=c_paused=="true";if(paused){$('#pause').trigger('click');}}
-music.pause();}
-function animeSecrets(){$('.toggleInfo').click(function(){$('.info').toggleClass('show');});$('.toggleMusic').click(function(){$('.music').toggleClass('show');});$('.next').click(nextSong);$('#play').click(function(){setMusic(false);});$('#pause').click(function(){setMusic(true);});loadCookies();checkRSS(allFeeds,showSaved,rssFailed);}
+var c_paused=getCookie('paused');if(c_paused){if(c_paused=="true"){$('#pause').trigger('click');}else{setMusicAsPaused(false);}}}
+function animeSecrets(){for(var i=0;i<tracks.length;i++){audios[i]=document.createElement('audio');audios[i].setAttribute('src',tracks[i]);audios[i].setAttribute('preload',true);audios[i].setAttribute('loop',true);audios[i].pause();}
+$('.toggleInfo').click(function(){$('.info').toggleClass('show');});$('.toggleMusic').click(function(){$('.music').toggleClass('show');});$('.next').click(nextSong);$('#play').click(function(){setMusicAsPaused(false);});$('#pause').click(function(){setMusicAsPaused(true);});loadCookies();checkRSS(allFeeds,showSaved,rssFailed);}
 $(document).on("ready",animeSecrets);
