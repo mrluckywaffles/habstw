@@ -8,6 +8,7 @@ TODO:
 
 - work out kinks in music. might be too demanding on resources right now :/
   - re-encode songs to way lower bitrate?
+- add favicon
 - auto refresh feeds every minute
   - indicate w/ small bobbing ryuuko loading icon in corner
   - doesnt reload page, only changes content when changes detected
