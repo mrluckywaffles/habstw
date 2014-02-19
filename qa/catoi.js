@@ -1,4 +1,6 @@
 var positiveSpeeds = [
+	10,
+	6,
 	4,
 	3,
 	2,
@@ -40,11 +42,11 @@ function changeIndex(delta){
 		updateSpeed();
 		if(speeds[index] == speeds[0]){
 			$('#dontLoseYourWay').addClass('show');
-// 			music.currentTime=35;
-// 			music.play();		
+			music.play();	
 		} else {
 			$('#dontLoseYourWay').removeClass('show');
 			music.pause();
+			music.currentTime = 63.5;
 		}
 	}
 }
@@ -57,10 +59,7 @@ $(document).ready(function(){
 		} else if (code === 39) { //right key
 			changeIndex(1);
 		}
-	};
-	
-// 	music = document.createElement('audio');
-// 	music.setAttribute('src', 'loading.ogg');
-	
+	};	
+	music = document.getElementById('sound');
 	updateSpeed();	
 });
