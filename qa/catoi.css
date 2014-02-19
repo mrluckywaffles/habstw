@@ -4,20 +4,49 @@ html, body {
 body {
 	text-align: center;
 	background-image: url('http://i.imgur.com/8lCC8xX.jpg');
+	background-position: center;
+	background-size: cover;
 	font-family: Arial, sans-serif;
 	text-decoration: none;
 	color: white;
 }
-.image {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 120px;
-    height: 120px;
-    margin:-60px 0 0 -60px;
-    -webkit-animation:spin 4s linear infinite;
-    -moz-animation:spin 4s linear infinite;
-    animation:spin 4s linear infinite;
+#dontLoseYourWay {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	
+	font-family: Impact, sans-serif;
+	font-size: 200pt;
+	color: red;
+	font-weight: bold;	
+	
+	top: 100%;
+	right: 100%;
+}
+.catbox {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	
+	top: 0px;
+	left: 0px;
+}
+.catoi {
+    width: auto;
+    height: 100%;
+}
+.speed {
+	text-align: left;
+	position: absolute;
+	left: 5px;
+	bottom: 10px;
+	font-size: 20px;
+    color: white;
+    text-shadow: -2px 0 black, 0 2px black, 2px 0 black, 0 -2px black;
+}
+#dontLoseYourWay.show {
+	top: 0px;
+	left: 0px;
 }
 @-moz-keyframes spin { 100% { -moz-transform: rotate(360deg); } }
 @-webkit-keyframes spin { 100% { -webkit-transform: rotate(360deg); } }
