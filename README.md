@@ -9,7 +9,6 @@ TODO:
 - work out kinks in music. might be too demanding on resources right now :/
   - re-encode songs to way lower bitrate?
 - add favicon (mako face from YES)
-- make CATOI.html
 - beg someone to make a transparent catsuki.png
 - auto refresh feeds every minute
   - indicate w/ small bobbing ryuuko loading icon in corner
