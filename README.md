@@ -23,3 +23,7 @@ http://kiwi6.com/file/q306ya962v
 http://kiwi6.com/file/9xhhbma9r0
 
 http://kiwi6.com/file/c71c6yjfn4
+
+
+http://en.wikipedia.org/wiki/Cron
+http://en.wikipedia.org/wiki/Shell_script
