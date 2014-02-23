@@ -6,26 +6,7 @@ Easily adaptable to any feed: just swap out the url (and image urls) and maybe t
 
 TODO:
 
-- work out kinks in music. might be too demanding on resources right now :/
-  - re-encode songs to way lower bitrate?
-- add favicon (mako face from YES)
 - beg someone to make a transparent catsuki.png
 - auto refresh feeds every minute
   - indicate w/ small bobbing ryuuko loading icon in corner
   - doesnt reload page, only changes content when changes detected
-
-new song urls
-
-http://kiwi6.com/file/jllne8m8da
-
-http://kiwi6.com/file/q306ya962v
-
-http://kiwi6.com/file/9xhhbma9r0
-
-http://kiwi6.com/file/c71c6yjfn4
-
-
-http://en.wikipedia.org/wiki/Cron
-http://en.wikipedia.org/wiki/Shell_script
-
-test
