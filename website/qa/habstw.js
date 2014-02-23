@@ -211,9 +211,9 @@ function rssFailed () {
 var paused = false;
 var song = 0;
 var tracks = [
-	'http://k007.kiwi6.com/hotlink/pu6o4nwuzf/06_G_at_LL_1.mp3',
-	'http://k007.kiwi6.com/hotlink/q306ya962v/04_Blumenkranz_1.mp3',
-	'http://k007.kiwi6.com/hotlink/c71c6yjfn4/14_ha_LL_1.mp3'
+	'http://k007.kiwi6.com/hotlink/pu6o4nwuzf',		//06
+	'http://k007.kiwi6.com/hotlink/q306ya962v',		//04
+	'http://k007.kiwi6.com/hotlink/c71c6yjfn4'		//14
 ]
 var audios = [];
 var music = function(){

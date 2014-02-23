@@ -46,7 +46,7 @@ function changeIndex(delta){
 		} else {
 			$('#dontLoseYourWay').removeClass('show');
 			music.pause();
-			music.currentTime = 63.5;
+			music.currentTime = 62.9;
 		}
 	}
 }
