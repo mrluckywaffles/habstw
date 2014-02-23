@@ -295,4 +295,3 @@ function animeSecrets () {
 }
 
 $(document).on("ready", animeSecrets);
-ent).on("ready", animeSecrets);
