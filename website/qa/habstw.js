@@ -60,8 +60,7 @@ function updateContent () {
 
 	var answer = $('#answerText');
 	var followup = $('#followup');
-	var imageHolder = $('#image');
-	var mako = $('.mako');	
+	var imageHolder = $('#image');	
 
 	//leave this in for debugging stuff	
 	var param = getParam("saved");	
@@ -83,10 +82,15 @@ function updateContent () {
 		}
 	}
 	
-	if(isSaved) {			
+	if(isSaved) {	
+ 		$('#leftAnswerBookend').html(
+ 		'<img class="answerBookends" src="http://i.imgur.com/HNR6h13.png"></img>'
+ 		);		
 		answer.html('YES');
+ 		$('#rightAnswerBookend').html(
+ 		'<img class="answerBookends" src="http://i.imgur.com/ShLuqus.png"></img>'
+ 		);
 		imageHolder.html(_images.getSuccess());
-		mako.show();
 	}
 	else{
 		answer.html('not yet :<');
