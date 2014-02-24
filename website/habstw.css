@@ -14,8 +14,7 @@ body {
 	font-weight: bold;
 	font-size: 120pt;
 }
-.mako {
-	display: none;
+.answerBookends {
 	max-width: 120px;
 	height: auto;
 }
@@ -93,4 +92,5 @@ body {
 }
 .show.catoi {
 	right: 130px;
+}0px;
 }
