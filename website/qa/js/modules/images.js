@@ -4,6 +4,11 @@ var src = anime.module('src').images;
 
 (function(module){
 
+	function chooseRandom (images) {		
+		var index = Math.floor(Math.random()*images.length);
+		return images[index];
+	};
+	
 	function genImageTag(url, classes, styles){
 		var c = '';
 		if(classes){
@@ -16,55 +21,45 @@ var src = anime.module('src').images;
 		return '<img src="' + url + '"' + c + s +' />'
 	}
 
-	function genImage (url, count) {
-		count = count ? count : 1;
-		var px = 700/count;
+	function resizeImage (img) {
+		var maxWidth = 700;
+		var width = img.width;
+		var count = Math.floor(maxWidth/width);
+		if(count < 1){
+			count = 1;
+		}
+		var px = maxWidth/count;
 		var styles = 'width: ' + px + 'px;';
 		var data = "";
 		for(var i = 0; i < count; i++)
 		{
-			data += genImageTag(url, null, styles);
+			data += genImageTag(img.src, null, styles);
 		}
-		return data;
+		img.imgTag = data;
 	}	
 
-	function genImageObj(url, count){
-		var preloadedImage = new Image();
-		preloadedImage.src = url;
-		var imageObj = {
-			url: url,
-			count: count,
-			imgTag: genImage(url, count)
+	function genMainImage(url){
+		var img = new Image();
+		img.imgTag = 'something happened';
+		img.onload = function(){
+			resizeImage(img);
 		};
-		return imageObj;
+		img.src = url;
+		return img;
 	}
-
-	var waitingImages = [
-	// 	genImageObj('http://i.imgur.com/Aio5V6d.png'), //ep16 this sucks
-	// 		genImageObj('http://i.imgur.com/uKlWv5U.png'), //ep02 mako dead
-	// 		genImageObj('http://i.imgur.com/87UTib6.png'), //ep13 ryuuko in bed
-		genImageObj('http://i.imgur.com/OyMOAhq.gif', 3), //ep16 mako sleeping in chair
-		genImageObj('http://i.imgur.com/wgDoGZ1.gif', 3) //ep14 mako sad w/ stick
-	];	
-	var successImages = [
-	// 		genImageObj('http://i.imgur.com/JocUhFU.png'), //ep02 nosebleed
-	// 		genImageObj('http://i.imgur.com/o5eteZt.png'), //ep02 confident smile
-		genImageObj('http://i.imgur.com/pTX2Bz4.png') //ed2 mako + elephant
-	];
-	var leftAnswerBookend = genImageTag(src.leftAnswerBookend, 'answerBookends');
-	var rightAnswerBookend = genImageTag(src.rightAnswerBookend, 'answerBookends');
-
-	function getRandomImage (images) {		
-		var index = Math.floor(Math.random()*images.length);
-		return images[index];
+		
+	var waiting = genMainImage(chooseRandom(src.waiting));
+	module.getWaiting = function(){
+		return waiting.imgTag;
 	};
 	
-	module.getWaiting = function(){
-		return getRandomImage(waitingImages).imgTag;
-	};
+	var success = genMainImage(chooseRandom(src.success));
 	module.getSuccess = function(){
-		return getRandomImage(successImages).imgTag;
+		return success.imgTag;
 	};
+	
+	var leftAnswerBookend = genImageTag(src.leftAnswerBookend, 'answerBookends');
+	var rightAnswerBookend = genImageTag(src.rightAnswerBookend, 'answerBookends');
 	module.getAnswerBookends = function(){
 		return [leftAnswerBookend, rightAnswerBookend];
 	};
