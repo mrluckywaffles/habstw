@@ -47,12 +47,10 @@ var src = anime.module('src').music;
 			song = parseInt(c_song) % tracks.length;
 		} //else 0
 		var c_paused = getCookie('paused');
-		if(c_paused){
-			if(c_paused == "true"){
-				$(_selectors.pause).trigger('click');
-			} else {
-				setMusicAsPaused(false);
-			}
+		if(c_paused && c_paused == "true"){
+			$(_selectors.pause).trigger('click');
+		} else {
+			setMusicAsPaused(false);
 		}
 	}
 	
@@ -76,7 +74,5 @@ var src = anime.module('src').music;
 
 		loadCookies();
 	};
-	
-	module.refresh = refreshMusic;
 	
 })(anime.module('music'));

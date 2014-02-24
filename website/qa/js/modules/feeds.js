@@ -30,11 +30,59 @@ var src = anime.module('src').feeds;
 			success: false //default value to be overridden
 		};
 	};
+ 	
+	function checkRSS(feeds, callback, failureHandler) {
+
+		var feedToSet = feeds[0];
+		if(!feedToSet){
+			callback();
+			return;
+		}
+		
+		var checkum = function (data){
+			var success = false;
+
+			if(!data){
+				failureHandler();
+				return;
+			}
+		
+			var curr = new Date; // get current date
+			var first = curr.getDate() - curr.getDay(); // should return most recent monday
+			var lastMonday = new Date(curr.setDate(first)); // it returns the time of day so its only kinda an approx but whatevs
+		
+			for(var i = 0; i < data.entries.length; i++){
+				var latestUpload = data.entries[i];			
+				var latestDate = new Date(latestUpload['publishedDate']);
+				success = success || lastMonday < latestDate;				
+			}
+		
+			feedToSet.success = success;
+		
+			//loop!
+			checkRSS(feeds.slice(1), callback, failureHandler);
+		};
 	
- 	var allFeeds = src.feeds.map(polishSrcFeed);
- 		
-	module.getFeeds = function(){
-		return allFeeds;
+		var param = getParam("rss");	
+		if(param === "false")
+		{
+			checkum(null);
+			return;
+		}
+
+		var urlToQuery = feedToSet.rss;
+	
+		$.jQRSS(urlToQuery, { count: 100 }, checkum);
+	}
+	
+	var allFeeds = src.feeds.map(polishSrcFeed);
+ 	
+	module.checkFeeds = function(callbackOnFeeds, failureHandler){
+		checkRSS(
+			allFeeds, 
+			function(){callbackOnFeeds(allFeeds)}, 
+			failureHandler
+		);
 	};
 	
 	module.forceSetAllFeeds = function(success){

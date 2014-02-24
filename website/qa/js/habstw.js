@@ -1,9 +1,7 @@
 //diff args you can use to debug/view different pages:
 //saved=true
 //saved=false
-//rssoff=true
-
-//magic number for results images is the width gets resized to 700px
+//rss=false (checked in feeds.js)
 
 $('#error').empty();
 
@@ -11,52 +9,8 @@ var _images = anime.module('images');
 var _feeds = anime.module('feeds');
 var _music = anime.module('music');
 
-function checkRSS(feeds, callback, failureHandler) {
-
-	var feedToSet = feeds[0];
-	if(!feedToSet){
-		callback();
-		return;
-	}
-		
-	var checkum = function (data){
-		var success = false;
-
-		if(!data){
-			failureHandler();
-			return;
-		}
-		
-		var curr = new Date; // get current date
-		var first = curr.getDate() - curr.getDay(); // should return most recent monday
-		var lastMonday = new Date(curr.setDate(first)); // it returns the time of day so its only kinda an approx but whatevs
-		
-		for(var i = 0; i < data.entries.length; i++){
-			var latestUpload = data.entries[i];			
-			var latestDate = new Date(latestUpload['publishedDate']);
-			success = success || lastMonday < latestDate;				
-		}
-		
-		feedToSet.success = success;
-		
-		//loop!
-		checkRSS(feeds.slice(1), callback, failureHandler);
-	};
-	
-	var param = getParam("rssoff");	
-	if(param === "true")
-	{
-		checkum(null);
-		return;
-  	}
-
-	var urlToQuery = feedToSet.rss;
-	
-	$.jQRSS(urlToQuery, { count: 100 }, checkum);
-}
-
 var lineBreak = '<br/>';
-function updateContent () {
+function updateContent (checkedFeeds) {
 
 	var answer = $('#answerText');
 	var followup = $('#followup');
@@ -70,15 +24,14 @@ function updateContent () {
 	
 	var isSaved = false;
 	followup.empty();
-	var allFeeds = _feeds.getFeeds();
-	for(var i = 0; i < allFeeds.length; i++){
-		var feed = allFeeds[i];
+	for(var i = 0; i < checkedFeeds.length; i++){
+		var feed = checkedFeeds[i];
 		if(feed.success){
 			if(isSaved){
 				followup.append(lineBreak);
 			}
 			isSaved = true;
-			followup.append(allFeeds[i].html);
+			followup.append(feed.html);
 		}
 	}
 	
@@ -93,15 +46,12 @@ function updateContent () {
 		answer.html('not yet :<');
 		imageHolder.html(_images.getWaiting());
 	}
-	
-	//last ditch effort to try and make music work
-	_music.refresh();
 }
 
-function showSaved () {
+function showSaved (checkedFeeds) {
 	var contentDiv = $('#content');
 	contentDiv.fadeOut(500, function(){
-		updateContent();
+		updateContent(checkedFeeds);
 		contentDiv.fadeIn();
 	});
 }
@@ -129,7 +79,7 @@ function animeSecrets () {
 	};
 	_music.init(musicSelectors);
 
-	checkRSS(_feeds.getFeeds(), showSaved, rssFailed);	
+	_feeds.checkFeeds(showSaved, rssFailed);	
 }
 
 $(document).on("ready", animeSecrets);
