@@ -9,6 +9,7 @@ $('#error').empty();
 
 var _images = anime.module('images');
 var _feeds = anime.module('feeds');
+var _music = anime.module('music');
 
 function getParam ( sname ) {
 	var params = location.search.substr(location.search.indexOf("?")+1);
@@ -106,7 +107,7 @@ function updateContent () {
 	}
 	
 	//last ditch effort to try and make music work
-	refreshMusic();
+	_music.refresh();
 }
 
 function showSaved () {
@@ -122,73 +123,9 @@ function rssFailed () {
 	$('#error').html('Try refreshing! If the problem persists, please contact hasanimebeensavedthisweek@gmail.com');
 }
 
-var paused = false;
-var song = 0;
-var tracks = [
-	'http://k007.kiwi6.com/hotlink/pu6o4nwuzf',		//06
-	'http://k007.kiwi6.com/hotlink/q306ya962v',		//04
-	'http://k007.kiwi6.com/hotlink/c71c6yjfn4'		//14
-]
-var audios = [];
-var music = function(){
-	return audios[song];
-}
-
-
-function saveCookies(){
-	setCookie('song', song, 7);
-	setCookie('paused', paused, 7);
-}
-function incSong(){
-	song = (song + 1) % tracks.length;
-	saveCookies();	
-}
-function refreshMusic(){
-	if(paused){
-		music().pause();
-	} else {
-		music().play();
-	}
-}
-function setMusicAsPaused(pause){
-	paused = pause;
-	refreshMusic();
-	saveCookies();
-}
-function nextSong(){
-	if(!paused){
-		music().pause();
-		incSong();
-		music().currentTime=0;
-		music().play();
-	}
-}
-function loadCookies(){
-	var c_song = getCookie('song');
-	if(c_song){
-		song = parseInt(c_song);
-	} //else 0
-	var c_paused = getCookie('paused');
-	if(c_paused){
-		if(c_paused == "true"){
-			$('#pause').trigger('click');
-		} else {
-			setMusicAsPaused(false);
-		}
-	}
-}
-
 //main func
 
 function animeSecrets () {
-
-	for(var i = 0; i < tracks.length; i++){
-		audios[i] = document.createElement('audio');
-		audios[i].setAttribute('src', tracks[i]);
-		audios[i].setAttribute('preload', true);
-		audios[i].setAttribute('loop', true);
-		audios[i].pause();
-	}
 
 	$('.toggleInfo').click(function(){
 		$('.info').toggleClass('show');
@@ -196,15 +133,14 @@ function animeSecrets () {
 	$('.toggleMusic').click(function(){
 		$('.music').toggleClass('show');
 	});
-	$('.next').click(nextSong);
-	$('#play').click(function (){
-		setMusicAsPaused(false);
-	});
-	$('#pause').click(function (){
-		setMusicAsPaused(true);
-	});
+	
+	var musicSelectors = {
+		play: '#play',
+		pause: '#pause',
+		next: '.next'
+	};
+	_music.init(musicSelectors);
 
-	loadCookies();
 	checkRSS(_feeds.getFeeds(), showSaved, rssFailed);	
 }
 
