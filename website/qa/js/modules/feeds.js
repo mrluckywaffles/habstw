@@ -21,7 +21,7 @@ var src = anime.module('src').feeds;
 			+ lineBreak
 			+ genLink('blog', feed.blog)
 			+ ' '
-			+ genLink('nyaa', feed.tor)
+			+ genLink('torrent', feed.tor)
 			+ '</div>'
 			;	
 		return { 
