@@ -8,51 +8,7 @@
 $('#error').empty();
 
 var _images = anime.module('images');
-		
-		
-function genLink (description, url) {
-	return '<span class="link"><a href="' + url + '">' + description + '</a></span>';
-}
-
-function getFreshRssUrl(url){
-	var googleGarbage = new Date().getTime();
-	return url + '&googleGarbage=' + googleGarbage;
-}
-
-function genFeed (rawRss, blurb) {
-	return { 
-		rss: getFreshRssUrl(rawRss),
-		blurb: blurb,
-		success: false
-	};
-}
-
-var lineBreak = '<br/>';
-var horribleRss = 'http://www.nyaa.se/?page=rss&user=64513&term=Kill+la+Kill+720p';
-var horribleBlurb = 
-	'<div>'
-	+ 'HORRIBLE IS OUT'
-	+ lineBreak
-	+ genLink('blog', 'http://horriblesubs.info/')
-	+ ' '
-	+ genLink('nyaa', 'http://www.nyaa.se/?page=search&cats=0_0&filter=0&term=kill+la+kill&user=64513')
-	+ '</div>'
-	;	
-var underwaterRss = 'http://www.nyaa.se/?page=rss&user=265&term=Kill+la+Kill';
-var underwaterBlurb = 
-	'<div>'
-	+ 'UNDERWATER IS OUT'
-	+ lineBreak
-	+ genLink('blog', 'http://underwater.nyaatorrents.org/?tag=KILL%20la%20KILL')
-	+ ' '
-	+ genLink('nyaa', 'http://www.nyaa.se/?page=search&cats=0_0&filter=0&term=kill+la+kill&user=265')
-	+ '</div>'
-	;	
-	
-var allFeeds = [
-	genFeed(horribleRss, horribleBlurb),
-	genFeed(underwaterRss, underwaterBlurb)
-];
+var _feeds = anime.module('feeds');
 
 function getParam ( sname ) {
 	var params = location.search.substr(location.search.indexOf("?")+1);
@@ -111,12 +67,7 @@ function checkRSS(feeds, callback, failureHandler) {
 	$.jQRSS(urlToQuery, { count: 100 }, checkum);
 }
 
-function forceSetAllFeeds(success){
-	for(var i = 0; i < allFeeds.length; i++){
-		allFeeds[i].success = success;
-	}
-}
-
+var lineBreak = '<br/>';
 function updateContent () {
 
 	var answer = $('#answerText');
@@ -126,12 +77,13 @@ function updateContent () {
 
 	//leave this in for debugging stuff	
 	var param = getParam("saved");	
-	if(param === "true"){ forceSetAllFeeds(true); }
-	if(param === "false"){ forceSetAllFeeds(false); }
+	if(param === "true"){ _feeds.forceSetAllFeeds(true); }
+	if(param === "false"){ _feeds.forceSetAllFeeds(false); }
 	//end debugging
 	
 	var isSaved = false;
 	followup.empty();
+	var allFeeds = _feeds.getFeeds();
 	for(var i = 0; i < allFeeds.length; i++){
 		var feed = allFeeds[i];
 		if(feed.success){
@@ -139,7 +91,7 @@ function updateContent () {
 				followup.append(lineBreak);
 			}
 			isSaved = true;
-			followup.append(allFeeds[i].blurb);
+			followup.append(allFeeds[i].html);
 		}
 	}
 	
@@ -253,7 +205,7 @@ function animeSecrets () {
 	});
 
 	loadCookies();
-	checkRSS(allFeeds, showSaved, rssFailed);	
+	checkRSS(_feeds.getFeeds(), showSaved, rssFailed);	
 }
 
 $(document).on("ready", animeSecrets);
