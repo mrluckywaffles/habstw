@@ -1,12 +1,12 @@
-; (function(module){
+;
+
+var src = anime.module('src').music;
+
+(function(module){
 		
 	var paused = false;
 	var song = 0;
-	var tracks = [
-		'http://k007.kiwi6.com/hotlink/pu6o4nwuzf',		//06
-		'http://k007.kiwi6.com/hotlink/q306ya962v',		//04
-		'http://k007.kiwi6.com/hotlink/c71c6yjfn4'		//14
-	]
+	var tracks = src.tracks;
 	var audios = [];
 	var music = function(){
 		return audios[song];
@@ -44,7 +44,7 @@
 	function loadCookies(){
 		var c_song = getCookie('song');
 		if(c_song){
-			song = parseInt(c_song);
+			song = parseInt(c_song) % tracks.length;
 		} //else 0
 		var c_paused = getCookie('paused');
 		if(c_paused){

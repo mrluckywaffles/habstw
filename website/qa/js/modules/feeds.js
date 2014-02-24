@@ -1,4 +1,8 @@
-; (function(module){
+; 
+
+var src = anime.module('src').feeds;
+
+(function(module){
 		
 	function genLink (description, url) {
 		return '<span class="link"><a href="' + url + '">' + description + '</a></span>';
@@ -9,40 +13,25 @@
 		return url + '&googleGarbage=' + googleGarbage;
 	};
 
-	function genFeed (rawRss, blurb) {
+	var lineBreak = '<br/>';
+	function polishSrcFeed (feed) {
+		var blurb =
+			'<div>'
+			+ feed.name + ' IS OUT'
+			+ lineBreak
+			+ genLink('blog', feed.blog)
+			+ ' '
+			+ genLink('nyaa', feed.tor)
+			+ '</div>'
+			;	
 		return { 
-			rss: getFreshRssUrl(rawRss),
+			rss: getFreshRssUrl(feed.rss),
 			html: blurb,
 			success: false //default value to be overridden
 		};
 	};
-
-	var lineBreak = '<br/>';
-	var horribleRss = 'http://www.nyaa.se/?page=rss&user=64513&term=Kill+la+Kill+720p';
-	var horribleBlurb = 
-		'<div>'
-		+ 'HORRIBLE IS OUT'
-		+ lineBreak
-		+ genLink('blog', 'http://horriblesubs.info/')
-		+ ' '
-		+ genLink('nyaa', 'http://www.nyaa.se/?page=search&cats=0_0&filter=0&term=kill+la+kill&user=64513')
-		+ '</div>'
-		;	
-	var underwaterRss = 'http://www.nyaa.se/?page=rss&user=265&term=Kill+la+Kill';
-	var underwaterBlurb = 
-		'<div>'
-		+ 'UNDERWATER IS OUT'
-		+ lineBreak
-		+ genLink('blog', 'http://underwater.nyaatorrents.org/?tag=KILL%20la%20KILL')
-		+ ' '
-		+ genLink('nyaa', 'http://www.nyaa.se/?page=search&cats=0_0&filter=0&term=kill+la+kill&user=265')
-		+ '</div>'
-		;	
-		
- 	var allFeeds = [
-		genFeed(horribleRss, horribleBlurb),
-		genFeed(underwaterRss, underwaterBlurb)
-	];
+	
+ 	var allFeeds = src.feeds.map(polishSrcFeed);
  		
 	module.getFeeds = function(){
 		return allFeeds;

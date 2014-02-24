@@ -1,4 +1,8 @@
-; (function(module){
+;
+
+var src = anime.module('src').images;
+
+(function(module){
 
 	function genImageTag(url, classes, styles){
 		var c = '';
@@ -47,8 +51,8 @@
 	// 		genImageObj('http://i.imgur.com/o5eteZt.png'), //ep02 confident smile
 		genImageObj('http://i.imgur.com/pTX2Bz4.png') //ed2 mako + elephant
 	];
-	var leftAnswerBookend = genImageTag('http://i.imgur.com/HNR6h13.png', 'answerBookends');
-	var rightAnswerBookend = genImageTag('http://i.imgur.com/ShLuqus.png', 'answerBookends');
+	var leftAnswerBookend = genImageTag(src.leftAnswerBookend, 'answerBookends');
+	var rightAnswerBookend = genImageTag(src.rightAnswerBookend, 'answerBookends');
 
 	function getRandomImage (images) {		
 		var index = Math.floor(Math.random()*images.length);
