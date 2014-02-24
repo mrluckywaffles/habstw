@@ -1,12 +1,25 @@
 ; (function(module){
 
+	function genImageTag(url, classes, styles){
+		var c = '';
+		if(classes){
+			c = ' class="' + classes + '"';
+		}
+		var s = '';
+		if(styles){
+			s = ' style="' + styles + '"';
+		}		
+		return '<img src="' + url + '"' + c + s +' />'
+	}
+
 	function genImage (url, count) {
 		count = count ? count : 1;
 		var px = 700/count;
+		var styles = 'width: ' + px + 'px;';
 		var data = "";
 		for(var i = 0; i < count; i++)
 		{
-			data += '<img src="' + url + '" style=" width: ' + px + 'px; "/>';
+			data += genImageTag(url, null, styles);
 		}
 		return data;
 	}	
@@ -34,6 +47,8 @@
 	// 		genImageObj('http://i.imgur.com/o5eteZt.png'), //ep02 confident smile
 		genImageObj('http://i.imgur.com/pTX2Bz4.png') //ed2 mako + elephant
 	];
+	var leftAnswerBookend = genImageTag('http://i.imgur.com/HNR6h13.png', 'answerBookends');
+	var rightAnswerBookend = genImageTag('http://i.imgur.com/ShLuqus.png', 'answerBookends');
 
 	function getRandomImage (images) {		
 		var index = Math.floor(Math.random()*images.length);
@@ -45,6 +60,9 @@
 	};
 	module.getSuccess = function(){
 		return getRandomImage(successImages).imgTag;
+	};
+	module.getAnswerBookends = function(){
+		return [leftAnswerBookend, rightAnswerBookend];
 	};
 	
 })(anime.module('images'));

@@ -83,13 +83,10 @@ function updateContent () {
 	}
 	
 	if(isSaved) {	
- 		$('#leftAnswerBookend').html(
- 		'<img class="answerBookends" src="http://i.imgur.com/HNR6h13.png"></img>'
- 		);		
+		var bookends = _images.getAnswerBookends();
+ 		$('#leftAnswerBookend').html(bookends[0]);		
 		answer.html('YES');
- 		$('#rightAnswerBookend').html(
- 		'<img class="answerBookends" src="http://i.imgur.com/ShLuqus.png"></img>'
- 		);
+ 		$('#rightAnswerBookend').html(bookends[1]);
 		imageHolder.html(_images.getSuccess());
 	}
 	else{
