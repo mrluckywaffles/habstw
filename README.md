@@ -8,6 +8,6 @@ TODO:
 
 - beg someone to make a transparent catsuki.png
   - then come up with something to do w/ it
-- auto refresh feeds every minute
-  - indicate w/ small bobbing ryuuko loading icon in corner
-  - doesnt reload page, only changes content when changes detected
+- move loose js into "tools" module
+- cleanup (make class either hyphen or camel, make modules _ or not, etc)
+- extract refresh logic into a module
