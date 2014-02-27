@@ -5,9 +5,9 @@
 
 $('#error').empty();
 
-var _images = anime.module('images');
-var _feeds = anime.module('feeds');
-var _music = anime.module('music');
+var _images = _images || anime.module('images');
+var _feeds = _feeds || anime.module('feeds');
+var _music = _music || anime.module('music');
 
 var lineBreak = '<br/>';
 function updateContent (checkedFeeds) {
@@ -26,7 +26,7 @@ function updateContent (checkedFeeds) {
 	followup.empty();
 	for(var i = 0; i < checkedFeeds.length; i++){
 		var feed = checkedFeeds[i];
-		if(feed.success){
+		if(feed.success()){
 			if(isSaved){
 				followup.append(lineBreak);
 			}
@@ -49,11 +49,18 @@ function updateContent (checkedFeeds) {
 }
 
 function showSaved (checkedFeeds) {
-	var contentDiv = $('#content');
-	contentDiv.fadeOut(500, function(){
-		updateContent(checkedFeeds);
-		contentDiv.fadeIn();
-	});
+	var changed = false;
+	for(var i = 0; i < checkedFeeds.length; i++){
+		changed = checkedFeeds[i].getChanged() || changed;
+	}
+
+	if(changed) {
+		var contentDiv = $('#content');
+		contentDiv.fadeOut(500, function(){
+			updateContent(checkedFeeds);
+			contentDiv.fadeIn();
+		});
+	}
 }
 
 function rssFailed () {
@@ -62,6 +69,10 @@ function rssFailed () {
 }
 
 //main func
+
+function fetchContent(){
+	_feeds.checkFeeds(showSaved, rssFailed);
+}
 
 function animeSecrets () {
 
@@ -79,7 +90,8 @@ function animeSecrets () {
 	};
 	_music.init(musicSelectors);
 
-	_feeds.checkFeeds(showSaved, rssFailed);	
+	fetchContent();
+	setInterval(fetchContent, 10000);	
 }
 
 $(document).on("ready", animeSecrets);
