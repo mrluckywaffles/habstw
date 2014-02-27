@@ -5,6 +5,7 @@
 
 $('#error').empty();
 
+var _tools = _tools || anime.module('tools');
 var _images = _images || anime.module('images');
 var _feeds = _feeds || anime.module('feeds');
 var _music = _music || anime.module('music');
@@ -17,7 +18,7 @@ function updateContent (checkedFeeds) {
 	var imageHolder = $('#image');	
 
 	//leave this in for debugging stuff	
-	var param = getParam("saved");	
+	var param = _tools.getParam("saved");	
 	if(param === "true"){ _feeds.forceSetAllFeeds(true); }
 	if(param === "false"){ _feeds.forceSetAllFeeds(false); }
 	//end debugging
