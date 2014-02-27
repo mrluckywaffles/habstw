@@ -1,3 +1,7 @@
+;
+
+var _tools = _tools || anime.module('tools');
+
 (function($) {
     if (!$.jQRSS) { 
         $.extend({  
@@ -51,7 +55,11 @@
 
                 $.ajax({
                     url: gURL,
-                    beforeSend: function (jqXHR, settings) { console.log(new Array(30).join('-'), "REQUESTING RSS XML", new Array(30).join('-')); console.log({ ajaxData: ajaxData, ajaxRequest: settings.url, jqXHR: jqXHR, settings: settings, options: o }); console.log(new Array(80).join('-')); },
+                    beforeSend: function (jqXHR, settings) {
+						_tools.log(new Array(30).join('-'), "REQUESTING RSS XML", new Array(30).join('-'));
+						_tools.log({ ajaxData: ajaxData, ajaxRequest: settings.url, jqXHR: jqXHR, settings: settings, options: o }); 
+						_tools.log(new Array(80).join('-')); 
+                    },
                     dataType: o.output != "xml" ? "json" : "xml",
                     data: ajaxData,
                     type: "GET",
@@ -60,11 +68,10 @@
                     success: function (data, textStatus, jqXHR) {  
                         var f = data['responseData'] ? data.responseData['feed'] ? data.responseData.feed : null : null,
                             e = data['responseData'] ? data.responseData['feed'] ? data.responseData.feed['entries'] ? data.responseData.feed.entries : null : null : null
-                        console.log(new Array(30).join('-'), "SUCCESS", new Array(30).join('-'));
-                        console.log({ data: data, textStatus: textStatus, jqXHR: jqXHR, feed: f, entries: e });
-                        console.log(new Array(70).join('-'));
-
-                        if (fun) {
+                        _tools.log(new Array(30).join('-'), "SUCCESS", new Array(30).join('-'));
+						_tools.log({ data: data, textStatus: textStatus, jqXHR: jqXHR, feed: f, entries: e });
+						_tools.log(new Array(70).join('-'));
+						if (fun) {
                             return fun.call(this, data['responseData'] ? data.responseData['feed'] ? data.responseData.feed : data.responseData : null);
                         }
                         else {

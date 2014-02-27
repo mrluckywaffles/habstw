@@ -13,6 +13,7 @@
 	var music = {};
 	var feeds = {};
 
+	images.loadingRss = 'http://i.imgur.com/XsOXgn5.gif'; //bobbing ryuuko
 	images.leftAnswerBookend = 'http://i.imgur.com/HNR6h13.png'; //mako face right
 	images.rightAnswerBookend = 'http://i.imgur.com/ShLuqus.png'; //mako face left
 	images.waiting = [

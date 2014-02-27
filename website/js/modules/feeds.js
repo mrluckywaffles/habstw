@@ -1,8 +1,8 @@
 ; 
 
-var src = anime.module('src').feeds;
-
 (function(module){
+
+	var _src = anime.module('src').feeds;
 		
 	function genLink (description, url) {
 		return '<span class="link"><a href="' + url + '">' + description + '</a></span>';
@@ -15,7 +15,12 @@ var src = anime.module('src').feeds;
 
 	var lineBreak = '<br/>';
 	function polishSrcFeed (feed) {
-		var blurb =
+		
+		var pfeed = {};
+	
+		pfeed.rss = getFreshRssUrl(feed.rss);
+	
+		pfeed.html =
 			'<div>'
 			+ feed.name + ' IS OUT'
 			+ lineBreak
@@ -23,12 +28,25 @@ var src = anime.module('src').feeds;
 			+ ' '
 			+ genLink('torrent', feed.tor)
 			+ '</div>'
-			;	
-		return { 
-			rss: getFreshRssUrl(feed.rss),
-			html: blurb,
-			success: false //default value to be overridden
+			;
+			
+		var changed = true;
+		pfeed.getChanged = function(){
+			var wasChanged = changed;
+			changed = false;
+			return wasChanged;
 		};
+		
+		var success = false;		
+		pfeed.success = function(newVal){
+			if(newVal != null && newVal != success){
+				changed = true;
+				success = newVal;
+			}
+			return success;
+		}
+		
+		return pfeed;
 	};
  	
 	function checkRSS(feeds, callback, failureHandler) {
@@ -57,7 +75,7 @@ var src = anime.module('src').feeds;
 				success = success || lastMonday < latestDate;				
 			}
 		
-			feedToSet.success = success;
+			feedToSet.success(success);
 		
 			//loop!
 			checkRSS(feeds.slice(1), callback, failureHandler);
@@ -75,7 +93,7 @@ var src = anime.module('src').feeds;
 		$.jQRSS(urlToQuery, { count: 100 }, checkum);
 	}
 	
-	var allFeeds = src.feeds.map(polishSrcFeed);
+	var allFeeds = _src.feeds.map(polishSrcFeed);
  	
 	module.checkFeeds = function(callbackOnFeeds, failureHandler){
 		checkRSS(
@@ -87,7 +105,7 @@ var src = anime.module('src').feeds;
 	
 	module.forceSetAllFeeds = function(success){
 		for(var i = 0; i < allFeeds.length; i++){
-			allFeeds[i].success = success;
+			allFeeds[i].success(true);
 		}
 	};
 	
