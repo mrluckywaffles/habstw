@@ -1,9 +1,9 @@
 ;
 
-var _tools = _tools || anime.module('tools');
-
 (function($) {
     if (!$.jQRSS) { 
+    	var _tools = anime.module('tools');
+    	
         $.extend({  
             jQRSS: function(rss, options, func) {
                 if (arguments.length <= 0) return false;
@@ -104,4 +104,4 @@ var _tools = _tools || anime.module('tools');
             userip: null
         };
     }
-})(jQuery);
+})(anime.module('tools'));
