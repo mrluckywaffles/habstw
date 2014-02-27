@@ -6,8 +6,8 @@ It also plays music for some reason?!?
 
 TODO:
 
+- make sure i didnt break qa with all my github edits
 - beg someone to make a transparent catsuki.png
   - then come up with something to do w/ it
-- move loose js into "tools" module
 - cleanup (make class either hyphen or camel, make modules _ or not, etc)
 - extract refresh logic into a module
