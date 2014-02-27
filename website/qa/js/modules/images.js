@@ -1,8 +1,8 @@
 ;
 
-var src = anime.module('src').images;
-
 (function(module){
+
+	var src = anime.module('src').images;
 
 	function chooseRandom (images) {		
 		var index = Math.floor(Math.random()*images.length);
@@ -62,6 +62,11 @@ var src = anime.module('src').images;
 	var rightAnswerBookend = genImageTag(src.rightAnswerBookend, 'answerBookends');
 	module.getAnswerBookends = function(){
 		return [leftAnswerBookend, rightAnswerBookend];
+	};
+	
+	var loadingRss = genImageTag(src.loadingRss, 'reloading-rss-image');
+	module.getLoadingRss = function(){
+		return loadingRss;
 	};
 	
 })(anime.module('images'));

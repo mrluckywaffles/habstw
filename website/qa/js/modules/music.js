@@ -1,9 +1,9 @@
 ;
 
-var src = anime.module('src').music;
-
 (function(module){
 		
+	var src = anime.module('src').music;
+
 	var paused = false;
 	var song = 0;
 	var tracks = src.tracks;
