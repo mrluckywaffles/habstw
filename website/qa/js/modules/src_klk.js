@@ -47,4 +47,4 @@
 	module.music = music;
 	module.feeds = feeds;
 	
-})(anime.module('src'));
+})(anime.module('src_klk'));
