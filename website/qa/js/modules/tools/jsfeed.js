@@ -104,4 +104,4 @@
             userip: null
         };
     }
-})(anime.module('tools'));
+})(jQuery);
