@@ -11,14 +11,17 @@ anime.module = function () {
             return modules[name];
         }
         
-        return modules[name] = {};
+        return modules[name] = { moduleName: name };
     };
 
     mod.exists = function(name){
         return !!modules[name];
     };
-
-    // unit testing purposes only
+	
+	mod.set = function(dest, src){
+		modules[dest] = mod(src);
+	};
+	
     mod._delete = function(name){
         delete modules[name];
     };
