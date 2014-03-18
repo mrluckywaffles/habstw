@@ -3,7 +3,6 @@
 (function(module){
 
 	var _src = anime.module('src').feeds;
-	var _tools = anime.module('tools');
 		
 	function genLink (description, url) {
 		return '<span class="link"><a href="' + url + '">' + description + '</a></span>';
@@ -91,7 +90,7 @@
 
 		var urlToQuery = feedToSet.rss;
 	
-		_tools.jQRSS(urlToQuery, { count: 100 }, checkum);
+		$.jQRSS(urlToQuery, { count: 100 }, checkum);
 	}
 	
 	var allFeeds = _src.feeds.map(polishSrcFeed);
