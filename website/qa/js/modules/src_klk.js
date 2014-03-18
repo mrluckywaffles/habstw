@@ -1,13 +1,6 @@
 ; (function(module){
-
-	function genFeed(name, rss, blog, tor){
-		return {
-			name: name,
-			rss: rss,
-			blog: blog,
-			tor: tor
-		};
-	};
+	
+	var _tools = anime.module('tools');
 
 	var images = {};
 	var music = {};
@@ -36,13 +29,13 @@
 	];
 	
 	feeds.feeds = [
-		genFeed(
+		_tools.rawFeed(
 			'HORRIBLE',
 			'http://www.nyaa.se/?page=rss&user=64513&term=Kill+la+Kill+720p',
 			'http://horriblesubs.info/',
 			'http://www.nyaa.se/?page=search&cats=0_0&filter=0&term=kill+la+kill&user=64513'
 		),
-		genFeed(
+		_tools.rawFeed(
 			'UNDERWATER',
 			'http://www.nyaa.se/?page=rss&user=265&term=Kill+la+Kill',
 			'http://underwater.nyaatorrents.org/?tag=KILL%20la%20KILL',
