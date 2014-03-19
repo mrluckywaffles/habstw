@@ -5,6 +5,7 @@
 	var images = {};
 	var music = {};
 	var feeds = {};
+	var text = {};
 
 	images.loadingRss = 'http://i.imgur.com/XsOXgn5.gif'; //bobbing ryuuko
 	images.leftAnswerBookend = 'http://i.imgur.com/HNR6h13.png'; //mako face right
@@ -21,6 +22,8 @@
 	// 	'http://i.imgur.com/o5eteZt.png', //ep02 confident smile
 		'http://i.imgur.com/pTX2Bz4.png'  //ED-2 mako + elephant
 	];
+	
+	text.waiting = 'not yet :<';
 	
 	music.tracks = [
 		'http://k007.kiwi6.com/hotlink/pu6o4nwuzf',		//06
@@ -44,6 +47,7 @@
 	];	
 	
 	module.images = images;
+	module.text = text;
 	module.music = music;
 	module.feeds = feeds;
 	

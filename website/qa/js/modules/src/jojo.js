@@ -5,38 +5,28 @@
 	var images = {};
 	var music = {};
 	var feeds = {};
+	var text = {};
 
 	images.loadingRss = 'http://i.imgur.com/XsOXgn5.gif'; //bobbing ryuuko
 	images.leftAnswerBookend = 'http://i.imgur.com/HNR6h13.png'; //mako face right
 	images.rightAnswerBookend = 'http://i.imgur.com/ShLuqus.png'; //mako face left
 	images.waiting = [
-		'http://i.imgur.com/OyMOAhq.gif', //ep16 mako sleeping in chair
-		'http://i.imgur.com/wgDoGZ1.gif'  //ep14 mako sad w/ stick
-	];	
+		'http://i.imgur.com/Il557U0.png'	//dio vs jotaro art
+	];
 	images.success = [
 		'http://i.imgur.com/pTX2Bz4.png'  //ED-2 mako + elephant
 	];
+	
+	text.waiting = "soon...";
 
 	music.tracks = [
 		'http://k007.kiwi6.com/hotlink/10po8om1ml'		//roundabout
 	];
 
-	feeds.feeds = [
-		_tools.rawFeed(
-			'HORRIBLE',
-			'http://www.nyaa.se/?page=rss&user=64513&term=Kill+la+Kill+720p',
-			'http://horriblesubs.info/',
-			'http://www.nyaa.se/?page=search&cats=0_0&filter=0&term=kill+la+kill&user=64513'
-		),
-		_tools.rawFeed(
-			'UNDERWATER',
-			'http://www.nyaa.se/?page=rss&user=265&term=Kill+la+Kill',
-			'http://underwater.nyaatorrents.org/?tag=KILL%20la%20KILL',
-			'http://www.nyaa.se/?page=search&cats=0_0&filter=0&term=kill+la+kill&user=265'
-		)
-	];	
+	feeds.feeds = [];	
 
 	module.images = images;
+	module.text = text;
 	module.music = music;
 	module.feeds = feeds;
 
