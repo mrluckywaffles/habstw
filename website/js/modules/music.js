@@ -3,6 +3,7 @@
 (function(module){
 		
 	var src = anime.module('src').music;
+	var _tools = anime.module('tools');
 
 	var paused = false;
 	var song = 0;
@@ -14,8 +15,8 @@
 	var _selectors;
 
 	function saveCookies(){
-		setCookie('song', song, 7);
-		setCookie('paused', paused, 7);
+		_tools.setCookie('song', song, 7);
+		_tools.setCookie('paused', paused, 7);
 	}
 	function incSong(){
 		song = (song + 1) % tracks.length;
@@ -42,11 +43,11 @@
 		}
 	}
 	function loadCookies(){
-		var c_song = getCookie('song');
+		var c_song = _tools.getCookie('song');
 		if(c_song){
 			song = parseInt(c_song) % tracks.length;
 		} //else 0
-		var c_paused = getCookie('paused');
+		var c_paused = _tools.getCookie('paused');
 		if(c_paused && c_paused == "true"){
 			$(_selectors.pause).trigger('click');
 		} else {

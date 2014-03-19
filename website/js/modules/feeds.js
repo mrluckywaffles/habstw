@@ -81,7 +81,7 @@
 			checkRSS(feeds.slice(1), callback, failureHandler);
 		};
 	
-		var param = getParam("rss");	
+		var param = _tools.getParam("rss");	
 		if(param === "false")
 		{
 			checkum(null);

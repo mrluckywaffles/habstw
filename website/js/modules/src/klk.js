@@ -1,17 +1,11 @@
 ; (function(module){
-
-	function genFeed(name, rss, blog, tor){
-		return {
-			name: name,
-			rss: rss,
-			blog: blog,
-			tor: tor
-		};
-	};
+	
+	var _tools = anime.module('tools');
 
 	var images = {};
 	var music = {};
 	var feeds = {};
+	var text = {};
 
 	images.loadingRss = 'http://i.imgur.com/XsOXgn5.gif'; //bobbing ryuuko
 	images.leftAnswerBookend = 'http://i.imgur.com/HNR6h13.png'; //mako face right
@@ -29,6 +23,8 @@
 		'http://i.imgur.com/pTX2Bz4.png'  //ED-2 mako + elephant
 	];
 	
+	text.waiting = 'not yet :<';
+	
 	music.tracks = [
 		'http://k007.kiwi6.com/hotlink/pu6o4nwuzf',		//06
 		'http://k007.kiwi6.com/hotlink/q306ya962v',		//04
@@ -36,13 +32,13 @@
 	];
 	
 	feeds.feeds = [
-		genFeed(
+		_tools.rawFeed(
 			'HORRIBLE',
 			'http://www.nyaa.se/?page=rss&user=64513&term=Kill+la+Kill+720p',
 			'http://horriblesubs.info/',
 			'http://www.nyaa.se/?page=search&cats=0_0&filter=0&term=kill+la+kill&user=64513'
 		),
-		genFeed(
+		_tools.rawFeed(
 			'UNDERWATER',
 			'http://www.nyaa.se/?page=rss&user=265&term=Kill+la+Kill',
 			'http://underwater.nyaatorrents.org/?tag=KILL%20la%20KILL',
@@ -51,7 +47,8 @@
 	];	
 	
 	module.images = images;
+	module.text = text;
 	module.music = music;
 	module.feeds = feeds;
 	
-})(anime.module('src'));
+})(anime.module('src_klk'));

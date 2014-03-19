@@ -5,9 +5,11 @@
 
 $('#error').empty();
 
+var _tools = _tools || anime.module('tools');
 var _images = _images || anime.module('images');
 var _feeds = _feeds || anime.module('feeds');
 var _music = _music || anime.module('music');
+var _src = _src || anime.module('src');
 
 var lineBreak = '<br/>';
 function updateContent (checkedFeeds) {
@@ -17,7 +19,7 @@ function updateContent (checkedFeeds) {
 	var imageHolder = $('#image');	
 
 	//leave this in for debugging stuff	
-	var param = getParam("saved");	
+	var param = _tools.getParam("saved");	
 	if(param === "true"){ _feeds.forceSetAllFeeds(true); }
 	if(param === "false"){ _feeds.forceSetAllFeeds(false); }
 	//end debugging
@@ -43,7 +45,7 @@ function updateContent (checkedFeeds) {
 		imageHolder.html(_images.getSuccess());
 	}
 	else{
-		answer.html('not yet :<');
+		answer.html(_src.text.waiting);
 		imageHolder.html(_images.getWaiting());
 	}
 }
@@ -62,7 +64,7 @@ function showSaved (checkedFeeds) {
 		changed = checkedFeeds[i].getChanged() || changed;
 	}
 
-	if(changed) {
+	if(changed || checkedFeeds.length == 0) {
 		var contentDiv = $('#content');
 		contentDiv.fadeOut(500, function(){
 			updateContent(checkedFeeds);
