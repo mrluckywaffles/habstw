@@ -71,7 +71,13 @@
 		$(_selectors.pause).click(function (){
 			setMusicAsPaused(true);
 		});
-		$(_selectors.next).click(nextSong);
+		
+		if(tracks.length > 1){
+			$(_selectors.next).click(nextSong);		
+		}
+		else {
+			$(_selectors.next).remove();		
+		}
 
 		loadCookies();
 	};
