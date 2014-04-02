@@ -242,6 +242,7 @@ anime.module = function () {
 	// 	'http://i.imgur.com/o5eteZt.png', //ep02 confident smile
 		'http://i.imgur.com/pTX2Bz4.png'  //ED-2 mako + elephant
 	];
+	images.defaultMainImageTag = 'refresh pls';
 	
 	text.waiting = 'not yet :<';
 	
@@ -290,6 +291,7 @@ anime.module = function () {
 	images.success = [
 		'http://i.imgur.com/pTX2Bz4.png'  //ED-2 mako + elephant
 	];
+	images.defaultMainImageTag = '<img src="http://i.imgur.com/Il557U0.png" style="width: 700px;">';
 	
 	text.waiting = "soon...";
 
@@ -297,7 +299,7 @@ anime.module = function () {
 		'http://k007.kiwi6.com/hotlink/10po8om1ml'		//roundabout
 	];
 
-	feeds.feeds = [];	
+	feeds.feeds = [];
 
 	module.images = images;
 	module.text = text;
@@ -361,7 +363,7 @@ anime.module = function () {
 
 	function genMainImage(url){
 		var img = new Image();
-		img.imgTag = 'something happened';
+		img.imgTag = src.defaultMainImageTag;
 		img.onload = function(){
 			resizeImage(img);
 		};

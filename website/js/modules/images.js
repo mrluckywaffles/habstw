@@ -40,7 +40,7 @@
 
 	function genMainImage(url){
 		var img = new Image();
-		img.imgTag = 'something happened';
+		img.imgTag = src.defaultMainImageTag;
 		img.onload = function(){
 			resizeImage(img);
 		};

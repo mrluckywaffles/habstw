@@ -22,6 +22,7 @@
 	// 	'http://i.imgur.com/o5eteZt.png', //ep02 confident smile
 		'http://i.imgur.com/pTX2Bz4.png'  //ED-2 mako + elephant
 	];
+	images.defaultMainImageTag = 'refresh pls';
 	
 	text.waiting = 'not yet :<';
 	
