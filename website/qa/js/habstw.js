@@ -108,7 +108,9 @@ function animeSecrets () {
 	_music.init(musicSelectors);
 
 	fetchContent();
-	setInterval(fetchContent, 30000);	
+	if(_src.feeds.feeds.length > 0){
+		setInterval(fetchContent, 30000);	
+	}
 }
 
 $(document).on("ready", animeSecrets);
