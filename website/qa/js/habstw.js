@@ -3,8 +3,6 @@
 //saved=false
 //rss=false (checked in feeds.js)
 
-$('#error').empty();
-
 var _tools = _tools || anime.module('tools');
 var _images = _images || anime.module('images');
 var _feeds = _feeds || anime.module('feeds');
@@ -12,6 +10,7 @@ var _music = _music || anime.module('music');
 var _src = _src || anime.module('src');
 
 var lineBreak = '<br/>';
+
 function updateContent (checkedFeeds) {
 
 	var answer = $('#answerText');
@@ -90,6 +89,8 @@ function fetchContent(){
 
 function animeSecrets () {
 
+	$('#error').empty();
+
 	$('.reloading-rss').hide();
 	$('.reloading-rss').html(_images.getLoadingRss());
 
@@ -112,5 +113,3 @@ function animeSecrets () {
 		setInterval(fetchContent, 30000);	
 	}
 }
-
-$(document).on("ready", animeSecrets);

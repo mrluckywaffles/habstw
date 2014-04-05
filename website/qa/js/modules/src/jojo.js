@@ -16,7 +16,7 @@
 	images.success = [
 		'http://i.imgur.com/QFwkov1.gif'  //YES gif
 	];
-	images.defaultMainImageTag = '<img src="http://i.imgur.com/Il557U0.png" style="width: 700px;">';
+	images.defaultMainImageTag = '<img src="http://i.imgur.com/OfD6OXd.png" style="width: 700px;">';
 		//jojo and dio face off
 	
 	text.waiting = "soon...";

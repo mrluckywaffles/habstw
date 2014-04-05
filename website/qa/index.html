@@ -24,6 +24,8 @@
 		<script src="js/modules/images.js"></script>
 		<script src="js/modules/feeds.js"></script>
 		<script src="js/modules/music.js"></script>
+		
+		<script src="js/habstw.js"></script>
 		<!--jsmin-end-->
 		
         <link rel="shortcut icon" href="http://k007.kiwi6.com/hotlink/z4qhyh9smx/favicon.ico" />
@@ -50,9 +52,11 @@
 				a site that simply asks the question:
 			</span>	
 			<span class="info-msg-middle">
-				HAS ANIME BEEN SAVED THIS WEEK
+				HAS ANIME BEEN SAVED THIS WEEK*
 			</span>
-			<span class="info-msg-bottom">			
+			<span class="info-msg-bottom">
+				*resets every Sunday morning
+				<br/>	
 				please send me site suggestions and/or love at 
 				<b>hasanimebeensavedthisweek@gmail.com</b> 
 				kthx <3
@@ -103,7 +107,9 @@
 				make sure you enable javascript kthx :3
 			</div>	
 		</div>
-	
-		<script src="js/habstw.js"></script>
+		
+		<script type="text/javascript">		
+			$(document).on("ready", animeSecrets);		
+		</script>
 	</body>
 </html>
