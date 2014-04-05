@@ -282,16 +282,17 @@ anime.module = function () {
 	var feeds = {};
 	var text = {};
 
-	images.loadingRss = 'http://i.imgur.com/XsOXgn5.gif'; //bobbing ryuuko
-	images.leftAnswerBookend = 'http://i.imgur.com/HNR6h13.png'; //mako face right
-	images.rightAnswerBookend = 'http://i.imgur.com/ShLuqus.png'; //mako face left
+	images.loadingRss = 'http://i.imgur.com/QzEuoVY.gif'; //dio stand punching
+	images.leftAnswerBookend = 'http://i.imgur.com/CpXcYP4.gif'; //dio standing
+	images.rightAnswerBookend = 'http://i.imgur.com/vbsR9w0.gif'; //jotaro win
 	images.waiting = [
 		'http://i.imgur.com/Il557U0.png'	//dio vs jotaro art
 	];
 	images.success = [
-		'http://i.imgur.com/pTX2Bz4.png'  //ED-2 mako + elephant
+		'http://i.imgur.com/QFwkov1.gif'  //YES gif
 	];
-	images.defaultMainImageTag = '<img src="http://i.imgur.com/Il557U0.png" style="width: 700px;">';
+	images.defaultMainImageTag = '<img src="http://i.imgur.com/OfD6OXd.png" style="width: 700px;">';
+		//jojo and dio face off
 	
 	text.waiting = "soon...";
 
@@ -299,7 +300,14 @@ anime.module = function () {
 		'http://k007.kiwi6.com/hotlink/10po8om1ml'		//roundabout
 	];
 
-	feeds.feeds = [];
+	feeds.feeds = [
+		_tools.rawFeed(
+			'HORRIBLE',
+			'http://www.nyaa.se/?page=rss&user=64513&term=JoJo',
+			'http://horriblesubs.info/',
+			'http://www.nyaa.se/?page=search&cats=0_0&filter=0&term=JoJo&user=64513'
+		)
+	];
 
 	module.images = images;
 	module.text = text;
@@ -589,3 +597,118 @@ anime.module = function () {
 	};
 	
 })(anime.module('music'));
+//diff args you can use to debug/view different pages:
+//saved=true
+//saved=false
+//rss=false (checked in feeds.js)
+
+var _tools = _tools || anime.module('tools');
+var _images = _images || anime.module('images');
+var _feeds = _feeds || anime.module('feeds');
+var _music = _music || anime.module('music');
+var _src = _src || anime.module('src');
+
+var lineBreak = '<br/>';
+
+function updateContent (checkedFeeds) {
+
+	var answer = $('#answerText');
+	var followup = $('#followup');
+	var imageHolder = $('#image');	
+
+	//leave this in for debugging stuff	
+	var param = _tools.getParam("saved");	
+	if(param === "true"){ _feeds.forceSetAllFeeds(true); }
+	if(param === "false"){ _feeds.forceSetAllFeeds(false); }
+	//end debugging
+	
+	var isSaved = false;
+	followup.empty();
+	for(var i = 0; i < checkedFeeds.length; i++){
+		var feed = checkedFeeds[i];
+		if(feed.success()){
+			if(isSaved){
+				followup.append(lineBreak);
+			}
+			isSaved = true;
+			followup.append(feed.html);
+		}
+	}
+	
+	if(isSaved) {	
+		var bookends = _images.getAnswerBookends();
+ 		$('#leftAnswerBookend').html(bookends[0]);		
+		answer.html('YES');
+ 		$('#rightAnswerBookend').html(bookends[1]);
+		imageHolder.html(_images.getSuccess());
+	}
+	else{
+		answer.html(_src.text.waiting);
+		imageHolder.html(_images.getWaiting());
+	}
+}
+
+var timesChecked = 0;
+
+function showSaved (checkedFeeds) {
+	
+	if(timesChecked > 0){
+		$('.reloading-rss').fadeOut(500);
+	}
+	timesChecked++;
+
+	var changed = false;
+	for(var i = 0; i < checkedFeeds.length; i++){
+		changed = checkedFeeds[i].getChanged() || changed;
+	}
+
+	if(changed || checkedFeeds.length == 0) {
+		var contentDiv = $('#content');
+		contentDiv.fadeOut(500, function(){
+			updateContent(checkedFeeds);
+			contentDiv.fadeIn(500);
+		});
+	}
+}
+
+function rssFailed () {
+	$('#answerText').html('rss lookup failed');
+	$('#error').html('Try refreshing! If the problem persists, please contact hasanimebeensavedthisweek@gmail.com');
+}
+
+//main func
+
+function fetchContent(){
+	if(timesChecked > 0){
+		$('.reloading-rss').fadeIn(500);
+	}
+	
+	_feeds.checkFeeds(showSaved, rssFailed);
+}
+
+function animeSecrets () {
+
+	$('#error').empty();
+
+	$('.reloading-rss').hide();
+	$('.reloading-rss').html(_images.getLoadingRss());
+
+	$('.toggleInfo').click(function(){
+		$('.info').toggleClass('show');
+	});
+	$('.toggleMusic').click(function(){
+		$('.music').toggleClass('show');
+	});
+	
+	var musicSelectors = {
+		play: '#play',
+		pause: '#pause',
+		next: '.next'
+	};
+	_music.init(musicSelectors);
+
+	fetchContent();
+	if(_src.feeds.feeds.length > 0){
+		setInterval(fetchContent, 30000);	
+	}
+}
