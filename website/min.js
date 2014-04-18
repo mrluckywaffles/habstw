@@ -297,6 +297,7 @@ anime.module = function () {
 	text.waiting = "soon...";
 
 	music.tracks = [
+		'http://k007.kiwi6.com/hotlink/uvtjht44cb',		//walk like an egyptian
 		'http://k007.kiwi6.com/hotlink/10po8om1ml'		//roundabout
 	];
 
