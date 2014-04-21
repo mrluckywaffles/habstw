@@ -1,8 +1,10 @@
-Simple static website that tells if you this week's episode of Kill la Kill has been subbed and released.
+Simple static website that tells if you this week's episode of (insert currently-airing anime*) has been subbed and released.
 
-Checks the HorribleSubs and Underwater RSS feed for anything named Kill la Kill uploaded since last Monday. If it detects something, it will display a message and provide related links.
+Checks both legitimate and fansub RSS feeds for anything named (anime*) uploaded since last Sunday morning. If it detects something, it will display a message and provide related links.
 
 It also plays music for some reason?!?
+
+*originally made for Kill la Kill, current displaying status for new JoJo episodes
 
 TODO:
 
