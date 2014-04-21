@@ -6,8 +6,10 @@ It also plays music for some reason?!?
 
 TODO:
 
-- make sure i didnt break qa with all my github edits
-- beg someone to make a transparent catsuki.png
-  - then come up with something to do w/ it
 - cleanup (make class either hyphen or camel, make modules _ or not, etc)
 - extract refresh logic into a module
+- automate copying qa
+- add crunchyroll http://www.crunchyroll.com/feed
+- add commie
+- replace "soon" with something more helpful
+- add link to KLK version
