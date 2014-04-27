@@ -12,8 +12,7 @@ TODO:
 
 - cleanup (make class either hyphen or camel, make modules _ or not, etc)
 - extract refresh logic into a module
-- automate copying qa
 - add crunchyroll http://www.crunchyroll.com/feed
 - add commie
-- replace "soon" with something more helpful
 - add link to KLK version
+- fix favicon

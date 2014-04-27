@@ -1,6 +1,8 @@
 ; (function(module){
 	
 	var _tools = anime.module('tools');
+	
+	anime.module('src_links').addSource('Kill la Kill', 'klk', true);
 
 	var images = {};
 	var music = {};
