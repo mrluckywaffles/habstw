@@ -39,7 +39,7 @@
 			'http://www.nyaa.se/?page=search&cats=0_0&filter=0&term=Ping+Pong&user=76430'
 		),
 		_tools.rawFeed(
-			'Puya (Spanish)',
+			'PUYA (Spanish)',
 			'http://www.nyaa.se/?page=rss&user=239789&term=Ping+Pong',
 			'http://www.puya-subs.info/',
 			'http://www.nyaa.se/?page=search&cats=0_0&filter=0&term=Ping+Pong&user=239789'
