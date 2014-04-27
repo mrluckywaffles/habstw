@@ -13,7 +13,8 @@ TODO:
 - cleanup (make class either hyphen or camel, make modules _ or not, etc)
 - extract refresh logic into a module
 - figure out if possible to rss official channels
-	- eg: crunchyroll http://www.crunchyroll.com/feed
+	- http://www.crunchyroll.com/feed
+	- http://www.funimation.com/shows/ping-pong-the-animation/home
 - figure out solution to "the commie problem" (releasing so late it trigger next week)
 - fix favicon
 - adjust cookies to save songs based on show
