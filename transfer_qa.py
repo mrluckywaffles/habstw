@@ -2,17 +2,13 @@ import os
 
 basePath = 'website'
 
-allPaths = []
-for dirname, dirnames, filenames in os.walk(basePath):
-	# print path to all subdirectories first.
-	for subdirname in dirnames:
-		allPaths.append(os.path.join(dirname, subdirname))
-    
-    # print path to all filenames.
-	for filename in filenames:
-		allPaths.append(os.path.join(dirname, filename))
-		
-indexPaths = list(p for p in allPaths if ("index.html" in p and "qa/" not in p))
+dir = os.listdir(basePath)
 
-for p in allPaths:
-	print (p)
+toDelete = list(i for i in dir if ("qatest" not in i))
+
+for p in toDelete:
+	if '.' in p:
+		os.remove(p)
+	else:
+		shutil.rmtree(p)
+		

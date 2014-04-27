@@ -48,7 +48,7 @@ for dirname, dirnames, filenames in os.walk(basePath):
 	for filename in filenames:
 		allPaths.append(os.path.join(dirname, filename))
 		
-indexPaths = list(p for p in allPaths if ("index.html" in p and "qa/" not in p))
+indexPaths = list(p for p in allPaths if ("index.html" in p and "qatest" not in p))
 
 for p in indexPaths:
 	minifyJsForIndex(p)
