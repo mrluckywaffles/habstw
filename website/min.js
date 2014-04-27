@@ -218,8 +218,42 @@ anime.module = function () {
 
 })(anime.module('tools'));
 ; (function(module){
+  
+  	var allSources = [];
+  
+  	module.addSource = function(name, code, saved){
+  		allSources.push({
+  			name: name,
+  			code: code,
+  			saved: saved
+		});
+  	};
+
+	module.getSources = function(){
+		var urls = [];
+		allSources.forEach(function (src){
+			var savedMarkup = "";
+			if(src.saved){
+				savedMarkup = "&saved=true";
+			}
+			urls.push(
+			'<a href="index.html?src='
+			+ src.code
+			+ savedMarkup
+			+ '">'
+			+ src.name
+			+ '</a>'
+			);
+		});
+		return urls;
+	};
+
+})(anime.module('src_links'));
+; (function(module){
 	
 	var _tools = anime.module('tools');
+	
+	anime.module('src_links').addSource('Kill la Kill', 'klk', true);
 
 	var images = {};
 	var music = {};
@@ -276,6 +310,8 @@ anime.module = function () {
 ; (function(module){
 
 	var _tools = anime.module('tools');
+	
+	anime.module('src_links').addSource('JoJo', 'jojo', false);
 
 	var images = {};
 	var music = {};
@@ -326,6 +362,8 @@ anime.module = function () {
 ; (function(module){
 
 	var _tools = anime.module('tools');
+	
+	anime.module('src_links').addSource('Ping Pong', 'pingpong', false);
 
 	var images = {};
 	var music = {};
@@ -382,8 +420,8 @@ anime.module = function () {
 
 	var _tools = anime.module('tools');
   
-	var moduleName = 'src_jojo';
-  
+	var moduleName = 'src_pingpong';
+
 	var paramSrc = _tools.getParam('src');
 	if(paramSrc && paramSrc.length > 0){
 		moduleName = 'src_' + paramSrc;
@@ -750,6 +788,15 @@ function fetchContent(){
 	_feeds.checkFeeds(showSaved, rssFailed);
 }
 
+function addLinks(){
+	var links = $('.links');
+	links.append("Permalinks:" + lineBreak);
+	var urls = anime.module("src_links").getSources();
+	urls.forEach(function (u){
+		links.append(u + " ");
+	});
+}
+
 function animeSecrets () {
 
 	$('#error').empty();
@@ -775,4 +822,6 @@ function animeSecrets () {
 	if(_src.feeds.feeds.length > 0){
 		setInterval(fetchContent, 30000);	
 	}
+	
+	addLinks();
 }

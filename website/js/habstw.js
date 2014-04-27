@@ -88,6 +88,15 @@ function fetchContent(){
 	_feeds.checkFeeds(showSaved, rssFailed);
 }
 
+function addLinks(){
+	var links = $('.links');
+	links.append("Permalinks:" + lineBreak);
+	var urls = anime.module("src_links").getSources();
+	urls.forEach(function (u){
+		links.append(u + " ");
+	});
+}
+
 function animeSecrets () {
 
 	$('#error').empty();
@@ -113,4 +122,6 @@ function animeSecrets () {
 	if(_src.feeds.feeds.length > 0){
 		setInterval(fetchContent, 30000);	
 	}
+	
+	addLinks();
 }
