@@ -19,7 +19,8 @@
 	images.defaultMainImageTag = '<img src="http://i.imgur.com/OfD6OXd.png" style="width: 700px;">';
 		//jojo and dio face off
 	
-	text.waiting = "soon...";
+	text.waiting = "not yet...";
+	text.waitingFollowup = "check back Friday afternoonish";
 
 	music.tracks = [
 		'http://k007.kiwi6.com/hotlink/uvtjht44cb',		//walk like an egyptian

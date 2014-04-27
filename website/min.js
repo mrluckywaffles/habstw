@@ -40,7 +40,6 @@ anime.module = function () {
 	};
 	
 	module.shouldLog = function(shouldLog){
-		console.log('logging: ' + shouldLog);
 		if(shouldLog){
 			module.log = realLog;
 		} else {
@@ -49,7 +48,7 @@ anime.module = function () {
 		return shouldLog;
 	};
 	
-	module.shouldLog(false);
+	module.shouldLog(document.URL.indexOf("qatest") > -1);
 	
 })(anime.module('tools'));; 
 
@@ -245,6 +244,7 @@ anime.module = function () {
 	images.defaultMainImageTag = 'refresh pls';
 	
 	text.waiting = 'not yet :<';
+	text.waitingFollowup = "";
 	
 	music.tracks = [
 		'http://k007.kiwi6.com/hotlink/pu6o4nwuzf',		//06
@@ -294,7 +294,8 @@ anime.module = function () {
 	images.defaultMainImageTag = '<img src="http://i.imgur.com/OfD6OXd.png" style="width: 700px;">';
 		//jojo and dio face off
 	
-	text.waiting = "soon...";
+	text.waiting = "not yet...";
+	text.waitingFollowup = "check back Friday afternoonish";
 
 	music.tracks = [
 		'http://k007.kiwi6.com/hotlink/uvtjht44cb',		//walk like an egyptian
@@ -343,7 +344,8 @@ anime.module = function () {
 	images.defaultMainImageTag = '<img src="http://i.imgur.com/Ou3vNV0.jpg" style="width: 700px;">';
 		//peco promo
 	
-	text.waiting = "come back Thursday";
+	text.waiting = "not yet...";
+	text.waitingFollowup = "check back Thursday afternoonish";
 
 	music.tracks = [
 		'http://k007.kiwi6.com/hotlink/nfm5mn7deb'		//ur the best
@@ -705,6 +707,7 @@ function updateContent (checkedFeeds) {
 	}
 	else{
 		answer.html(_src.text.waiting);
+		followup.html(lineBreak + _src.text.waitingFollowup);
 		imageHolder.html(_images.getWaiting());
 	}
 }

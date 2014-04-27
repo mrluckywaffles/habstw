@@ -10,7 +10,6 @@
 	};
 	
 	module.shouldLog = function(shouldLog){
-		console.log('logging: ' + shouldLog);
 		if(shouldLog){
 			module.log = realLog;
 		} else {
@@ -19,6 +18,6 @@
 		return shouldLog;
 	};
 	
-	module.shouldLog(false);
+	module.shouldLog(document.URL.indexOf("qatest") > -1);
 	
 })(anime.module('tools'));

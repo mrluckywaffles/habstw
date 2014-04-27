@@ -25,6 +25,7 @@
 	images.defaultMainImageTag = 'refresh pls';
 	
 	text.waiting = 'not yet :<';
+	text.waitingFollowup = "";
 	
 	music.tracks = [
 		'http://k007.kiwi6.com/hotlink/pu6o4nwuzf',		//06

@@ -19,7 +19,8 @@
 	images.defaultMainImageTag = '<img src="http://i.imgur.com/Ou3vNV0.jpg" style="width: 700px;">';
 		//peco promo
 	
-	text.waiting = "come back Thursday";
+	text.waiting = "not yet...";
+	text.waitingFollowup = "check back Thursday afternoonish";
 
 	music.tracks = [
 		'http://k007.kiwi6.com/hotlink/nfm5mn7deb'		//ur the best

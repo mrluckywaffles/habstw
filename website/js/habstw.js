@@ -45,6 +45,7 @@ function updateContent (checkedFeeds) {
 	}
 	else{
 		answer.html(_src.text.waiting);
+		followup.html(lineBreak + _src.text.waitingFollowup);
 		imageHolder.html(_images.getWaiting());
 	}
 }
