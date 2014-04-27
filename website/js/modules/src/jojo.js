@@ -32,7 +32,13 @@
 			'http://www.nyaa.se/?page=rss&user=64513&term=JoJo',
 			'http://horriblesubs.info/',
 			'http://www.nyaa.se/?page=search&cats=0_0&filter=0&term=JoJo&user=64513'
-		)
+		)/*,
+		_tools.rawFeed(
+			'COMMIE',
+			'http://www.nyaa.se/?page=rss&user=76430&term=JoJo',
+			'http://commiesubs.com/category/jojo/',
+			'http://www.nyaa.se/?page=search&cats=0_0&filter=0&term=JoJo&user=76430'
+		)*/
 	];
 
 	module.images = images;
