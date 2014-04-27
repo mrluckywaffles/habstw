@@ -4,7 +4,7 @@
   
 	var moduleName = 'src_pingpong';
 
-	var paramSrc = _tools.getParam('src');
+	var paramSrc = _tools.getParam('show');
 	if(paramSrc && paramSrc.length > 0){
 		moduleName = 'src_' + paramSrc;
 	}

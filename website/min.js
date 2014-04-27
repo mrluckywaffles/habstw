@@ -237,7 +237,7 @@ anime.module = function () {
 				savedMarkup = "&saved=true";
 			}
 			urls.push(
-			'<a href="index.html?src='
+			'<a href="index.html?show='
 			+ src.code
 			+ savedMarkup
 			+ '">'
@@ -422,7 +422,7 @@ anime.module = function () {
   
 	var moduleName = 'src_pingpong';
 
-	var paramSrc = _tools.getParam('src');
+	var paramSrc = _tools.getParam('show');
 	if(paramSrc && paramSrc.length > 0){
 		moduleName = 'src_' + paramSrc;
 	}

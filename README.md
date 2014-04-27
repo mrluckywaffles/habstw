@@ -12,7 +12,9 @@ TODO:
 
 - cleanup (make class either hyphen or camel, make modules _ or not, etc)
 - extract refresh logic into a module
-- add crunchyroll http://www.crunchyroll.com/feed
-- add commie
-- add link to KLK version
+- figure out if possible to rss official channels
+	- eg: crunchyroll http://www.crunchyroll.com/feed
+- figure out solution to "the commie problem" (releasing so late it trigger next week)
 - fix favicon
+- adjust cookies to save songs based on show
+- fix bug(?) where songs dont loop

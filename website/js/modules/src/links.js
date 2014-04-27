@@ -18,7 +18,7 @@
 				savedMarkup = "&saved=true";
 			}
 			urls.push(
-			'<a href="index.html?src='
+			'<a href="index.html?show='
 			+ src.code
 			+ savedMarkup
 			+ '">'
