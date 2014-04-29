@@ -1,3 +1,5 @@
+http://hasanimebeensavedthisweek.com
+
 Simple static website that tells if you this week's episode of (insert currently-airing anime*) has been subbed and released.
 
 Checks both legitimate and fansub RSS feeds for anything named (anime*) uploaded since last Sunday morning. If it detects something, it will display a message and provide related links.
