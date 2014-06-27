@@ -2,7 +2,7 @@
 
 	var _tools = anime.module('tools');
   
-	var moduleName = 'src_pingpong';
+	var moduleName = 'src_jojo';
 
 	var paramSrc = _tools.getParam('show');
 	if(paramSrc && paramSrc.length > 0){

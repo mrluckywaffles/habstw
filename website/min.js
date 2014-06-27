@@ -363,7 +363,7 @@ anime.module = function () {
 
 	var _tools = anime.module('tools');
 	
-	anime.module('src_links').addSource('Ping Pong', 'pingpong', false);
+	anime.module('src_links').addSource('Ping Pong', 'pingpong', true);
 
 	var images = {};
 	var music = {};
@@ -399,7 +399,7 @@ anime.module = function () {
 		_tools.rawFeed(
 			'COMMIE',
 			'http://www.nyaa.se/?page=rss&user=76430&term=Ping+Pong',
-			'http://commiesubs.com/category/jojo/',
+			'http://commiesubs.com/category/ping-pong/',
 			'http://www.nyaa.se/?page=search&cats=0_0&filter=0&term=Ping+Pong&user=76430'
 		),
 		_tools.rawFeed(
@@ -420,7 +420,7 @@ anime.module = function () {
 
 	var _tools = anime.module('tools');
   
-	var moduleName = 'src_pingpong';
+	var moduleName = 'src_jojo';
 
 	var paramSrc = _tools.getParam('show');
 	if(paramSrc && paramSrc.length > 0){
