@@ -1,6 +1,6 @@
 #!/bin/sh
 
-python3 transfer_qa.py
+python3 python/transfer_qa.py
 echo delete and copy successful
-python3 min_js.py
+python3 python/min_js.py
 echo minify successful
