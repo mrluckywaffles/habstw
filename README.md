@@ -12,9 +12,9 @@ NOTICE ON HOW TO USE REPO IN CASE YOU WANT TO BRANCH/FORK:
 
 The easiest way to code in this repo is to make all your changes in the "qatest" directory. That's where the real coding happens/file changes matter.
 
-To see those changes "come to life" in the main site, just run "minify.sh" in the main directory. It clears out the current non-qa code, copies qa over, then concats all js files into one larger file (to ease traffic on my modest host provider).
+To see those changes "come to life" in the main site, just run "copy_qa_and_minify.sh" in the main directory. It copies (and overwrites) qa into the main directory, then concats all js files into one larger file with a timestamp.
 
-The ftp.sh also performs the minify if you pass "-m" but you would need creds to ftp soooooo :)
+NOTE: If you delete a directory in qa, you will need to delete it manually in the main site. The copy script is cautious about deleting things so that it doesn't wipe out this README or the favicon.
 
 TODO:
 
