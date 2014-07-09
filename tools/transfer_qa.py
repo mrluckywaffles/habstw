@@ -1,13 +1,14 @@
 import os
 import shutil
 
-basePath = 'website'
+basePath = ''
 testDir = 'qatest'
+toolsDir = 'tools'
 testPath = basePath + '/' + testDir
 
 dir = os.listdir(basePath)
 
-toDelete = list(basePath + '/' + i for i in dir if (testDir not in i))
+toDelete = list(basePath + '/' + i for i in dir if not (testDir in i or toolsDir in i))
 
 for p in toDelete:
 	if '.' in p:
