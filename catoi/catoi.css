@@ -1,0 +1,52 @@
+html, body {
+	height: 100%;
+}
+body {
+	text-align: center;
+	background-image: url('http://i.imgur.com/8lCC8xX.jpg');
+	background-position: center;
+	background-size: cover;
+	font-family: Arial, sans-serif;
+	text-decoration: none;
+}
+#dontLoseYourWay {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	
+	font-family: Impact, sans-serif;
+	font-size: 200pt;
+	color: red;
+	font-weight: bold;	
+	
+	top: 100%;
+	right: 100%;
+}
+.catbox {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	
+	top: 0px;
+	left: 0px;
+}
+.catoi {
+    width: auto;
+    height: 100%;
+}
+.speed {
+	text-align: left;
+	position: absolute;
+	left: 10px;
+	bottom: 10px;
+	font-size: 20px;
+    color: white;
+    text-shadow: -2px 0 black, 0 2px black, 2px 0 black, 0 -2px black;
+}
+#dontLoseYourWay.show {
+	top: 0px;
+	left: 0px;
+}
+@-moz-keyframes spin { 100% { -moz-transform: rotate(360deg); } }
+@-webkit-keyframes spin { 100% { -webkit-transform: rotate(360deg); } }
+@keyframes spin { 100% { -webkit-transform: rotate(360deg); transform:rotate(360deg); } }

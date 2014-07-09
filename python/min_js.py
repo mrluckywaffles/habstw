@@ -4,9 +4,10 @@ import datetime
 minFlagStart = "<!--jsmin-start-->"
 minFlagEnd = "<!--jsmin-end-->"
 basePath = '.'
-intro = '// last updated '
+intro = (
+	'// last updated '
 	+ datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-	+ '\n'
+	+ '\n\n')
 
 def minifyJsForIndex(indexPath):
 # 	print (indexPath)
@@ -20,7 +21,7 @@ def minifyJsForIndex(indexPath):
 # 		print ("no changes made")
 		return
 	
-	index2 = "<script src=\"min.js\"></script>"
+	index2 = "<script src=\"assets/min.js\"></script>"
 	with open(indexPath, "w") as f:
 		f.write(index1 + index2 + index3)
 	
@@ -36,9 +37,9 @@ def minifyJsForIndex(indexPath):
 		with open(p) as f:
 			min += f.read();
 	
-	minPath = indexPath.partition("index.html")[0] + "min.js"
+	minPath = indexPath.partition("index.html")[0] + "assets/min.js"
 	with open(minPath, "w") as f:
-		f.write(min)
+		f.write(intro + min)
 		
 	#done
 

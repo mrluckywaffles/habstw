@@ -9,7 +9,7 @@ testPath = basePath + '/' + testDir
 base_dir = os.listdir(basePath)
 qa_dir = os.listdir(testPath)
 
-toDelete = list(basePath + '/' + i for i in base_dir if (testPath + '/' + i in qa_dir))
+toDelete = list(i for i in base_dir if i in qa_dir)
 
 for p in toDelete:
 	if '.' in p:
