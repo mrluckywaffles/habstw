@@ -1,7 +1,7 @@
 import os
 import shutil
 
-basePath = ''
+basePath = '.'
 testDir = 'qatest'
 toolsDir = 'tools'
 testPath = basePath + '/' + testDir
