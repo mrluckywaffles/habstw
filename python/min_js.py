@@ -1,8 +1,10 @@
 import os
+import datetime
 
 minFlagStart = "<!--jsmin-start-->"
 minFlagEnd = "<!--jsmin-end-->"
-basePath = 'website'
+basePath = ''
+intro = '// last updated ' + datetime.datetime.now() + '\n'
 
 def minifyJsForIndex(indexPath):
 # 	print (indexPath)

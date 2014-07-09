@@ -6,9 +6,10 @@ testDir = 'qatest'
 toolsDir = 'tools'
 testPath = basePath + '/' + testDir
 
-dir = os.listdir(basePath)
+base_dir = os.listdir(basePath)
+qa_dir = os.listdir(testPath)
 
-toDelete = list(basePath + '/' + i for i in dir if not (testDir in i or toolsDir in i))
+toDelete = list(basePath + '/' + i for i in base_dir if (testPath + '/' + i in qa_dir))
 
 for p in toDelete:
 	if '.' in p:
@@ -16,9 +17,7 @@ for p in toDelete:
 	else:
 		shutil.rmtree(p)
 
-toCopy = os.listdir(testPath)
-
-for p in toCopy:
+for p in qa_dir:
 	src = testPath + '/' + p
 	dst = basePath + '/' + p
 	if '.' in p:
