@@ -89,11 +89,11 @@ function fetchContent(){
 }
 
 function addLinks(){
-	var links = $('.links');
+	var links = $('#permalinks');
 	links.append("Permalinks:" + lineBreak);
 	var urls = anime.module("src_links").getSources();
 	urls.forEach(function (u){
-		links.append(u + " ");
+		links.append(u + lineBreak);
 	});
 }
 
