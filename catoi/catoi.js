@@ -32,7 +32,12 @@ function updateSpeed(){
 	+ ' animation:' + secs + 's spin linear infinite' + reverse + ';'
 	+ '">');
 	
-	$('#speed').html(secs);
+	var rps = 1/secs;
+	if(secs == 0) {
+		rps = 0;
+	}
+	
+	$('#speed').html(rps.toFixed(2));
 }
 
 function changeIndex(delta){
