@@ -25,7 +25,7 @@
 	text.waitingFollowup = "check back Thursday afternoonish";
 
 	music.tracks = [
-		'http://k007.kiwi6.com/hotlink/nfm5mn7deb'		//ur the best
+		'assets/music/youre-the-best.mp3'
 	];
 
 	feeds.feeds = [

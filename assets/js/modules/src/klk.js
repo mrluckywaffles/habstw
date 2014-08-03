@@ -30,9 +30,9 @@
 	text.waitingFollowup = "";
 	
 	music.tracks = [
-		'http://k007.kiwi6.com/hotlink/pu6o4nwuzf',		//06
-		'http://k007.kiwi6.com/hotlink/q306ya962v',		//04
-		'http://k007.kiwi6.com/hotlink/c71c6yjfn4'		//14
+		'assets/music/klk-06.mp3',
+		'assets/music/klk-04.mp3',
+		'assets/music/klk-14.mp3'
 	];
 	
 	feeds.feeds = [
