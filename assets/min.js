@@ -1,4 +1,4 @@
-// last updated 2014-07-09 14:49:41
+// last updated 2014-08-02 19:59:56
 
 var anime = anime || {};
 
@@ -510,7 +510,7 @@ anime.module = function () {
 	var _src = anime.module('src').feeds;
 		
 	function genLink (description, url) {
-		return '<span class="link"><a href="' + url + '">' + description + '</a></span>';
+		return '<a href="' + url + '">' + description + '</a>';
 	}
 
 	function getFreshRssUrl(url){
