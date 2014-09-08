@@ -15,13 +15,7 @@ function updateContent (checkedFeeds) {
 
 	var answer = $('#answerText');
 	var followup = $('#followup');
-	var imageHolder = $('#image');	
-
-	//leave this in for debugging stuff	
-	var param = _tools.getParam("saved");	
-	if(param === "true"){ _feeds.forceSetAllFeeds(true); }
-	if(param === "false"){ _feeds.forceSetAllFeeds(false); }
-	//end debugging
+	var imageHolder = $('#image');
 	
 	var isSaved = false;
 	followup.empty();

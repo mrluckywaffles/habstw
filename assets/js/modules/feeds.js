@@ -1,5 +1,7 @@
 ; 
 
+var _tools = _tools || anime.module('tools');
+
 (function(module){
 
 	var _src = anime.module('src').feeds;
@@ -48,49 +50,60 @@
 		
 		return pfeed;
 	};
- 	
-	function checkRSS(feeds, callback, failureHandler) {
-
-		var feedToSet = feeds[0];
-		if(!feedToSet){
-			callback();
-			return;
+	
+	var forceSetAllFeeds = function(success, callback){
+		for(var i = 0; i < allFeeds.length; i++){
+			allFeeds[i].success(true);
 		}
-		
-		var checkum = function (data){
-			var success = false;
-
-			if(!data){
-				failureHandler();
+		return callback();
+	};
+ 	
+	function checkRSS(feeds, callback, failureHandler) {		
+		var param = _tools.getParam("saved");	
+		if		(param === "true"){ return forceSetAllFeeds(true, callback); }
+		else if	(param === "false"){ return forceSetAllFeeds(false, callback); }
+		else  {
+			var feedToSet = feeds[0];
+			if(!feedToSet){
+				callback();
 				return;
 			}
 		
-			var curr = new Date; // get current date
-			var first = curr.getDate() - curr.getDay(); // should return most recent monday
-			var lastMonday = new Date(curr.setDate(first)); // it returns the time of day so its only kinda an approx but whatevs
-		
-			for(var i = 0; i < data.entries.length; i++){
-				var latestUpload = data.entries[i];			
-				var latestDate = new Date(latestUpload['publishedDate']);
-				success = success || lastMonday < latestDate;				
-			}
-		
-			feedToSet.success(success);
-		
-			//loop!
-			checkRSS(feeds.slice(1), callback, failureHandler);
-		};
-	
-		var param = _tools.getParam("rss");	
-		if(param === "false")
-		{
-			checkum(null);
-			return;
-		}
+			var processRSS = function (data){
+				var success = false;	
 
-		var urlToQuery = feedToSet.rss;
+				if(!data){
+					failureHandler();
+					return;
+				}
+		
+				var curr = new Date; // get current date
+				var first = curr.getDate() - curr.getDay(); // should return most recent monday
+				var lastMonday = new Date(curr.setDate(first)); // it returns the time of day so its only kinda an approx but whatevs
+		
+				for(var i = 0; i < data.entries.length; i++){
+					var latestUpload = data.entries[i];			
+					var latestDate = new Date(latestUpload['publishedDate']);
+					success = success || lastMonday < latestDate;				
+				}
+		
+				feedToSet.success(success);
+		
+				//loop!
+				checkRSS(feeds.slice(1), callback, failureHandler);
+			};
 	
-		$.jQRSS(urlToQuery, { count: 100 }, checkum);
+			var param = _tools.getParam("rss");	
+			if(param === "false")
+			{
+				checkum(null);
+				return;
+			}
+
+			var urlToQuery = feedToSet.rss;
+			
+			return $.jQRSS(urlToQuery, { count: 100 }, processRSS);
+		}
 	}
 	
 	var allFeeds = _src.feeds.map(polishSrcFeed);
@@ -101,12 +114,6 @@
 			function(){callbackOnFeeds(allFeeds)}, 
 			failureHandler
 		);
-	};
-	
-	module.forceSetAllFeeds = function(success){
-		for(var i = 0; i < allFeeds.length; i++){
-			allFeeds[i].success(true);
-		}
 	};
 	
 })(anime.module('feeds'));
