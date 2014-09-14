@@ -1,14 +1,19 @@
 ; (function(module){
 
 	var _tools = anime.module('tools');
-  
-	var moduleName = 'src_jojo';
-
+	
+	var isIndex = true;  
+	var valueModuleName = 'src_jojo';
 	var paramSrc = _tools.getParam('show');
 	if(paramSrc && paramSrc.length > 0){
-		moduleName = 'src_' + paramSrc;
+		valueModuleName = 'src_' + paramSrc;
+		isIndex = false;
 	}
+		
+	anime.module.set(module.moduleName, valueModuleName);
 	
-	anime.module.set(module.moduleName, moduleName);
+	var src = anime.module(module.moduleName);
+	
+	_tools.askForSuggestions = isIndex && src.savedForever;
 
 })(anime.module('src'));

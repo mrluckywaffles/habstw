@@ -2,25 +2,23 @@
   
   	var allSources = [];
   
-  	module.addSource = function(name, code, saved){
+  	module.addSource = function(name, code){
   		allSources.push({
   			name: name,
-  			code: code,
-  			saved: saved
+  			code: code
 		});
   	};
 
 	module.getSources = function(){
-		var urls = [];
+		var urls = [
+			'',
+			'<a href="index.html">Current</a>',
+			''
+		];
 		allSources.forEach(function (src){
-			var savedMarkup = "";
-			if(src.saved){
-				savedMarkup = "&saved=true";
-			}
 			urls.push(
 			'<a href="index.html?show='
 			+ src.code
-			+ savedMarkup
 			+ '">'
 			+ src.name
 			+ '</a>'
