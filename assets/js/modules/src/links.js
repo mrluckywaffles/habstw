@@ -10,7 +10,11 @@
   	};
 
 	module.getSources = function(){
-		var urls = [];
+		var urls = [
+			'',
+			'<a href="index.html">Current</a>',
+			''
+		];
 		allSources.forEach(function (src){
 			urls.push(
 			'<a href="index.html?show='

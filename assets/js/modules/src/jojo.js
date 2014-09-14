@@ -2,7 +2,7 @@
 
 	var _tools = anime.module('tools');
 	
-	_tools.savedForever = true;
+	module.savedForever = true;
 	
 	module.name = 'JoJo';
 	

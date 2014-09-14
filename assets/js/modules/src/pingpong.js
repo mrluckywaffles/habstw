@@ -2,9 +2,11 @@
 
 	var _tools = anime.module('tools');
 	
-	_tools.savedForever = true;
+	module.savedForever = true;
 	
-	anime.module('src_links').addSource('Ping Pong', 'pingpong');
+	module.name = 'Ping Pong';
+	
+	anime.module('src_links').addSource(module.name, 'pingpong');
 
 	var images = {};
 	var music = {};

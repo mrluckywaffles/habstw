@@ -1,10 +1,11 @@
 ; 
 
 var _tools = _tools || anime.module('tools');
+var _src = _src || anime.module('src');
 
 (function(module){
 
-	var _src = anime.module('src').feeds;
+	var _feeds = _src.feeds;
 		
 	function genLink (description, url) {
 		return '<a href="' + url + '">' + description + '</a>';
@@ -24,7 +25,7 @@ var _tools = _tools || anime.module('tools');
 	
 		pfeed.html = '<div>' + feed.name;
 		
-		if(!_tools.savedForever){
+		if(!_src.savedForever){
 			pfeed.html += ' IS OUT';
 		}
 		
@@ -62,7 +63,7 @@ var _tools = _tools || anime.module('tools');
 	};
  	
 	function checkRSS(feeds, callback, failureHandler) {
-		if(_tools.savedForever){ return forceSetAllFeeds(true, callback); }
+		if(_src.savedForever){ return forceSetAllFeeds(true, callback); }
 		else  {
 			var feedToSet = feeds[0];
 			if(!feedToSet){
@@ -107,7 +108,7 @@ var _tools = _tools || anime.module('tools');
 		}
 	}
 	
-	var allFeeds = _src.feeds.map(polishSrcFeed);
+	var allFeeds = _feeds.feeds.map(polishSrcFeed);
  	
 	module.checkFeeds = function(callbackOnFeeds, failureHandler){
 		checkRSS(
