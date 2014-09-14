@@ -2,7 +2,9 @@
 	
 	var _tools = anime.module('tools');
 	
-	anime.module('src_links').addSource('Kill la Kill', 'klk', true);
+	_tools.savedForever = true;
+	
+	anime.module('src_links').addSource('Kill la Kill', 'klk');
 
 	var images = {};
 	var music = {};

@@ -22,10 +22,13 @@ var _tools = _tools || anime.module('tools');
 	
 		pfeed.rss = getFreshRssUrl(feed.rss);
 	
-		pfeed.html =
-			'<div>'
-			+ feed.name + ' IS OUT'
-			+ lineBreak
+		pfeed.html = '<div>' + feed.name;
+		
+		if(!_tools.savedForever){
+			pfeed.html += ' IS OUT';
+		}
+		
+		pfeed.html += lineBreak
 			+ genLink('blog', feed.blog)
 			+ ' '
 			+ genLink('torrent', feed.tor)
@@ -58,10 +61,8 @@ var _tools = _tools || anime.module('tools');
 		return callback();
 	};
  	
-	function checkRSS(feeds, callback, failureHandler) {		
-		var param = _tools.getParam("saved");	
-		if		(param === "true"){ return forceSetAllFeeds(true, callback); }
-		else if	(param === "false"){ return forceSetAllFeeds(false, callback); }
+	function checkRSS(feeds, callback, failureHandler) {
+		if(_tools.savedForever){ return forceSetAllFeeds(true, callback); }
 		else  {
 			var feedToSet = feeds[0];
 			if(!feedToSet){

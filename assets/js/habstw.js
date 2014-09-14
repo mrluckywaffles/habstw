@@ -84,6 +84,8 @@ function fetchContent(){
 	}
 	
 	_feeds.checkFeeds(showSaved, rssFailed);
+	
+	return !_tools.savedForever && (_src.feeds.feeds.length > 0);
 }
 
 function addLinks(){
@@ -116,8 +118,8 @@ function animeSecrets () {
 	};
 	_music.init(musicSelectors);
 
-	fetchContent();
-	if(_src.feeds.feeds.length > 0){
+	var shouldRefresh = fetchContent();
+	if(shouldRefresh){
 		setInterval(fetchContent, 30000);	
 	}
 	

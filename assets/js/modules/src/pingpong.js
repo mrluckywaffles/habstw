@@ -2,7 +2,9 @@
 
 	var _tools = anime.module('tools');
 	
-	anime.module('src_links').addSource('Ping Pong', 'pingpong', true);
+	_tools.savedForever = true;
+	
+	anime.module('src_links').addSource('Ping Pong', 'pingpong');
 
 	var images = {};
 	var music = {};
@@ -25,6 +27,8 @@
 	text.waitingFollowup = "check back Thursday afternoonish";
 
 	music.tracks = [
+		'assets/music/pp-hero.mp3',
+		'assets/music/pp-peco.mp3',
 		'assets/music/youre-the-best.mp3'
 	];
 
