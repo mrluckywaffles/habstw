@@ -12,12 +12,12 @@
 	module.getSources = function(){
 		var urls = [
 			'',
-			'<a href="index.html">Current</a>',
+			'<a href="/">Current</a>',
 			''
 		];
 		allSources.forEach(function (src){
 			urls.push(
-			'<a href="index.html?show='
+			'<a href="/?show='
 			+ src.code
 			+ '">'
 			+ src.name
