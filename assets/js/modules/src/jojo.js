@@ -4,7 +4,9 @@
 	
 	_tools.savedForever = true;
 	
-	anime.module('src_links').addSource('JoJo', 'jojo');
+	module.name = 'JoJo';
+	
+	anime.module('src_links').addSource(module.name, 'jojo');
 
 	var images = {};
 	var music = {};

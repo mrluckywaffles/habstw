@@ -10,6 +10,9 @@ var _music = _music || anime.module('music');
 var _src = _src || anime.module('src');
 
 var lineBreak = '<br/>';
+var emailRaw = 'hasanimebeensavedthisweek@gmail.com';
+var emailHtml = '<a href="mailto:' + emailRaw
+	 + '?subject=Show Suggestion">' + emailRaw + '</a>';
 
 function updateContent (checkedFeeds) {
 
@@ -42,6 +45,13 @@ function updateContent (checkedFeeds) {
 		followup.html(lineBreak + _src.text.waitingFollowup);
 		imageHolder.html(_images.getWaiting());
 	}
+		
+	if(_tools.askForSuggestions){
+		$('#image-followup').html(lineBreak
+			+ _src.name	+ ' has ended! Any suggestions for what this site should track next season?'
+			+ lineBreak	+ 'Send them to ' + emailHtml
+		);
+	}
 }
 
 var timesChecked = 0;
@@ -70,7 +80,7 @@ function showSaved (checkedFeeds) {
 function rssFailed () {
 	$('#answerText').html('something went wrong D:');
 	$('#error').html(
-		'Try refreshing! If the problem persists, please contact hasanimebeensavedthisweek@gmail.com'
+		'Try refreshing! If the problem persists, please contact ' + emailRaw
 		+ lineBreak + '<b>EDIT (9/1/14)</b> nyaa.eu is currently down: http://www.downforeveryoneorjustme.com/nyaa.eu'
 		+ lineBreak + 'Check https://twitter.com/HorribleSubs for more info'
 	);
