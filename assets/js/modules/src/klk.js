@@ -38,14 +38,16 @@
 		'assets/music/klk-04.mp3',
 		'assets/music/klk-14.mp3'
 	];
+
+	text.subtitle = 'EPISODE 25 (OVA) OF KLK IS OUT';
 	
 	feeds.feeds = [
-		_tools.rawFeed(
-			'HORRIBLE',
-			'http://www.nyaa.se/?page=rss&user=64513&term=Kill+la+Kill+720p',
-			'http://horriblesubs.info/',
-			'http://www.nyaa.se/?page=search&cats=0_0&filter=0&term=kill+la+kill&user=64513'
-		),
+		// _tools.rawFeed(
+		// 	'HORRIBLE',
+		// 	'http://www.nyaa.se/?page=rss&user=64513&term=Kill+la+Kill+720p',
+		// 	'http://horriblesubs.info/',
+		// 	'http://www.nyaa.se/?page=search&cats=0_0&filter=0&term=kill+la+kill&user=64513'
+		// ),
 		_tools.rawFeed(
 			'UNDERWATER',
 			'http://www.nyaa.se/?page=rss&user=265&term=Kill+la+Kill',
