@@ -39,6 +39,9 @@ function updateContent (checkedFeeds) {
 		answer.html('YES');
  		$('#rightAnswerBookend').html(bookends[1]);
 		imageHolder.html(_images.getSuccess());
+		if(_src.text.subtitle) {
+			followup.prepend('<b>' + _src.text.subtitle + '</b>' + lineBreak + lineBreak)
+		}
 	}
 	else{
 		answer.html(_src.text.waiting);
@@ -48,7 +51,7 @@ function updateContent (checkedFeeds) {
 		
 	if(_tools.askForSuggestions){
 		$('#image-followup').html(lineBreak
-			+ _src.name	+ ' has ended! Any suggestions for what this site should track next season?'
+			+ 'This season has ended! Any suggestions for what this site should track next?'
 			+ lineBreak	+ 'Send them to ' + emailHtml
 		);
 	}
