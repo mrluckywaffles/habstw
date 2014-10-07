@@ -4,13 +4,23 @@ html, body {
 body {
 	text-align: center;
 	background-color: #eeeeee;
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
 	font-family: Arial, sans-serif;
 	text-decoration: none;
 	color: black;
 }
+#content a:link{
+	text-decoration: none;
+}
+#content a:hover {
+	text-decoration:underline;
+}
 #content {
 	position: relative;
 	z-index: 2;
+	text-shadow: 2px 0 0 #fff, -2px 0 0 #fff, 0 2px 0 #fff, 0 -2px 0 #fff, 1px 1px #fff, -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff;
+	font-size: 16pt;
 }
 .answer {
 	display: inline-block;

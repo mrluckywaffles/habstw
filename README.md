@@ -6,7 +6,7 @@ Checks both legitimate and fansub RSS feeds for anything named (anime*) uploaded
 
 It also plays music for some reason?!?
 
-*originally made for Kill la Kill, currently displaying status for new JoJo episodes
+*originally made for Kill la Kill, currently displaying status for new Psycho Pass (season 2) episodes
 
 TODO:
 
