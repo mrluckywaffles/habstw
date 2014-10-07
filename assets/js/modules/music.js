@@ -55,7 +55,7 @@
 		}
 	}
 	
-	module.init = function(selectors){	
+	module.init = function(selectors){
 		for(var i = 0; i < tracks.length; i++){
 			audios[i] = document.createElement('audio');
 			audios[i].setAttribute('src', tracks[i]);
