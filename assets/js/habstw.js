@@ -32,25 +32,32 @@ function updateContent (checkedFeeds) {
 			followup.append(feed.html);
 		}
 	}
+
+	imageHolder.empty();
+	var imgUrl;
 	
 	if(isSaved) {	
 		var bookends = _images.getAnswerBookends();
  		$('#leftAnswerBookend').html(bookends[0]);		
 		answer.html('YES');
  		$('#rightAnswerBookend').html(bookends[1]);
-		imageHolder.html(_images.getSuccess());
 		if(_src.text.subtitle) {
 			followup.prepend('<b>' + _src.text.subtitle + '</b>' + lineBreak + lineBreak)
 		}
+		imgUrl = _src.images.success[0];
 	}
 	else{
 		answer.html(_src.text.waiting);
 		followup.html(lineBreak + _src.text.waitingFollowup);
-		imageHolder.html(_images.getWaiting());
+		imgUrl = _src.images.waiting[0];
 	}
+
+	$('body').css('background-image','url("' + imgUrl + '")');
 		
 	if(_tools.askForSuggestions){
-		$('#image-followup').html(lineBreak
+		$('#image-followup').html(lineBreak+lineBreak+lineBreak
+			+lineBreak+lineBreak+lineBreak+lineBreak+lineBreak
+			+lineBreak+lineBreak+lineBreak+lineBreak+lineBreak
 			+ 'This season has ended! Any suggestions for what this site should track next?'
 			+ lineBreak	+ 'Send them to ' + emailHtml
 		);

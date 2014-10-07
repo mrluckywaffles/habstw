@@ -14,8 +14,8 @@
 	var text = {};
 
 	images.loadingRss = 'http://i.imgur.com/XsOXgn5.gif'; //bobbing ryuuko
-	images.leftAnswerBookend = 'assets/psycho/feelsgoodleft.png';
-	images.rightAnswerBookend = 'assets/psycho/feelsgoodright.png';
+	images.leftAnswerBookend = 'assets/psycho/feelsgoodright.png';
+	images.rightAnswerBookend = 'assets/psycho/feelsgoodleft.png';
 	images.waiting = [
 		'assets/psycho/akanedang.jpg'
 	];	

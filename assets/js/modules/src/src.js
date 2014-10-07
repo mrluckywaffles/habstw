@@ -13,6 +13,11 @@
 	anime.module.set(module.moduleName, valueModuleName);
 	
 	var src = anime.module(module.moduleName);
+
+	var paramSaved = _tools.getParam('saved');
+	if(paramSaved){
+		src.savedForever = true;
+	}
 	
 	_tools.askForSuggestions = isIndex && src.savedForever;
 
