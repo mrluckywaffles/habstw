@@ -91,8 +91,6 @@ function rssFailed () {
 	$('#answerText').html('something went wrong D:');
 	$('#error').html(
 		'Try refreshing! If the problem persists, please contact ' + emailRaw
-		+ lineBreak + '<b>EDIT (9/1/14)</b> nyaa.eu is currently down: http://www.downforeveryoneorjustme.com/nyaa.eu'
-		+ lineBreak + 'Check https://twitter.com/HorribleSubs for more info'
 	);
 }
 
