@@ -2,11 +2,11 @@
 	
 	var _tools = anime.module('tools');
 	
-	module.savedForever = true;
+	module.savedForever = false;
 	
-	module.name = 'Psycho Pass';
+	module.name = 'Parasyte';
 	
-	anime.module('src_links').addSource(module.name, 'psycho');
+	anime.module('src_links').addSource(module.name, 'parasyte');
 
 	var images = {};
 	var music = {};
