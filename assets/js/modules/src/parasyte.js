@@ -14,13 +14,13 @@
 	var text = {};
 
 	images.loadingRss = 'http://i.imgur.com/XsOXgn5.gif'; //bobbing ryuuko
-	images.leftAnswerBookend = 'assets/psycho/feelsgoodright.png';
-	images.rightAnswerBookend = 'assets/psycho/feelsgoodleft.png';
+	images.leftAnswerBookend = 'assets/parasyte/thumbs_up.png';
+	images.rightAnswerBookend = 'assets/parasyte/thumbs_up.png';
 	images.waiting = [
-		'assets/psycho/akanedang.jpg'
+		'assets/parasyte/migi_sup.png'
 	];	
 	images.success = [
-		'assets/psycho/akanegrin.jpg'
+		'assets/parasyte/migi_sup.png'
 	];
 	images.defaultMainImageTag = 'refresh pls';
 	
@@ -54,4 +54,4 @@
 	module.music = music;
 	module.feeds = feeds;
 	
-})(anime.module('src_psycho'));
+})(anime.module('src_parasyte'));

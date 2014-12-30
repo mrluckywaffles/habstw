@@ -3,7 +3,7 @@
 	var _tools = anime.module('tools');
 	
 	var isIndex = true;  
-	var valueModuleName = 'src_psycho';
+	var valueModuleName = 'src_parasyte';
 	var paramSrc = _tools.getParam('show');
 	if(paramSrc && paramSrc.length > 0){
 		valueModuleName = 'src_' + paramSrc;
