@@ -113,7 +113,7 @@ var will_overlap_grid = function(x, y, dx, dy){
 	return ret
 };
 
-makeBody = function() {
+var makeBody = function() {
 
 	var self = {};
 
@@ -143,7 +143,52 @@ makeBody = function() {
 	return self;
 }
 
-makeProtag = function() {
+var makeEnemy = function() {
+
+	var self = makeBody();
+
+	var possibleDirections = function(){
+		dirs = [
+			pair(-1,0),
+			pair(1,0),
+			pair(0,-1),
+			pair(0,1),
+		]
+		good_dirs = [];
+
+		dirs.forEach(function (d){
+			if(d.x == self.dx && d.y == self.dy){
+				continue;
+			}
+			if(!will_overlap_grid(self.x, self.y, d.x, d.y)){
+				good_dirs.append(d);
+			}
+		})
+
+		return good_dirs;
+	}
+
+	var determineDirection = function(){
+		if(will_overlap_grid(self.x, self.y, self.dx, self.dy)){
+			//present course will hit a wall
+			self.dx *= -1;
+			self.dy *= -1;
+			return;
+		}
+		valid_dirs = possibleDirections();
+		if(valid_dirs.length > 1){
+			
+		}
+	};
+
+	self._step = self.step;
+	self.step = function(){
+		determineDirection();
+		self._step();
+	}
+}
+
+var makeProtag = function() {
 
 	var self = makeBody();
 
