@@ -2,7 +2,7 @@
 
 	var _tools = anime.module('tools');
 	
-	module.savedForever = true;
+	module.savedForever = false;
 	
 	module.name = 'JoJo';
 	
@@ -17,7 +17,7 @@
 	images.leftAnswerBookend = 'http://i.imgur.com/CpXcYP4.gif'; //dio standing
 	images.rightAnswerBookend = 'http://i.imgur.com/vbsR9w0.gif'; //jotaro win
 	images.waiting = [
-		'http://i.imgur.com/Il557U0.png'	//dio vs jotaro art
+		'assets/jojo/iggy_hump.jpg'
 	];
 	images.success = [
 		'http://i.imgur.com/QFwkov1.gif'  //YES gif
