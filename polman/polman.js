@@ -11,11 +11,11 @@ LEFT = 'LEFT';
 RIGHT = 'RIGHT';
 
 var makeKeyin = function() {
-	self = {};
+	var self = {};
 
-	buffer = grid_size/2;
+	var buffer = grid_size/2;
 
-	buttons = {
+	var buttons = {
 		UP: 0,
 		DOWN: 0,
 		LEFT: 0,
@@ -77,7 +77,7 @@ grid_x = grid_blocks[0].length;
 grid_y = grid_blocks.length;
 
 function pair(x,y){
-	self = {};
+	var self = {};
 	self.x = x;
 	self.y = y;
 	return self;
@@ -94,8 +94,8 @@ var is_grid = function(coord){
 var will_overlap_grid = function(x, y, dx, dy){
 	var ret = false;
 
-	far_x = x + dx + (dx*grid_size/2);
-	far_y = y + dy + (dy*grid_size/2);
+	var far_x = x + dx + (dx*grid_size/2);
+	var far_y = y + dy + (dy*grid_size/2);
 	ret = ret || is_grid(coord(far_x, far_y));
 
 	if(dx == 0){
@@ -115,17 +115,37 @@ var will_overlap_grid = function(x, y, dx, dy){
 
 makeBody = function() {
 
-	self = {};
+	var self = {};
 
-	dx = 0;
-	dy = 0;
+	self.dx = 0;
+	self.dy = 0;
 
-	x = grid_size*1.5;
-	y = grid_size*1.5;
+	self.x = grid_size*1.5;
+	self.y = grid_size*1.5;
 
 	self.get_coord = function(){
-		return coord(x,y);
+		return coord(self.x, self.y);
 	};
+
+	self.step = function(){
+		if(will_overlap_grid(self.x, self.y, self.dx, self.dy)){
+			return;
+		}
+
+		self.x += self.dx;
+		self.y += self.dy;
+	};
+
+	self.draw = function(){
+		throw 'child must implement';
+	};
+
+	return self;
+}
+
+makeProtag = function() {
+
+	var self = makeBody();
 
 	self.keyin = function(input){
 		if(!input){
@@ -144,21 +164,12 @@ makeBody = function() {
 			new_dx = 1;
 		}
 
-		if(will_overlap_grid(x, y, new_dx, new_dy)){
+		if(will_overlap_grid(self.x, self.y, new_dx, new_dy)){
 			return;
 		}
 
-		dx = new_dx;
-		dy = new_dy;
-	};
-
-	self.step = function(){
-		if(will_overlap_grid(x, y, dx, dy)){
-			return;
-		}
-
-		x += dx;
-		y += dy;
+		self.dx = new_dx;
+		self.dy = new_dy;
 	};
 
 	// animation_duration = 1000/TIMEOUT;
@@ -178,15 +189,15 @@ makeBody = function() {
 		// }
 
 
-		if(dx < 0 || dy < 0){
+		if(self.dx < 0 || self.dy < 0){
 			img = brain.pol_left;
 		} else {
 			img = brain.pol_right;
 		}
 		ctx.drawImage(
 			img,
-			x - grid_size/2,
-			y - grid_size/2,
+			self.x - grid_size/2,
+			self.y - grid_size/2,
 			grid_size, grid_size
 		);
 	};
@@ -214,9 +225,7 @@ function drawGrid(){
 
 function turn(){
 
-	keyin = brain.keyreader.get();
-
-	brain.protag.keyin(keyin);
+	brain.protag.keyin(brain.keyreader.get());
 
 	brain.everybody.forEach(function(e){
 		e.step()
@@ -243,7 +252,7 @@ $(document).ready(function(){
 
 	brain = {};
 	brain.keyreader = makeKeyin();
-	brain.protag = makeBody();
+	brain.protag = makeProtag();
 	brain.everybody = [brain.protag];
 
 	brain.pol_left = new Image();
