@@ -3,7 +3,7 @@ ctx = null;
 brain = null;
 
 grid_size = 50;
-TIMEOUT = 10;
+TIMEOUT = 8;
 
 UP = 'UP';
 DOWN = 'DOWN';
@@ -13,7 +13,7 @@ RIGHT = 'RIGHT';
 var makeKeyin = function() {
 	var self = {};
 
-	var buffer = grid_size/2;
+	var buffer = grid_size;
 
 	var buttons = {
 		UP: 0,
@@ -66,12 +66,18 @@ var makeKeyin = function() {
 
 
 grid_blocks = [
-	[1,1,1,1,1,1,1],
-	[1,0,0,1,0,1,1],
-	[1,0,1,0,0,0,1],
-	[1,0,1,1,0,1,1],
-	[1,0,0,0,0,0,1],
-	[1,1,1,1,1,1,1]
+	[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+	[1,0,0,0,0,0,0,1,0,0,0,0,0,0,1],
+	[1,0,1,1,0,1,0,1,0,1,0,1,1,0,1],
+	[1,0,0,0,0,1,0,0,0,1,0,0,0,0,1],
+	[1,0,1,1,0,1,0,1,0,1,0,1,1,0,1],
+	[1,0,0,0,0,0,0,1,0,0,0,0,0,0,1],
+	[1,1,0,1,1,0,1,1,1,0,1,1,0,1,1],
+	[1,1,0,1,1,0,1,1,1,0,1,1,0,1,1],
+	[1,0,0,0,0,0,0,1,0,0,0,0,0,0,1],
+	[1,0,1,1,1,1,0,1,0,1,1,1,1,0,1],
+	[1,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+	[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
 ];
 grid_x = grid_blocks[0].length;
 grid_y = grid_blocks.length;
@@ -177,7 +183,7 @@ var makeEnemy = function() {
 		}
 		valid_dirs = possibleDirections();
 		if(valid_dirs.length > 1){
-			
+
 		}
 	};
 
@@ -245,6 +251,15 @@ var makeProtag = function() {
 			self.y - grid_size/2,
 			grid_size, grid_size
 		);
+
+		ctx.beginPath();
+		ctx.strokeStyle="white";
+		ctx.rect(
+			self.x - grid_size/2,
+			self.y - grid_size/2,
+			grid_size, grid_size
+		);
+		ctx.stroke();
 	};
 
 	return self;
