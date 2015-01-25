@@ -98,26 +98,24 @@ var is_grid = function(coord){
 };
 
 var will_overlap_grid = function(x, y, dx, dy){
-	var ret = false;
-
-	var far_x = x + dx + (dx*grid_size/2);
-	var far_y = y + dy + (dy*grid_size/2);
-	ret = ret || is_grid(coord(far_x, far_y));
-
-	if(dx == 0){
-		far_x = x - 1 + (grid_size/2);
-		ret = ret || is_grid(coord(far_x, far_y));
-		far_x = x + 1 - (grid_size/2);
-		ret = ret || is_grid(coord(far_x, far_y));
+	if(atIntersection(x,y)){
+		var far_x = x + (dx*grid_size);
+		var far_y = y + (dy*grid_size);
+		return is_grid(coord(far_x, far_y));
 	} else {
-		far_y = y - 1 + (grid_size/2);
-		ret = ret || is_grid(coord(far_x, far_y));
-		far_y = y + 1 - (grid_size/2);
-		ret = ret || is_grid(coord(far_x, far_y));		
+		if(x % grid_size == grid_size/2){
+			return dx != 0;
+		} else if(y % grid_size == grid_size/2){
+			return dy != 0;
+		}
 	}
 
-	return ret
+	throw 'impossible scenario';
 };
+
+var atIntersection = function(x, y){
+	return x % grid_size == grid_size/2 && y % grid_size == grid_size/2;
+}
 
 var makeBody = function() {
 
@@ -130,7 +128,7 @@ var makeBody = function() {
 	self.y = grid_size*1.5;
 
 	self.atIntersection = function(){
-		return self.x % grid_size == grid_size/2 && self.y % grid_size == grid_size/2;
+		return atIntersection(self.x, self.y);
 	}
 
 	self.get_coord = function(){
@@ -197,12 +195,26 @@ var makeEnemy = function(style, chaseFunc) {
 	}
 
 	self.draw = function(){
-		ctx.fillStyle=style;
-		ctx.fillRect(
+		if(self.dx < 0 || self.dy < 0){
+			img = brain.iggy_left;
+		} else {
+			img = brain.iggy_right;
+		}
+		ctx.drawImage(
+			img,
 			self.x - grid_size/2,
 			self.y - grid_size/2,
 			grid_size, grid_size
 		);
+
+		ctx.beginPath();
+		ctx.strokeStyle=style;
+		ctx.rect(
+			self.x - grid_size/2,
+			self.y - grid_size/2,
+			grid_size, grid_size
+		);
+		ctx.stroke();
 	}
 
 	return self;
@@ -237,23 +249,7 @@ var makeProtag = function() {
 		self.dy = new_dy;
 	};
 
-	// animation_duration = 1000/TIMEOUT;
-	// animation_step = animation_duration;
-	// animation_frame = false;
-
 	self.draw = function(){
-		// animation_step--;
-		// if(animation_step == 0){
-		// 	animation_step = animation_duration;
-		// 	animation_frame = !animation_frame;
-		// }
-
-		// mouth = grid_size;
-		// if(animation_frame){
-		// 	mouth *= 0.7;
-		// }
-
-
 		if(self.dx < 0 || self.dy < 0){
 			img = brain.pol_left;
 		} else {
@@ -357,6 +353,12 @@ $(document).ready(function(){
 	brain.pol_left.src = "pol_left.png";
 	brain.pol_right = new Image();
 	brain.pol_right.src = "pol_right.png";
+
+	brain.iggy_left = new Image();
+	brain.iggy_left.src = "iggy_left.png";
+	brain.iggy_right = new Image();
+	brain.iggy_right.src = "iggy_right.png";
+
 
 	start();
 });
