@@ -2,8 +2,10 @@ ctx = null;
 
 brain = null;
 
-grid_size = 50;
-TIMEOUT = 8;
+grid_size = 60;
+TIMEOUT = 5;
+DRAW_BUFFER = 3;
+DRAW_COUNT = 0;
 
 UP = 'UP';
 DOWN = 'DOWN';
@@ -95,6 +97,14 @@ var coord = function(x, y) {
 
 var is_grid = function(coord){
 	return grid_blocks[coord.y][coord.x];
+};
+
+var is_pellet = function(coord){
+	return brain.pellets[coord.y][coord.x];
+};
+
+var eatPellet = function(coord){
+	brain.pellets[coord.y][coord.x] = false;
 };
 
 var will_overlap_grid = function(x, y, dx, dy){
@@ -249,6 +259,14 @@ var makeProtag = function() {
 		self.dy = new_dy;
 	};
 
+	self._step = self.step;
+	self.step = function(){
+		if(self.atIntersection()){
+			eatPellet(self.get_coord());
+		}
+		self._step();
+	}
+
 	self.draw = function(){
 		if(self.dx < 0 || self.dy < 0){
 			img = brain.pol_left;
@@ -293,7 +311,6 @@ var chaseProtag = function(self, dirs){
 			best_min = distance;
 			best_dir = d;
 		}
-		console.log(distance, d, next, brain.protag.get_coord());
 	});
 	return best_dir;
 }
@@ -302,14 +319,21 @@ function drawGrid(){
 	ctx.fillStyle = "#000000";
 	ctx.fillRect(0,0,grid_size*grid_x,grid_size*grid_y);
 
-	ctx.fillStyle = "#888888";
 	for(var x = 0; x < grid_x; x++){
 		for(var y = 0; y < grid_y; y++){
 			crd = pair(x,y);
 			if(is_grid(crd)){
+				ctx.fillStyle = "#888888";
 				ctx.fillRect(
 					x*grid_size, y*grid_size,
 					grid_size, grid_size
+				);
+			} else if(is_pellet(crd)){
+				ctx.fillStyle = "#bbbb00";
+				ctx.fillRect(
+					x*grid_size + grid_size/2 - grid_size/16,
+					y*grid_size + grid_size/2 - grid_size/16,
+					grid_size/8, grid_size/8
 				);
 			}
 		}
@@ -317,6 +341,7 @@ function drawGrid(){
 };
 
 function turn(){
+	window.setTimeout(turn, TIMEOUT);
 
 	brain.protag.keyin(brain.keyreader.get());
 
@@ -326,12 +351,14 @@ function turn(){
 
 	brain.keyreader.step();
 
-	drawGrid();
-	brain.everybody.forEach(function(e){
-		e.draw()
-	});
-
-	window.setTimeout(turn, TIMEOUT);
+	if(DRAW_COUNT == 0){
+		DRAW_COUNT = DRAW_BUFFER;
+		drawGrid();
+		brain.everybody.forEach(function(e){
+			e.draw()
+		});
+	}
+	DRAW_COUNT--;
 };
 
 
@@ -359,6 +386,17 @@ $(document).ready(function(){
 	brain.iggy_right = new Image();
 	brain.iggy_right.src = "iggy_right.png";
 
+
+
+	var pellets = []
+	for(var b = 0; b < grid_y; b++){
+		pellets[b] = [];
+		for(var a = 0; a < grid_x; a++){
+			var p = pair(a,b);
+			pellets[b][a] = !is_grid(p);
+		}
+	}
+	brain.pellets = pellets;
 
 	start();
 });
