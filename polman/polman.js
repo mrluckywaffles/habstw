@@ -129,6 +129,10 @@ var makeBody = function() {
 	self.x = grid_size*1.5;
 	self.y = grid_size*1.5;
 
+	self.atIntersection = function(){
+		return self.x % grid_size == grid_size/2 && self.y % grid_size == grid_size/2;
+	}
+
 	self.get_coord = function(){
 		return coord(self.x, self.y);
 	};
@@ -149,9 +153,12 @@ var makeBody = function() {
 	return self;
 }
 
-var makeEnemy = function() {
+var makeEnemy = function(style, chaseFunc) {
 
 	var self = makeBody();
+
+	self.x = grid_size*grid_x - self.x;
+	self.y = grid_size*grid_y - self.y;
 
 	var possibleDirections = function(){
 		dirs = [
@@ -163,11 +170,11 @@ var makeEnemy = function() {
 		good_dirs = [];
 
 		dirs.forEach(function (d){
-			if(d.x == self.dx && d.y == self.dy){
-				continue;
+			if(d.x == -1*self.dx && d.y == -1*self.dy){
+				//do nothing
 			}
-			if(!will_overlap_grid(self.x, self.y, d.x, d.y)){
-				good_dirs.append(d);
+			else if(!will_overlap_grid(self.x, self.y, d.x, d.y)){
+				good_dirs.push(d);
 			}
 		})
 
@@ -175,15 +182,11 @@ var makeEnemy = function() {
 	}
 
 	var determineDirection = function(){
-		if(will_overlap_grid(self.x, self.y, self.dx, self.dy)){
-			//present course will hit a wall
-			self.dx *= -1;
-			self.dy *= -1;
-			return;
-		}
-		valid_dirs = possibleDirections();
-		if(valid_dirs.length > 1){
-
+		if(self.atIntersection()){
+			valid_dirs = possibleDirections();
+			result_dir = chaseFunc(self, valid_dirs);
+			self.dx = result_dir.x;
+			self.dy = result_dir.y;
 		}
 	};
 
@@ -192,6 +195,17 @@ var makeEnemy = function() {
 		determineDirection();
 		self._step();
 	}
+
+	self.draw = function(){
+		ctx.fillStyle=style;
+		ctx.fillRect(
+			self.x - grid_size/2,
+			self.y - grid_size/2,
+			grid_size, grid_size
+		);
+	}
+
+	return self;
 }
 
 var makeProtag = function() {
@@ -265,6 +279,29 @@ var makeProtag = function() {
 	return self;
 }
 
+var pythagoreanDistance = function(coord1, coord2){
+	return Math.sqrt(
+		Math.pow(coord1.x - coord2.x, 2) + Math.pow(coord1.y - coord2.y, 2)
+	);
+}
+
+var chaseProtag = function(self, dirs){
+	var best_min = null;
+	var best_dir = null;
+	dirs.forEach(function (d){
+		var next = self.get_coord();
+		next.x += d.x;
+		next.y += d.y;
+		var distance = pythagoreanDistance(brain.protag.get_coord(), next);
+		if(!best_dir || best_min > distance){
+			best_min = distance;
+			best_dir = d;
+		}
+		console.log(distance, d, next, brain.protag.get_coord());
+	});
+	return best_dir;
+}
+
 function drawGrid(){
 	ctx.fillStyle = "#000000";
 	ctx.fillRect(0,0,grid_size*grid_x,grid_size*grid_y);
@@ -313,7 +350,8 @@ $(document).ready(function(){
 	brain = {};
 	brain.keyreader = makeKeyin();
 	brain.protag = makeProtag();
-	brain.everybody = [brain.protag];
+	var red = makeEnemy('red', chaseProtag);
+	brain.everybody = [brain.protag, red];
 
 	brain.pol_left = new Image();
 	brain.pol_left.src = "pol_left.png";
