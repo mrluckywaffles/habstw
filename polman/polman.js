@@ -3,6 +3,7 @@ ctx = null;
 brain = null;
 
 grid_size = 50;
+TIMEOUT = 10;
 
 UP = 'UP';
 DOWN = 'DOWN';
@@ -160,9 +161,30 @@ makeBody = function() {
 		y += dy;
 	};
 
+	// animation_duration = 1000/TIMEOUT;
+	// animation_step = animation_duration;
+	// animation_frame = false;
+
 	self.draw = function(){
-		ctx.fillStyle = "#FF0000";
-		ctx.fillRect(
+		// animation_step--;
+		// if(animation_step == 0){
+		// 	animation_step = animation_duration;
+		// 	animation_frame = !animation_frame;
+		// }
+
+		// mouth = grid_size;
+		// if(animation_frame){
+		// 	mouth *= 0.7;
+		// }
+
+
+		if(dx < 0 || dy < 0){
+			img = brain.pol_left;
+		} else {
+			img = brain.pol_right;
+		}
+		ctx.drawImage(
+			img,
 			x - grid_size/2,
 			y - grid_size/2,
 			grid_size, grid_size
@@ -207,7 +229,7 @@ function turn(){
 		e.draw()
 	});
 
-	window.setTimeout(turn, 10);
+	window.setTimeout(turn, TIMEOUT);
 };
 
 
@@ -223,6 +245,11 @@ $(document).ready(function(){
 	brain.keyreader = makeKeyin();
 	brain.protag = makeBody();
 	brain.everybody = [brain.protag];
+
+	brain.pol_left = new Image();
+	brain.pol_left.src = "pol_left.png";
+	brain.pol_right = new Image();
+	brain.pol_right.src = "pol_right.png";
 
 	start();
 });
