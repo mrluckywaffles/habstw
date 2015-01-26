@@ -4,6 +4,7 @@ brain = null;
 
 grid_size = 60;
 TIMEOUT = 5;
+TURNS_PER_SEC = 1000/TIMEOUT;
 DRAW_BUFFER = 3;
 DRAW_COUNT = 0;
 
@@ -22,6 +23,12 @@ var makeKeyin = function() {
 		DOWN: 0,
 		LEFT: 0,
 		RIGHT: 0
+	};
+
+	self.empty = function(){
+		for(var dir in buttons){
+			buttons[dir] = 0;
+		}
 	};
 
 	self.get = function(){
@@ -56,7 +63,13 @@ var makeKeyin = function() {
     		pressed = LEFT;
     	} else if (key == 39){
     		pressed = RIGHT;
-    	}
+    	} else if (key == 67){ // c
+    		brain.tryChariot = true;
+		} else if (key == 82){ // r
+			brain.gameover = true;
+		} else if (key == 49){ // 1
+			brain.pelletCount += 10;
+		}
 
     	if(pressed){
     		buttons[pressed] = buffer;
@@ -88,6 +101,11 @@ function pair(x,y){
 	var self = {};
 	self.x = x;
 	self.y = y;
+
+	self.equals = function(other){
+		return self.x == other.x && self.y == other.y;
+	}
+
 	return self;
 };
 
@@ -104,7 +122,10 @@ var is_pellet = function(coord){
 };
 
 var eatPellet = function(coord){
-	brain.pellets[coord.y][coord.x] = false;
+	if(is_pellet(coord)){
+		brain.pellets[coord.y][coord.x] = false;
+		brain.pelletCount++;
+	}
 };
 
 var will_overlap_grid = function(x, y, dx, dy){
@@ -127,9 +148,11 @@ var atIntersection = function(x, y){
 	return x % grid_size == grid_size/2 && y % grid_size == grid_size/2;
 }
 
-var makeBody = function() {
+var makeBody = function(asset) {
 
 	var self = {};
+
+	self.asset = asset;
 
 	self.dx = 0;
 	self.dy = 0;
@@ -155,18 +178,49 @@ var makeBody = function() {
 	};
 
 	self.draw = function(){
-		throw 'child must implement';
+		if(self.dx < 0 || self.dy < 0){
+			img = self.asset.leftImg;
+		} else {
+			img = self.asset.rightImg;
+		}
+		ctx.drawImage(
+			img,
+			self.x - grid_size/2,
+			self.y - grid_size/2,
+			grid_size, grid_size
+		);
+
+		ctx.beginPath();
+		ctx.strokeStyle = self.asset.color;
+		ctx.rect(
+			self.x - grid_size/2,
+			self.y - grid_size/2,
+			grid_size, grid_size
+		);
+		ctx.stroke();
 	};
 
 	return self;
 }
 
-var makeEnemy = function(style, chaseFunc) {
+var makeEnemy = function(asset, chaseFunc) {
 
-	var self = makeBody();
+	var self = makeBody(asset);
 
-	self.x = grid_size*grid_x - self.x;
-	self.y = grid_size*grid_y - self.y;
+	self.x = asset.spawn.x;
+	self.y = asset.spawn.y;
+
+	self.alive = true;
+	self.kill = function(){
+		self.alive = false;
+		self.dx = 0;
+		self.dy = 0;
+	}
+
+	self.panic = function(){
+		self.dx *= -1;
+		self.dy *= -1;
+	}
 
 	var possibleDirections = function(){
 		dirs = [
@@ -191,10 +245,14 @@ var makeEnemy = function(style, chaseFunc) {
 
 	var determineDirection = function(){
 		if(self.atIntersection()){
-			valid_dirs = possibleDirections();
-			result_dir = chaseFunc(self, valid_dirs);
-			self.dx = result_dir.x;
-			self.dy = result_dir.y;
+			var valid_dirs = possibleDirections();
+			var result_dirs = chaseFunc(self, valid_dirs);
+			var chosen_dir = result_dirs[0];
+			if(brain.isChariot){
+				chosen_dir = result_dirs[1];
+			}
+			self.dx = chosen_dir.x;
+			self.dy = chosen_dir.y;
 		}
 	};
 
@@ -204,35 +262,12 @@ var makeEnemy = function(style, chaseFunc) {
 		self._step();
 	}
 
-	self.draw = function(){
-		if(self.dx < 0 || self.dy < 0){
-			img = brain.iggy_left;
-		} else {
-			img = brain.iggy_right;
-		}
-		ctx.drawImage(
-			img,
-			self.x - grid_size/2,
-			self.y - grid_size/2,
-			grid_size, grid_size
-		);
-
-		ctx.beginPath();
-		ctx.strokeStyle=style;
-		ctx.rect(
-			self.x - grid_size/2,
-			self.y - grid_size/2,
-			grid_size, grid_size
-		);
-		ctx.stroke();
-	}
-
 	return self;
 }
 
-var makeProtag = function() {
+var makeProtag = function(asset) {
 
-	var self = makeBody();
+	var self = makeBody(asset);
 
 	self.keyin = function(input){
 		if(!input){
@@ -267,29 +302,6 @@ var makeProtag = function() {
 		self._step();
 	}
 
-	self.draw = function(){
-		if(self.dx < 0 || self.dy < 0){
-			img = brain.pol_left;
-		} else {
-			img = brain.pol_right;
-		}
-		ctx.drawImage(
-			img,
-			self.x - grid_size/2,
-			self.y - grid_size/2,
-			grid_size, grid_size
-		);
-
-		ctx.beginPath();
-		ctx.strokeStyle="white";
-		ctx.rect(
-			self.x - grid_size/2,
-			self.y - grid_size/2,
-			grid_size, grid_size
-		);
-		ctx.stroke();
-	};
-
 	return self;
 }
 
@@ -299,31 +311,54 @@ var pythagoreanDistance = function(coord1, coord2){
 	);
 }
 
-var chaseProtag = function(self, dirs){
-	var best_min = null;
+var _chaseToCoord = function(self, dirs, destination){
+	var min = null;
 	var best_dir = null;
+	var max = null;
+	var worst_dir = null;
 	dirs.forEach(function (d){
 		var next = self.get_coord();
 		next.x += d.x;
 		next.y += d.y;
-		var distance = pythagoreanDistance(brain.protag.get_coord(), next);
-		if(!best_dir || best_min > distance){
-			best_min = distance;
+		var distance = pythagoreanDistance(destination, next);
+		if(!best_dir || min > distance){
+			min = distance;
 			best_dir = d;
 		}
+		if(!worst_dir || max < distance){
+			max = distance;
+			worst_dir = d;
+		}
 	});
-	return best_dir;
+	return [best_dir, worst_dir];
+}
+
+var chaseProtag = function(self, dirs){
+	destination = brain.protag.get_coord();
+	return _chaseToCoord(self, dirs, destination);
+}
+
+var predictProtag = function(self, dirs){
+	destination = brain.protag.get_coord();
+	destination.x += brain.protag.dx * 3;
+	destination.y += brain.protag.dy * 3;
+	return _chaseToCoord(self, dirs, destination);
 }
 
 function drawGrid(){
 	ctx.fillStyle = "#000000";
 	ctx.fillRect(0,0,grid_size*grid_x,grid_size*grid_y);
 
+	var gridColor = "#888888";
+	if(brain.isChariot){
+		gridColor = '#bbbb00';
+	}
+
 	for(var x = 0; x < grid_x; x++){
 		for(var y = 0; y < grid_y; y++){
 			crd = pair(x,y);
 			if(is_grid(crd)){
-				ctx.fillStyle = "#888888";
+				ctx.fillStyle = gridColor;
 				ctx.fillRect(
 					x*grid_size, y*grid_size,
 					grid_size, grid_size
@@ -338,18 +373,81 @@ function drawGrid(){
 			}
 		}
 	}
+
+	ctx.fillStyle = "#DDDDDD";
+	ctx.font = "48px serif";
+	ctx.fillText("Pellet count: " + brain.pelletCount, 10, 50);
+	if(!brain.isChariot && brain.pelletCount >= CHARIOT_PELLET_MIN){
+		ctx.fillText("PRESS C TO ACTIVATE CHARIOT", 10, grid_y*grid_size - 10);
+	}
 };
 
+function checkCollisions(){
+	var protag_coord = brain.protag.get_coord();
+	brain.enemies.forEach(function (e){
+		var collision = e.get_coord().equals(protag_coord);
+		if(collision && e.alive){
+			if(brain.isChariot){
+				e.kill();
+			} else {
+				brain.gameover = true;
+			}
+		}
+	});
+}
+
+CHARIOT_PELLET_MIN = 20;
+CHARIOT_COUNTDOWN_BUFFER = TURNS_PER_SEC/20;
+CHARIOT_COUNTDOWN_COUNT = 0;
+
+function stepChariot(){
+	if(brain.tryChariot && !brain.isChariot){
+		if(brain.pelletCount >= CHARIOT_PELLET_MIN){
+			brain.isChariot = true;
+			brain.protag.asset = brain.asset.chariot;
+			brain.enemies.forEach(function (e){
+				e.panic();
+			});
+		}
+	}
+	brain.tryChariot = false;
+
+	if(brain.pelletCount == 0){
+		brain.isChariot = false;
+		brain.protag.asset = brain.asset.polnareff;
+	}
+
+	if(brain.isChariot){
+		if(CHARIOT_COUNTDOWN_COUNT == 0){
+			CHARIOT_COUNTDOWN_COUNT = CHARIOT_COUNTDOWN_BUFFER;
+			brain.pelletCount--;
+		}
+		CHARIOT_COUNTDOWN_COUNT--;
+	}
+}
+
 function turn(){
+	if(brain.gameover){
+		return start();
+	}
+
 	window.setTimeout(turn, TIMEOUT);
 
 	brain.protag.keyin(brain.keyreader.get());
+
+	stepChariot();
+
+	if(brain.isChariot){
+		brain.protag.step() //gets double steps
+	}
 
 	brain.everybody.forEach(function(e){
 		e.step()
 	});
 
 	brain.keyreader.step();
+
+	checkCollisions();
 
 	if(DRAW_COUNT == 0){
 		DRAW_COUNT = DRAW_BUFFER;
@@ -363,30 +461,15 @@ function turn(){
 
 
 function start(){
-	turn();
-};
+	brain.gameover = false;
 
-$(document).ready(function(){
-	canvas = document.getElementById("myCanvas");
-	ctx = canvas.getContext("2d");
+	brain.keyreader.empty();
 
-	brain = {};
-	brain.keyreader = makeKeyin();
-	brain.protag = makeProtag();
-	var red = makeEnemy('red', chaseProtag);
-	brain.everybody = [brain.protag, red];
-
-	brain.pol_left = new Image();
-	brain.pol_left.src = "pol_left.png";
-	brain.pol_right = new Image();
-	brain.pol_right.src = "pol_right.png";
-
-	brain.iggy_left = new Image();
-	brain.iggy_left.src = "iggy_left.png";
-	brain.iggy_right = new Image();
-	brain.iggy_right.src = "iggy_right.png";
-
-
+	brain.protag = makeProtag(brain.asset.polnareff);
+	var red = makeEnemy(brain.asset.iggy, chaseProtag);
+	var blue = makeEnemy(brain.asset.toilet, predictProtag);
+	brain.enemies = [red, blue];
+	brain.everybody = [brain.protag].concat(brain.enemies);
 
 	var pellets = []
 	for(var b = 0; b < grid_y; b++){
@@ -397,6 +480,61 @@ $(document).ready(function(){
 		}
 	}
 	brain.pellets = pellets;
+	brain.pelletCount = 0;
+	brain.tryChariot = false;
+	brain.isChariot = false;
+
+	turn();
+};
+
+IMG_PATH = 'img/'
+function sprite(color, leftImg, rightImg){
+	var self = {};
+	self.color = color;
+	self.leftImg = leftImg;
+	self.rightImg = rightImg;
+	return self;
+}
+
+$(document).ready(function(){
+	canvas = document.getElementById("myCanvas");
+	ctx = canvas.getContext("2d");
+
+	brain = {};
+	brain.asset = {};
+	brain.keyreader = makeKeyin();
+
+	var pol_left = new Image();
+	pol_left.src = IMG_PATH + "pol_left.png";
+	var pol_right = new Image();
+	pol_right.src = IMG_PATH + "pol_right.png";
+	brain.asset.polnareff = sprite('white', pol_left, pol_right);
+	
+	var char_left = new Image();
+	char_left.src = IMG_PATH + "char_left.png";
+	var char_right = new Image();
+	char_right.src = IMG_PATH + "char_right.png";
+	brain.asset.chariot = sprite('white', char_left, char_right);
+
+	var iggy_left = new Image();
+	iggy_left.src = IMG_PATH + "iggy_left.png";
+	var iggy_right = new Image();
+	iggy_right.src = IMG_PATH + "iggy_right.png";
+	brain.asset.iggy = sprite('red', iggy_left, iggy_right);
+	brain.asset.iggy.spawn = pair(
+		grid_size*grid_x - grid_size*1.5,
+		grid_size*grid_y - grid_size*1.5
+	);
+
+	var toilet_left = new Image();
+	toilet_left.src = IMG_PATH + "toilet_left.png";
+	var toilet_right = new Image();
+	toilet_right.src = IMG_PATH + "toilet_right.png";
+	brain.asset.toilet = sprite('blue', toilet_left, toilet_right);
+	brain.asset.toilet.spawn = pair(
+		grid_size*grid_x - grid_size*1.5,
+		grid_size*1.5
+	);
 
 	start();
 });
