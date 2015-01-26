@@ -67,6 +67,8 @@ var makeKeyin = function() {
     		brain.tryChariot = true;
 		} else if (key == 82){ // r
 			brain.gameover = true;
+		} else if (key == 49){ // 1
+			brain.pelletCount += 10;
 		}
 
     	if(pressed){
@@ -478,7 +480,7 @@ function start(){
 		}
 	}
 	brain.pellets = pellets;
-	brain.pelletCount = 20;
+	brain.pelletCount = 0;
 	brain.tryChariot = false;
 	brain.isChariot = false;
 
