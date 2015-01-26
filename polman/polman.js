@@ -4,6 +4,7 @@ brain = null;
 
 grid_size = 60;
 TIMEOUT = 5;
+TURNS_PER_SEC = 1000/TIMEOUT;
 DRAW_BUFFER = 3;
 DRAW_COUNT = 0;
 
@@ -149,6 +150,8 @@ var makeBody = function(asset) {
 
 	var self = {};
 
+	self.asset = asset;
+
 	self.dx = 0;
 	self.dy = 0;
 
@@ -174,9 +177,9 @@ var makeBody = function(asset) {
 
 	self.draw = function(){
 		if(self.dx < 0 || self.dy < 0){
-			img = asset.leftImg;
+			img = self.asset.leftImg;
 		} else {
-			img = asset.rightImg;
+			img = self.asset.rightImg;
 		}
 		ctx.drawImage(
 			img,
@@ -186,7 +189,7 @@ var makeBody = function(asset) {
 		);
 
 		ctx.beginPath();
-		ctx.strokeStyle = asset.color;
+		ctx.strokeStyle = self.asset.color;
 		ctx.rect(
 			self.x - grid_size/2,
 			self.y - grid_size/2,
@@ -204,6 +207,18 @@ var makeEnemy = function(asset, chaseFunc) {
 
 	self.x = asset.spawn.x;
 	self.y = asset.spawn.y;
+
+	self.alive = true;
+	self.kill = function(){
+		self.alive = false;
+		self.dx = 0;
+		self.dy = 0;
+	}
+
+	self.panic = function(){
+		self.dx *= -1;
+		self.dy *= -1;
+	}
 
 	var possibleDirections = function(){
 		dirs = [
@@ -228,10 +243,14 @@ var makeEnemy = function(asset, chaseFunc) {
 
 	var determineDirection = function(){
 		if(self.atIntersection()){
-			valid_dirs = possibleDirections();
-			result_dir = chaseFunc(self, valid_dirs);
-			self.dx = result_dir.x;
-			self.dy = result_dir.y;
+			var valid_dirs = possibleDirections();
+			var result_dirs = chaseFunc(self, valid_dirs);
+			var chosen_dir = result_dirs[0];
+			if(brain.isChariot){
+				chosen_dir = result_dirs[1];
+			}
+			self.dx = chosen_dir.x;
+			self.dy = chosen_dir.y;
 		}
 	};
 
@@ -291,19 +310,25 @@ var pythagoreanDistance = function(coord1, coord2){
 }
 
 var _chaseToCoord = function(self, dirs, destination){
-	var best_min = null;
+	var min = null;
 	var best_dir = null;
+	var max = null;
+	var worst_dir = null;
 	dirs.forEach(function (d){
 		var next = self.get_coord();
 		next.x += d.x;
 		next.y += d.y;
 		var distance = pythagoreanDistance(destination, next);
-		if(!best_dir || best_min > distance){
-			best_min = distance;
+		if(!best_dir || min > distance){
+			min = distance;
 			best_dir = d;
 		}
+		if(!worst_dir || max < distance){
+			max = distance;
+			worst_dir = d;
+		}
 	});
-	return best_dir;
+	return [best_dir, worst_dir];
 }
 
 var chaseProtag = function(self, dirs){
@@ -322,11 +347,16 @@ function drawGrid(){
 	ctx.fillStyle = "#000000";
 	ctx.fillRect(0,0,grid_size*grid_x,grid_size*grid_y);
 
+	var gridColor = "#888888";
+	if(brain.isChariot){
+		gridColor = '#bbbb00';
+	}
+
 	for(var x = 0; x < grid_x; x++){
 		for(var y = 0; y < grid_y; y++){
 			crd = pair(x,y);
 			if(is_grid(crd)){
-				ctx.fillStyle = "#888888";
+				ctx.fillStyle = gridColor;
 				ctx.fillRect(
 					x*grid_size, y*grid_size,
 					grid_size, grid_size
@@ -345,19 +375,53 @@ function drawGrid(){
 	ctx.fillStyle = "#DDDDDD";
 	ctx.font = "48px serif";
 	ctx.fillText("Pellet count: " + brain.pelletCount, 10, 50);
+	if(!brain.isChariot && brain.pelletCount >= CHARIOT_PELLET_MIN){
+		ctx.fillText("PRESS C TO ACTIVATE CHARIOT", 10, grid_y*grid_size - 10);
+	}
 };
 
-function isGameOver(){
+function checkCollisions(){
 	var protag_coord = brain.protag.get_coord();
-	var collision = false;
 	brain.enemies.forEach(function (e){
-		collision |= e.get_coord().equals(protag_coord);
+		var collision = e.get_coord().equals(protag_coord);
+		if(collision && e.alive){
+			if(brain.isChariot){
+				e.kill();
+			} else {
+				brain.gameover = true;
+			}
+		}
 	});
-	return collision;
 }
 
+CHARIOT_PELLET_MIN = 20;
+CHARIOT_COUNTDOWN_BUFFER = TURNS_PER_SEC/20;
+CHARIOT_COUNTDOWN_COUNT = 0;
+
 function stepChariot(){
-	
+	if(brain.tryChariot && !brain.isChariot){
+		if(brain.pelletCount >= CHARIOT_PELLET_MIN){
+			brain.isChariot = true;
+			brain.protag.asset = brain.asset.chariot;
+			brain.enemies.forEach(function (e){
+				e.panic();
+			});
+		}
+	}
+	brain.tryChariot = false;
+
+	if(brain.pelletCount == 0){
+		brain.isChariot = false;
+		brain.protag.asset = brain.asset.polnareff;
+	}
+
+	if(brain.isChariot){
+		if(CHARIOT_COUNTDOWN_COUNT == 0){
+			CHARIOT_COUNTDOWN_COUNT = CHARIOT_COUNTDOWN_BUFFER;
+			brain.pelletCount--;
+		}
+		CHARIOT_COUNTDOWN_COUNT--;
+	}
 }
 
 function turn(){
@@ -371,13 +435,17 @@ function turn(){
 
 	stepChariot();
 
+	if(brain.isChariot){
+		brain.protag.step() //gets double steps
+	}
+
 	brain.everybody.forEach(function(e){
 		e.step()
 	});
 
 	brain.keyreader.step();
 
-	brain.gameover |= isGameOver();
+	checkCollisions();
 
 	if(DRAW_COUNT == 0){
 		DRAW_COUNT = DRAW_BUFFER;
@@ -410,8 +478,9 @@ function start(){
 		}
 	}
 	brain.pellets = pellets;
-	brain.pelletCount = 0;
+	brain.pelletCount = 20;
 	brain.tryChariot = false;
+	brain.isChariot = false;
 
 	turn();
 };
@@ -438,6 +507,12 @@ $(document).ready(function(){
 	var pol_right = new Image();
 	pol_right.src = IMG_PATH + "pol_right.png";
 	brain.asset.polnareff = sprite('white', pol_left, pol_right);
+	
+	var char_left = new Image();
+	char_left.src = IMG_PATH + "char_left.png";
+	var char_right = new Image();
+	char_right.src = IMG_PATH + "char_right.png";
+	brain.asset.chariot = sprite('white', char_left, char_right);
 
 	var iggy_left = new Image();
 	iggy_left.src = IMG_PATH + "iggy_left.png";
