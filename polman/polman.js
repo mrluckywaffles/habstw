@@ -24,6 +24,12 @@ var makeKeyin = function() {
 		RIGHT: 0
 	};
 
+	self.empty = function(){
+		for(var dir in buttons){
+			buttons[dir] = 0;
+		}
+	};
+
 	self.get = function(){
 		max = 0;
 		res = null;
@@ -88,6 +94,11 @@ function pair(x,y){
 	var self = {};
 	self.x = x;
 	self.y = y;
+
+	self.equals = function(other){
+		return self.x == other.x && self.y == other.y;
+	}
+
 	return self;
 };
 
@@ -340,7 +351,20 @@ function drawGrid(){
 	}
 };
 
+function isGameOver(){
+	var protag_coord = brain.protag.get_coord();
+	var collision = false;
+	brain.enemies.forEach(function (e){
+		collision |= e.get_coord().equals(protag_coord);
+	});
+	return collision;
+}
+
 function turn(){
+	if(brain.gameover){
+		return start();
+	}
+
 	window.setTimeout(turn, TIMEOUT);
 
 	brain.protag.keyin(brain.keyreader.get());
@@ -350,6 +374,8 @@ function turn(){
 	});
 
 	brain.keyreader.step();
+
+	brain.gameover |= isGameOver();
 
 	if(DRAW_COUNT == 0){
 		DRAW_COUNT = DRAW_BUFFER;
@@ -363,30 +389,14 @@ function turn(){
 
 
 function start(){
-	turn();
-};
+	brain.gameover = false;
 
-$(document).ready(function(){
-	canvas = document.getElementById("myCanvas");
-	ctx = canvas.getContext("2d");
+	brain.keyreader.empty();
 
-	brain = {};
-	brain.keyreader = makeKeyin();
 	brain.protag = makeProtag();
 	var red = makeEnemy('red', chaseProtag);
-	brain.everybody = [brain.protag, red];
-
-	brain.pol_left = new Image();
-	brain.pol_left.src = "pol_left.png";
-	brain.pol_right = new Image();
-	brain.pol_right.src = "pol_right.png";
-
-	brain.iggy_left = new Image();
-	brain.iggy_left.src = "iggy_left.png";
-	brain.iggy_right = new Image();
-	brain.iggy_right.src = "iggy_right.png";
-
-
+	brain.enemies = [red];
+	brain.everybody = [brain.protag].concat(brain.enemies);
 
 	var pellets = []
 	for(var b = 0; b < grid_y; b++){
@@ -397,6 +407,28 @@ $(document).ready(function(){
 		}
 	}
 	brain.pellets = pellets;
+
+	turn();
+};
+
+IMG_PATH = 'img/'
+
+$(document).ready(function(){
+	canvas = document.getElementById("myCanvas");
+	ctx = canvas.getContext("2d");
+
+	brain = {};
+	brain.keyreader = makeKeyin();
+
+	brain.pol_left = new Image();
+	brain.pol_left.src = IMG_PATH + "pol_left.png";
+	brain.pol_right = new Image();
+	brain.pol_right.src = IMG_PATH + "pol_right.png";
+
+	brain.iggy_left = new Image();
+	brain.iggy_left.src = IMG_PATH + "iggy_left.png";
+	brain.iggy_right = new Image();
+	brain.iggy_right.src = IMG_PATH + "iggy_right.png";
 
 	start();
 });
