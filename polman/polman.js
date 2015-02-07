@@ -1,10 +1,11 @@
+
+$(document).ready(function(){
+
 canvas = null;
 ctx = null;
 
 brain = null;
 
-grid_size = 30; //must be divisible by 2
-half_grid_size = grid_size/2;
 TIMEOUT = 8;
 TURNS_PER_SEC = parseInt(1000/TIMEOUT);
 DRAW_BUFFER = 2;
@@ -14,6 +15,46 @@ UP = 'UP';
 DOWN = 'DOWN';
 LEFT = 'LEFT';
 RIGHT = 'RIGHT';
+
+grid_blocks = [
+	[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+	[1,0,0,0,0,0,0,1,0,0,0,0,0,0,1],
+	[1,0,1,1,0,1,0,1,0,1,0,1,1,0,1],
+	[1,0,0,0,0,1,0,0,0,1,0,0,0,0,1],
+	[1,0,1,1,0,1,0,1,0,1,0,1,1,0,1],
+	[1,0,0,0,0,0,0,1,0,0,0,0,0,0,1],
+	[1,1,0,1,1,0,1,1,1,0,1,1,0,1,1],
+	[1,1,0,1,1,0,1,1,1,0,1,1,0,1,1],
+	[1,0,0,0,0,0,0,1,0,0,0,0,0,0,1],
+	[1,0,1,1,1,1,0,1,0,1,1,1,1,0,1],
+	[1,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+	[1,0,1,1,1,1,0,1,0,1,1,1,1,0,1],
+	[1,0,0,0,0,0,0,1,0,0,0,0,0,0,1],
+	[1,0,1,1,0,1,0,1,0,1,0,1,1,0,1],
+	[1,0,0,0,0,1,0,0,0,1,0,0,0,0,1],
+	[1,0,1,1,0,1,0,1,0,1,0,1,1,0,1],
+	[1,0,0,0,0,0,0,1,0,0,0,0,0,0,1],
+	[1,1,0,1,1,0,1,1,1,0,1,1,0,1,1],
+	[1,1,0,1,1,0,1,1,1,0,1,1,0,1,1],
+	[1,0,0,0,0,0,0,1,0,0,0,0,0,0,1],
+	[1,0,1,1,1,1,0,1,0,1,1,1,1,0,1],
+	[1,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+	[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+];
+grid_x = grid_blocks[0].length;
+grid_y = grid_blocks.length;
+
+height = $(document).height() - 30;
+width = $(document).width() - 30;
+canvas = document.getElementById("myCanvas");
+ctx = canvas.getContext("2d");
+canvas.height = height;
+canvas.width = width;
+
+grid_size = parseInt(height/grid_y);
+half_grid_size = parseInt(grid_size/2);
+grid_x_real = grid_size*grid_x;
+grid_y_real = grid_size*grid_y;
 
 var makeKeyin = function() {
 	var self = {};
@@ -82,8 +123,6 @@ var makeKeyin = function() {
 
 	document.onmousedown = function(e){
 		console.log(e);
-		var height = $(document).height();
-		var width = $(document).width();
 		if(e.button == 0){ // left click
 			if (e.pageX > width/4 &&
 				e.pageX < width/4*3 &&
@@ -130,37 +169,6 @@ var makeKeyin = function() {
 
 	return self;
 };
-
-
-grid_blocks = [
-	[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-	[1,0,0,0,0,0,0,1,0,0,0,0,0,0,1],
-	[1,0,1,1,0,1,0,1,0,1,0,1,1,0,1],
-	[1,0,0,0,0,1,0,0,0,1,0,0,0,0,1],
-	[1,0,1,1,0,1,0,1,0,1,0,1,1,0,1],
-	[1,0,0,0,0,0,0,1,0,0,0,0,0,0,1],
-	[1,1,0,1,1,0,1,1,1,0,1,1,0,1,1],
-	[1,1,0,1,1,0,1,1,1,0,1,1,0,1,1],
-	[1,0,0,0,0,0,0,1,0,0,0,0,0,0,1],
-	[1,0,1,1,1,1,0,1,0,1,1,1,1,0,1],
-	[1,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-	[1,0,1,1,1,1,0,1,0,1,1,1,1,0,1],
-	[1,0,0,0,0,0,0,1,0,0,0,0,0,0,1],
-	[1,0,1,1,0,1,0,1,0,1,0,1,1,0,1],
-	[1,0,0,0,0,1,0,0,0,1,0,0,0,0,1],
-	[1,0,1,1,0,1,0,1,0,1,0,1,1,0,1],
-	[1,0,0,0,0,0,0,1,0,0,0,0,0,0,1],
-	[1,1,0,1,1,0,1,1,1,0,1,1,0,1,1],
-	[1,1,0,1,1,0,1,1,1,0,1,1,0,1,1],
-	[1,0,0,0,0,0,0,1,0,0,0,0,0,0,1],
-	[1,0,1,1,1,1,0,1,0,1,1,1,1,0,1],
-	[1,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-	[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-];
-grid_x = grid_blocks[0].length;
-grid_y = grid_blocks.length;
-grid_x_real = grid_size*grid_x;
-grid_y_real = grid_size*grid_y;
 
 function pair(x,y){
 	var self = {};
@@ -221,8 +229,8 @@ var makeBody = function(asset) {
 	self.dy = 0;
 
 	self.respawn = function(){
-		self.x = (grid_x_real + asset.spawn.x*grid_size*1.5) % grid_x_real;
-		self.y = (grid_y_real + asset.spawn.y*grid_size*1.5) % grid_y_real;
+		self.x = parseInt(grid_x_real + asset.spawn.x*grid_size*1.5) % grid_x_real;
+		self.y = parseInt(grid_y_real + asset.spawn.y*grid_size*1.5) % grid_y_real;
 	}
 
 	self.atIntersection = function(){
@@ -576,44 +584,43 @@ function sprite(color, leftImg, rightImg){
 	return self;
 }
 
-$(document).ready(function(){
-	canvas = document.getElementById("myCanvas");
-	ctx = canvas.getContext("2d");
+// run
 
-	brain = {};
-	brain.asset = {};
-	brain.keyreader = makeKeyin();
+brain = {};
+brain.asset = {};
+brain.keyreader = makeKeyin();
 
-	var pol_left = new Image();
-	pol_left.src = IMG_PATH + "pol_left.png";
-	var pol_right = new Image();
-	pol_right.src = IMG_PATH + "pol_right.png";
-	brain.asset.polnareff = sprite('white', pol_left, pol_right);
-	brain.asset.polnareff.spawn = pair(1, 1);
-	
-	var char_left = new Image();
-	char_left.src = IMG_PATH + "char_left.png";
-	var char_right = new Image();
-	char_right.src = IMG_PATH + "char_right.png";
-	brain.asset.chariot = sprite('white', char_left, char_right);
+var pol_left = new Image();
+pol_left.src = IMG_PATH + "pol_left.png";
+var pol_right = new Image();
+pol_right.src = IMG_PATH + "pol_right.png";
+brain.asset.polnareff = sprite('white', pol_left, pol_right);
+brain.asset.polnareff.spawn = pair(1, 1);
 
-	var iggy_left = new Image();
-	iggy_left.src = IMG_PATH + "iggy_left.png";
-	var iggy_right = new Image();
-	iggy_right.src = IMG_PATH + "iggy_right.png";
-	brain.asset.iggy = sprite('red', iggy_left, iggy_right);
-	brain.asset.iggy.spawn = pair(-1, 1);
+var char_left = new Image();
+char_left.src = IMG_PATH + "char_left.png";
+var char_right = new Image();
+char_right.src = IMG_PATH + "char_right.png";
+brain.asset.chariot = sprite('white', char_left, char_right);
 
-	//todo find original sprite
-	brain.asset.iggy_pink = sprite('pink', iggy_left, iggy_right);
-	brain.asset.iggy_pink.spawn = pair(1, -1);
+var iggy_left = new Image();
+iggy_left.src = IMG_PATH + "iggy_left.png";
+var iggy_right = new Image();
+iggy_right.src = IMG_PATH + "iggy_right.png";
+brain.asset.iggy = sprite('red', iggy_left, iggy_right);
+brain.asset.iggy.spawn = pair(-1, 1);
 
-	var toilet_left = new Image();
-	toilet_left.src = IMG_PATH + "toilet_left.png";
-	var toilet_right = new Image();
-	toilet_right.src = IMG_PATH + "toilet_right.png";
-	brain.asset.toilet = sprite('blue', toilet_left, toilet_right);
-	brain.asset.toilet.spawn = pair(-1, -1);
+//todo find original sprite
+brain.asset.iggy_pink = sprite('pink', iggy_left, iggy_right);
+brain.asset.iggy_pink.spawn = pair(1, -1);
 
-	start();
+var toilet_left = new Image();
+toilet_left.src = IMG_PATH + "toilet_left.png";
+var toilet_right = new Image();
+toilet_right.src = IMG_PATH + "toilet_right.png";
+brain.asset.toilet = sprite('blue', toilet_left, toilet_right);
+brain.asset.toilet.spawn = pair(-1, -1);
+
+start();
+
 });
