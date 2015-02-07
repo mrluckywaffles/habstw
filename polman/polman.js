@@ -465,9 +465,9 @@ function drawGrid(){
 
 	ctx.fillStyle = "#DDDDDD";
 	ctx.font = grid_size + "px serif";
-	ctx.fillText("GS:" + grid_size + " Pellet count: " + brain.pelletCount, 10, grid_size - 5);
+	ctx.fillText("GS:" + grid_size + " Pellet count: " + brain.pelletCount, 10, grid_size/6*5);
 	if(!brain.isChariot && brain.pelletCount >= CHARIOT_PELLET_MIN){
-		ctx.fillText("PRESS C TO ACTIVATE CHARIOT", 10, grid_y_real - 5);
+		ctx.fillText("PRESS C TO ACTIVATE CHARIOT", 10, grid_y_real - grid_size/6);
 	}
 	// if(brain.latestEvent){
 	// 	ctx.fillText(
