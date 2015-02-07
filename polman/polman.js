@@ -1,17 +1,58 @@
-ctx = null;
 
-brain = null;
+$(document).ready(function(){
 
-grid_size = 60;
-TIMEOUT = 5;
-TURNS_PER_SEC = 1000/TIMEOUT;
-DRAW_BUFFER = 3;
-DRAW_COUNT = 0;
+var brain = {};
 
-UP = 'UP';
-DOWN = 'DOWN';
-LEFT = 'LEFT';
-RIGHT = 'RIGHT';
+var IMG_PATH = 'img/';
+var UP = 'UP';
+var DOWN = 'DOWN';
+var LEFT = 'LEFT';
+var RIGHT = 'RIGHT';
+
+var grid_blocks = [
+	[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+	[1,2,0,0,0,0,0,1,0,0,0,0,0,2,1],
+	[1,0,1,1,0,1,0,1,0,1,0,1,1,0,1],
+	[1,0,0,0,0,1,0,0,0,1,0,0,0,0,1],
+	[1,0,1,1,0,1,0,1,0,1,0,1,1,0,1],
+	[1,0,0,0,0,0,0,1,0,0,0,0,0,0,1],
+	[1,1,0,1,1,0,1,1,1,0,1,1,0,1,1],
+	[1,1,0,1,1,0,1,1,1,0,1,1,0,1,1],
+	[1,0,0,0,0,0,0,1,0,0,0,0,0,0,1],
+	[1,0,1,1,1,1,0,1,0,1,1,1,1,0,1],
+	[1,0,1,2,2,1,0,0,0,0,0,0,0,0,1],
+	[1,0,1,1,1,1,0,1,0,1,1,1,1,0,1],
+	[1,0,0,0,0,0,0,1,0,0,0,0,0,0,1],
+	[1,0,1,1,1,0,1,1,1,1,0,1,1,0,1],
+	[1,0,1,2,1,0,1,2,2,1,0,0,0,0,1],
+	[1,0,1,1,1,0,1,2,1,1,0,1,1,0,1],
+	[1,0,0,0,0,0,1,2,1,0,0,0,0,0,1],
+	[1,1,0,1,1,0,1,2,1,0,1,1,0,1,1],
+	[1,1,0,1,1,0,1,1,1,0,1,1,0,1,1],
+	[1,0,0,0,0,0,0,1,0,0,0,0,0,0,1],
+	[1,0,1,1,1,1,0,1,0,1,1,1,1,0,1],
+	[1,2,0,0,0,0,0,0,0,0,0,0,0,2,1],
+	[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+];
+var grid_x = grid_blocks[0].length;
+var grid_y = grid_blocks.length;
+
+var height = $(document).height() - 30;
+var width = $(document).width() - 30;
+var canvas = document.getElementById("myCanvas");
+var ctx = canvas.getContext("2d");
+canvas.height = height;
+canvas.width = width;
+
+var grid_size = parseInt(height/grid_y);
+var half_grid_size = parseInt(grid_size/2);
+var grid_x_real = grid_size*grid_x;
+var grid_y_real = grid_size*grid_y;
+
+var TIMEOUT = parseInt(8*20/grid_size);
+var TURNS_PER_SEC = parseInt(1000/TIMEOUT);
+var DRAW_BUFFER = 2;
+var DRAW_COUNT = 0;
 
 var makeKeyin = function() {
 	var self = {};
@@ -24,6 +65,7 @@ var makeKeyin = function() {
 		LEFT: 0,
 		RIGHT: 0
 	};
+	self.buttons = buttons;
 
 	self.empty = function(){
 		for(var dir in buttons){
@@ -32,8 +74,8 @@ var makeKeyin = function() {
 	};
 
 	self.get = function(){
-		max = 0;
-		res = null;
+		var max = 0;
+		var res = null;
 		for(var dir in buttons){
 			if(buttons[dir] > max){
 				res = dir;
@@ -54,7 +96,7 @@ var makeKeyin = function() {
 	window.onkeydown = function(e) {
     	var key = e.keyCode ? e.keyCode : e.which;
 
-    	pressed = null;
+    	var pressed = null;
     	if (key == 38){
     		pressed = UP;
     	} else if (key == 40){
@@ -69,6 +111,8 @@ var makeKeyin = function() {
 			brain.gameover = true;
 		} else if (key == 49){ // 1
 			brain.pelletCount += 10;
+		} else if (key == 73){ // I
+			brain.invuln = !brain.invuln;
 		}
 
     	if(pressed){
@@ -76,26 +120,60 @@ var makeKeyin = function() {
     	}
 	}
 
+	var handleTouch = function(e){
+		// console.log(e);
+		if(e.changedTouches){
+			e = e.changedTouches[0];
+		}
+		// brain.latestEvent = e;
+
+		if (e.pageX > width/4 &&
+			e.pageX < width/4*3 &&
+			e.pageY > height/4 &&
+			e.pageY < height/4*3){
+			brain.tryChariot = true;
+		} else {
+			var slope = height/width;
+			var f = function(x){
+				return -1*slope*x + height;
+			}
+			var g = function(x){
+				return slope*x;
+			}
+			var possible = {
+				UP: true,
+				DOWN: true,
+				LEFT: true,
+				RIGHT: true
+			};
+			if(f(e.pageX) > e.pageY){
+				possible[DOWN] = false;
+				possible[RIGHT] = false;
+			} else {
+				possible[UP] = false;
+				possible[LEFT] = false;
+			}
+			if(g(e.pageX) > e.pageY){
+				possible[DOWN] = false;
+				possible[LEFT] = false;
+			} else {
+				possible[UP] = false;
+				possible[RIGHT] = false;
+			}
+			// brain.latestPossible = possible;
+			for(var dir in possible){
+				if(possible[dir]){
+					buttons[dir] = buffer;
+				}
+			}
+		}
+	}
+
+	document.addEventListener("mousedown", handleTouch, false);
+	document.addEventListener("touchend", handleTouch, false);
+
 	return self;
 };
-
-
-grid_blocks = [
-	[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-	[1,0,0,0,0,0,0,1,0,0,0,0,0,0,1],
-	[1,0,1,1,0,1,0,1,0,1,0,1,1,0,1],
-	[1,0,0,0,0,1,0,0,0,1,0,0,0,0,1],
-	[1,0,1,1,0,1,0,1,0,1,0,1,1,0,1],
-	[1,0,0,0,0,0,0,1,0,0,0,0,0,0,1],
-	[1,1,0,1,1,0,1,1,1,0,1,1,0,1,1],
-	[1,1,0,1,1,0,1,1,1,0,1,1,0,1,1],
-	[1,0,0,0,0,0,0,1,0,0,0,0,0,0,1],
-	[1,0,1,1,1,1,0,1,0,1,1,1,1,0,1],
-	[1,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-	[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-];
-grid_x = grid_blocks[0].length;
-grid_y = grid_blocks.length;
 
 function pair(x,y){
 	var self = {};
@@ -113,8 +191,15 @@ var coord = function(x, y) {
 	return pair(parseInt(x/grid_size), parseInt(y/grid_size));
 };
 
-var is_grid = function(coord){
+var get_grid = function(coord){
+	if(coord.x < 0 || coord.x >= grid_x || coord.y < 0 || coord.y >= grid_y){
+		return false;
+	}
 	return grid_blocks[coord.y][coord.x];
+}
+
+var is_grid = function(coord){
+	return get_grid(coord) == 1;
 };
 
 var is_pellet = function(coord){
@@ -134,9 +219,9 @@ var will_overlap_grid = function(x, y, dx, dy){
 		var far_y = y + (dy*grid_size);
 		return is_grid(coord(far_x, far_y));
 	} else {
-		if(x % grid_size == grid_size/2){
+		if(x % grid_size == half_grid_size){
 			return dx != 0;
-		} else if(y % grid_size == grid_size/2){
+		} else if(y % grid_size == half_grid_size){
 			return dy != 0;
 		}
 	}
@@ -145,20 +230,20 @@ var will_overlap_grid = function(x, y, dx, dy){
 };
 
 var atIntersection = function(x, y){
-	return x % grid_size == grid_size/2 && y % grid_size == grid_size/2;
+	return x % grid_size == half_grid_size && y % grid_size == half_grid_size;
 }
 
 var makeBody = function(asset) {
 
 	var self = {};
 
-	self.asset = asset;
-
 	self.dx = 0;
 	self.dy = 0;
 
-	self.x = grid_size*1.5;
-	self.y = grid_size*1.5;
+	self.respawn = function(){
+		self.x = parseInt(grid_x_real + asset.spawn.x*grid_size*1.5) % grid_x_real;
+		self.y = parseInt(grid_y_real + asset.spawn.y*grid_size*1.5) % grid_y_real;
+	}
 
 	self.atIntersection = function(){
 		return atIntersection(self.x, self.y);
@@ -179,36 +264,38 @@ var makeBody = function(asset) {
 
 	self.draw = function(){
 		if(self.dx < 0 || self.dy < 0){
-			img = self.asset.leftImg;
+			img = asset.leftImg;
 		} else {
-			img = self.asset.rightImg;
+			img = asset.rightImg;
 		}
+
+		var half = grid_size;
+		var full = half*2;
+
 		ctx.drawImage(
 			img,
-			self.x - grid_size/2,
-			self.y - grid_size/2,
-			grid_size, grid_size
+			self.x - half,
+			self.y - half,
+			full, full
 		);
 
-		ctx.beginPath();
-		ctx.strokeStyle = self.asset.color;
-		ctx.rect(
-			self.x - grid_size/2,
-			self.y - grid_size/2,
-			grid_size, grid_size
-		);
-		ctx.stroke();
+		// ctx.beginPath();
+		// ctx.strokeStyle = asset.color;
+		// ctx.rect(
+		// 	self.x - half,
+		// 	self.y - half,
+		// 	full, full
+		// );
+		// ctx.stroke();
 	};
 
+	self.respawn();
 	return self;
 }
 
 var makeEnemy = function(asset, chaseFunc) {
 
 	var self = makeBody(asset);
-
-	self.x = asset.spawn.x;
-	self.y = asset.spawn.y;
 
 	self.alive = true;
 	self.kill = function(){
@@ -274,8 +361,8 @@ var makeProtag = function(asset) {
 			return;
 		}
 
-		new_dx = 0;
-		new_dy = 0;
+		var new_dx = 0;
+		var new_dy = 0;
 		if(input == UP){
 			new_dy = -1;
 		} else if (input == DOWN){
@@ -334,22 +421,75 @@ var _chaseToCoord = function(self, dirs, destination){
 }
 
 var chaseProtag = function(self, dirs){
-	destination = brain.protag.get_coord();
+	var destination = brain.protag.get_coord();
 	return _chaseToCoord(self, dirs, destination);
 }
 
 var predictProtag = function(self, dirs){
-	destination = brain.protag.get_coord();
+	var destination = brain.protag.get_coord();
 	destination.x += brain.protag.dx * 3;
 	destination.y += brain.protag.dy * 3;
 	return _chaseToCoord(self, dirs, destination);
 }
 
+var vectorProtagFactory = function(ally){
+	var chaseFunc = function(self, dirs){
+		var pivot = brain.protag.get_coord();
+		var other = ally.get_coord();
+		var destination = pair(
+			pivot.x*2 - other.x,
+			pivot.y*2 - other.y
+		);
+		return _chaseToCoord(self, dirs, destination);
+	};
+	return chaseFunc;
+}
+
+function drawGridSquare(crd){
+	// ctx.fillRect(
+	// 	crd.x*grid_size, crd.y*grid_size,
+	// 	grid_size, grid_size
+	// );
+	ctx.fillRect(
+		crd.x*grid_size + grid_size*7/16,
+		crd.y*grid_size + grid_size*7/16,
+		grid_size/8, grid_size/8
+	);
+	if(is_grid(pair(crd.x, crd.y - 1))){
+		ctx.fillRect(
+			crd.x*grid_size + grid_size*7/16,
+			crd.y*grid_size,
+			grid_size/8, grid_size/2
+		);
+	}
+	if(is_grid(pair(crd.x, crd.y + 1))){
+		ctx.fillRect(
+			crd.x*grid_size + grid_size*7/16,
+			crd.y*grid_size + grid_size/2,
+			grid_size/8, grid_size/2
+		);
+	}
+	if(is_grid(pair(crd.x - 1, crd.y))){
+		ctx.fillRect(
+			crd.x*grid_size,
+			crd.y*grid_size + grid_size*7/16,
+			grid_size/2, grid_size/8
+		);
+	}
+	if(is_grid(pair(crd.x + 1, crd.y))){
+		ctx.fillRect(
+			crd.x*grid_size + grid_size/2,
+			crd.y*grid_size + grid_size*7/16,
+			grid_size/2, grid_size/8
+		);
+	}
+}
+
 function drawGrid(){
 	ctx.fillStyle = "#000000";
-	ctx.fillRect(0,0,grid_size*grid_x,grid_size*grid_y);
+	ctx.fillRect(0, 0, grid_x_real, grid_y_real);
 
-	var gridColor = "#888888";
+	var gridColor = "#551a8b";
 	if(brain.isChariot){
 		gridColor = '#bbbb00';
 	}
@@ -359,15 +499,12 @@ function drawGrid(){
 			crd = pair(x,y);
 			if(is_grid(crd)){
 				ctx.fillStyle = gridColor;
-				ctx.fillRect(
-					x*grid_size, y*grid_size,
-					grid_size, grid_size
-				);
+				drawGridSquare(crd);
 			} else if(is_pellet(crd)){
 				ctx.fillStyle = "#bbbb00";
 				ctx.fillRect(
-					x*grid_size + grid_size/2 - grid_size/16,
-					y*grid_size + grid_size/2 - grid_size/16,
+					crd.x*grid_size + grid_size*7/16,
+					crd.y*grid_size + grid_size*7/16,
 					grid_size/8, grid_size/8
 				);
 			}
@@ -375,11 +512,28 @@ function drawGrid(){
 	}
 
 	ctx.fillStyle = "#DDDDDD";
-	ctx.font = "48px serif";
-	ctx.fillText("Pellet count: " + brain.pelletCount, 10, 50);
+	ctx.font = grid_size + "px serif";
+	ctx.fillText("GS:" + grid_size + " Pellet count: " + brain.pelletCount, 10, grid_size/6*5);
 	if(!brain.isChariot && brain.pelletCount >= CHARIOT_PELLET_MIN){
-		ctx.fillText("PRESS C TO ACTIVATE CHARIOT", 10, grid_y*grid_size - 10);
+		ctx.fillText("PRESS C TO ACTIVATE CHARIOT", 10, grid_y_real - grid_size/6);
 	}
+	// if(brain.latestEvent){
+	// 	ctx.fillText(
+	// 		brain.latestEvent.pageX + '/' + width + ' ' + 
+	// 		brain.latestEvent.pageY + '/' + height + ' ' + 
+	// 		brain.protag.dx + '/' + brain.protag.dy + ' ' +
+	// 		'',
+	// 		10, grid_y_real - 10
+	// 	);
+	// 	ctx.fillText(
+	// 		JSON.stringify(brain.keyreader.buttons),
+	// 		10, grid_y_real - 50
+	// 	);
+	// 	ctx.fillText(
+	// 		JSON.stringify(brain.latestPossible),
+	// 		10, grid_y_real - 90
+	// 	);
+	// }
 };
 
 function checkCollisions(){
@@ -389,6 +543,8 @@ function checkCollisions(){
 		if(collision && e.alive){
 			if(brain.isChariot){
 				e.kill();
+			} else if(brain.invuln){
+				// do nothing
 			} else {
 				brain.gameover = true;
 			}
@@ -396,9 +552,9 @@ function checkCollisions(){
 	});
 }
 
-CHARIOT_PELLET_MIN = 20;
-CHARIOT_COUNTDOWN_BUFFER = TURNS_PER_SEC/20;
-CHARIOT_COUNTDOWN_COUNT = 0;
+var CHARIOT_PELLET_MIN = 20;
+var CHARIOT_COUNTDOWN_BUFFER = parseInt(TURNS_PER_SEC/20);
+var CHARIOT_COUNTDOWN_COUNT = 0;
 
 function stepChariot(){
 	if(brain.tryChariot && !brain.isChariot){
@@ -467,8 +623,9 @@ function start(){
 
 	brain.protag = makeProtag(brain.asset.polnareff);
 	var red = makeEnemy(brain.asset.iggy, chaseProtag);
-	var blue = makeEnemy(brain.asset.toilet, predictProtag);
-	brain.enemies = [red, blue];
+	var pink = makeEnemy(brain.asset.iggy_pink, predictProtag);
+	var blue = makeEnemy(brain.asset.toilet, vectorProtagFactory(red));
+	brain.enemies = [red, pink, blue];
 	brain.everybody = [brain.protag].concat(brain.enemies);
 
 	var pellets = []
@@ -476,18 +633,18 @@ function start(){
 		pellets[b] = [];
 		for(var a = 0; a < grid_x; a++){
 			var p = pair(a,b);
-			pellets[b][a] = !is_grid(p);
+			pellets[b][a] = get_grid(p) == 0;
 		}
 	}
 	brain.pellets = pellets;
 	brain.pelletCount = 0;
 	brain.tryChariot = false;
 	brain.isChariot = false;
+	brain.invuln = true;
 
 	turn();
 };
 
-IMG_PATH = 'img/'
 function sprite(color, leftImg, rightImg){
 	var self = {};
 	self.color = color;
@@ -496,45 +653,42 @@ function sprite(color, leftImg, rightImg){
 	return self;
 }
 
-$(document).ready(function(){
-	canvas = document.getElementById("myCanvas");
-	ctx = canvas.getContext("2d");
+// run
 
-	brain = {};
-	brain.asset = {};
-	brain.keyreader = makeKeyin();
+brain.asset = {};
+brain.keyreader = makeKeyin();
 
-	var pol_left = new Image();
-	pol_left.src = IMG_PATH + "pol_left.png";
-	var pol_right = new Image();
-	pol_right.src = IMG_PATH + "pol_right.png";
-	brain.asset.polnareff = sprite('white', pol_left, pol_right);
-	
-	var char_left = new Image();
-	char_left.src = IMG_PATH + "char_left.png";
-	var char_right = new Image();
-	char_right.src = IMG_PATH + "char_right.png";
-	brain.asset.chariot = sprite('white', char_left, char_right);
+var pol_left = new Image();
+pol_left.src = IMG_PATH + "pol_left.png";
+var pol_right = new Image();
+pol_right.src = IMG_PATH + "pol_right.png";
+brain.asset.polnareff = sprite('white', pol_left, pol_right);
+brain.asset.polnareff.spawn = pair(1, 1);
 
-	var iggy_left = new Image();
-	iggy_left.src = IMG_PATH + "iggy_left.png";
-	var iggy_right = new Image();
-	iggy_right.src = IMG_PATH + "iggy_right.png";
-	brain.asset.iggy = sprite('red', iggy_left, iggy_right);
-	brain.asset.iggy.spawn = pair(
-		grid_size*grid_x - grid_size*1.5,
-		grid_size*grid_y - grid_size*1.5
-	);
+var char_left = new Image();
+char_left.src = IMG_PATH + "char_left.png";
+var char_right = new Image();
+char_right.src = IMG_PATH + "char_right.png";
+brain.asset.chariot = sprite('white', char_left, char_right);
 
-	var toilet_left = new Image();
-	toilet_left.src = IMG_PATH + "toilet_left.png";
-	var toilet_right = new Image();
-	toilet_right.src = IMG_PATH + "toilet_right.png";
-	brain.asset.toilet = sprite('blue', toilet_left, toilet_right);
-	brain.asset.toilet.spawn = pair(
-		grid_size*grid_x - grid_size*1.5,
-		grid_size*1.5
-	);
+var iggy_left = new Image();
+iggy_left.src = IMG_PATH + "iggy_left.png";
+var iggy_right = new Image();
+iggy_right.src = IMG_PATH + "iggy_right.png";
+brain.asset.iggy = sprite('red', iggy_left, iggy_right);
+brain.asset.iggy.spawn = pair(-1, 1);
 
-	start();
+//todo find original sprite
+brain.asset.iggy_pink = sprite('pink', iggy_left, iggy_right);
+brain.asset.iggy_pink.spawn = pair(1, -1);
+
+var toilet_left = new Image();
+toilet_left.src = IMG_PATH + "toilet_left.png";
+var toilet_right = new Image();
+toilet_right.src = IMG_PATH + "toilet_right.png";
+brain.asset.toilet = sprite('blue', toilet_left, toilet_right);
+brain.asset.toilet.spawn = pair(-1, -1);
+
+start();
+
 });
