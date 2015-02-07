@@ -97,7 +97,7 @@ var makeKeyin = function() {
 	window.onkeydown = function(e) {
     	var key = e.keyCode ? e.keyCode : e.which;
 
-    	pressed = null;
+    	var pressed = null;
     	if (key == 38){
     		pressed = UP;
     	} else if (key == 40){
@@ -352,8 +352,8 @@ var makeProtag = function(asset) {
 			return;
 		}
 
-		new_dx = 0;
-		new_dy = 0;
+		var new_dx = 0;
+		var new_dy = 0;
 		if(input == UP){
 			new_dy = -1;
 		} else if (input == DOWN){
@@ -492,9 +492,9 @@ function checkCollisions(){
 	});
 }
 
-CHARIOT_PELLET_MIN = 20;
-CHARIOT_COUNTDOWN_BUFFER = parseInt(TURNS_PER_SEC/20);
-CHARIOT_COUNTDOWN_COUNT = 0;
+var CHARIOT_PELLET_MIN = 20;
+var CHARIOT_COUNTDOWN_BUFFER = parseInt(TURNS_PER_SEC/20);
+var CHARIOT_COUNTDOWN_COUNT = 0;
 
 function stepChariot(){
 	if(brain.tryChariot && !brain.isChariot){
