@@ -1,22 +1,22 @@
 
 $(document).ready(function(){
 
-canvas = null;
-ctx = null;
+var canvas = null;
+var ctx = null;
 
-brain = null;
+var brain = null;
 
-TIMEOUT = 8;
-TURNS_PER_SEC = parseInt(1000/TIMEOUT);
-DRAW_BUFFER = 2;
-DRAW_COUNT = 0;
+var TIMEOUT = 8;
+var TURNS_PER_SEC = parseInt(1000/TIMEOUT);
+var DRAW_BUFFER = 2;
+var DRAW_COUNT = 0;
 
-UP = 'UP';
-DOWN = 'DOWN';
-LEFT = 'LEFT';
-RIGHT = 'RIGHT';
+var UP = 'UP';
+var DOWN = 'DOWN';
+var LEFT = 'LEFT';
+var RIGHT = 'RIGHT';
 
-grid_blocks = [
+var grid_blocks = [
 	[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
 	[1,0,0,0,0,0,0,1,0,0,0,0,0,0,1],
 	[1,0,1,1,0,1,0,1,0,1,0,1,1,0,1],
@@ -41,20 +41,20 @@ grid_blocks = [
 	// [1,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
 	[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
 ];
-grid_x = grid_blocks[0].length;
-grid_y = grid_blocks.length;
+var grid_x = grid_blocks[0].length;
+var grid_y = grid_blocks.length;
 
-height = $(document).height() - 30;
-width = $(document).width() - 30;
-canvas = document.getElementById("myCanvas");
-ctx = canvas.getContext("2d");
+var height = $(document).height() - 30;
+var width = $(document).width() - 30;
+var canvas = document.getElementById("myCanvas");
+var ctx = canvas.getContext("2d");
 canvas.height = height;
 canvas.width = width;
 
-grid_size = parseInt(height/grid_y);
-half_grid_size = parseInt(grid_size/2);
-grid_x_real = grid_size*grid_x;
-grid_y_real = grid_size*grid_y;
+var grid_size = parseInt(height/grid_y);
+var half_grid_size = parseInt(grid_size/2);
+var grid_x_real = grid_size*grid_x;
+var grid_y_real = grid_size*grid_y;
 
 var makeKeyin = function() {
 	var self = {};
@@ -75,8 +75,8 @@ var makeKeyin = function() {
 	};
 
 	self.get = function(){
-		max = 0;
-		res = null;
+		var max = 0;
+		var res = null;
 		for(var dir in buttons){
 			if(buttons[dir] > max){
 				res = dir;
@@ -585,7 +585,7 @@ function start(){
 	turn();
 };
 
-IMG_PATH = 'img/'
+var IMG_PATH = 'img/'
 function sprite(color, leftImg, rightImg){
 	var self = {};
 	self.color = color;
