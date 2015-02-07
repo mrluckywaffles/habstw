@@ -130,7 +130,7 @@ var makeKeyin = function() {
 		brain.latestEvent = e;
 
 
-		e.preventDefault();
+		// e.preventDefault();
 		// if (e.pageX > width/4 &&
 		// 	e.pageX < width/4*3 &&
 		// 	e.pageY > height/4 &&
