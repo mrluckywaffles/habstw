@@ -123,10 +123,11 @@ var makeKeyin = function() {
 
 	var handleTouch = function(e){
 		console.log(e);
-		brain.latestEvent = e;
 		if(e.changedTouches){
 			e = e.changedTouches[0];
 		}
+		brain.latestEvent = e;
+
 
 		e.preventDefault();
 		if (e.pageX > width/4 &&
@@ -471,7 +472,7 @@ function drawGrid(){
 		ctx.fillText("PRESS C TO ACTIVATE CHARIOT", 10, grid_y_real - 10);
 	}
 	if(brain.latestEvent){
-		ctx.fillText(brain.latestEvent, 10, grid_y_real - 10);
+		ctx.fillText(brain.latestEvent.pageX + '/' + width, 10, grid_y_real - 10);
 	}
 };
 
