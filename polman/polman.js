@@ -509,7 +509,7 @@ function drawGridSquare(crd){
 
 function drawBaseGrid(color){
 	ctx.fillStyle = "#000000";
-	ctx.fillRect(0, 0, grid_x_real, grid_y_real);
+	ctx.fillRect(0, 0, width, height);
 
 	ctx.fillStyle = color;
 	for(var x = 0; x < grid_x; x++){
@@ -555,10 +555,14 @@ function drawGrid(){
 	ctx.font = grid_size + "px serif";
 	ctx.fillText("Pellet count: " + brain.pelletCount, 10, grid_size/6*5);
 	if(!brain.isChariot && brain.pelletCount >= CHARIOT_PELLET_MIN){
-		ctx.fillText("PRESS C TO ACTIVATE CHARIOT", 10, grid_y_real - grid_size/6);
+		ctx.fillText("PRESS C TO ACTIVATE STAND", 10, grid_y_real - grid_size/6);
 	}
 	if(debug){
 		ctx.fillText("GS:" + grid_size, grid_x_real/2, grid_size/6*5);
+		ctx.fillText(
+			JSON.stringify(brain.keyreader.buttons),
+			10, grid_y_real - 50
+		);
 	}
 };
 
@@ -688,9 +692,9 @@ brain.asset = {};
 brain.keyreader = makeKeyin();
 
 var pol_left = new Image();
-pol_left.src = IMG_PATH + "pol_left.png";
+pol_left.src = IMG_PATH + "pol_left2.png";
 var pol_right = new Image();
-pol_right.src = IMG_PATH + "pol_right.png";
+pol_right.src = IMG_PATH + "pol_right2.png";
 brain.asset.polnareff = {};
 brain.asset.polnareff.img = sprite('white', pol_left, pol_right);
 brain.asset.polnareff.spawn = pair(1, 1);
