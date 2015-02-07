@@ -270,7 +270,7 @@ var makeBody = function(asset) {
 		}
 
 		var half = grid_size;
-		var full = grid_size*2;
+		var full = half*2;
 
 		ctx.drawImage(
 			img,
