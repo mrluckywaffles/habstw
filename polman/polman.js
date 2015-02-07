@@ -80,20 +80,20 @@ var makeKeyin = function() {
     	}
 	}
 
-	canvas.onmousedown = function(e){
-		var chariot_window = grid_size*4;
-
+	document.onmousedown = function(e){
+		console.log(e);
+		var height = $(document).height();
+		var width = $(document).width();
 		if(e.button == 0){ // left click
-			if (e.pageX > grid_x_real/2 - chariot_window &&
-				e.pageX < grid_x_real/2 + chariot_window &&
-				e.pageY > grid_y_real/2 - chariot_window &&
-				e.pageY < grid_y_real/2 + chariot_window){
+			if (e.pageX > width/4 &&
+				e.pageX < width/4*3 &&
+				e.pageY > height/4 &&
+				e.pageY < height/4*3){
 				brain.tryChariot = true;
-				console.log('chariot');
 			} else {
-				var slope = grid_y_real/grid_x_real;
+				var slope = height/width;
 				var f = function(x){
-					return -1*slope*x + grid_y_real;
+					return -1*slope*x + height;
 				}
 				var g = function(x){
 					return slope*x;
