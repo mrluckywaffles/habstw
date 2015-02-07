@@ -130,12 +130,12 @@ var makeKeyin = function() {
 
 
 		e.preventDefault();
-		if (e.pageX > width/4 &&
-			e.pageX < width/4*3 &&
-			e.pageY > height/4 &&
-			e.pageY < height/4*3){
-			brain.tryChariot = true;
-		} else {
+		// if (e.pageX > width/4 &&
+		// 	e.pageX < width/4*3 &&
+		// 	e.pageY > height/4 &&
+		// 	e.pageY < height/4*3){
+		// 	brain.tryChariot = true;
+		// } else {
 			var slope = height/width;
 			var f = function(x){
 				return -1*slope*x + height;
@@ -168,7 +168,7 @@ var makeKeyin = function() {
 					buttons[dir] = buffer;
 				}
 			}
-		}
+		// }
 	}
 
 	document.addEventListener("mousedown", handleTouch, false);
