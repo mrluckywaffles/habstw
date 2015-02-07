@@ -121,7 +121,7 @@ var makeKeyin = function() {
 	}
 
 	var handleTouch = function(e){
-		// console.log(e);
+		e.preventDefault();
 		if(e.changedTouches){
 			e = e.changedTouches[0];
 		}
