@@ -70,6 +70,8 @@ var makeKeyin = function() {
 			brain.gameover = true;
 		} else if (key == 49){ // 1
 			brain.pelletCount += 10;
+		} else if (key == 73){ // I
+			brain.invuln = !brain.invuln;
 		}
 
     	if(pressed){
@@ -346,15 +348,28 @@ var _chaseToCoord = function(self, dirs, destination){
 }
 
 var chaseProtag = function(self, dirs){
-	destination = brain.protag.get_coord();
+	var destination = brain.protag.get_coord();
 	return _chaseToCoord(self, dirs, destination);
 }
 
 var predictProtag = function(self, dirs){
-	destination = brain.protag.get_coord();
+	var destination = brain.protag.get_coord();
 	destination.x += brain.protag.dx * 3;
 	destination.y += brain.protag.dy * 3;
 	return _chaseToCoord(self, dirs, destination);
+}
+
+var vectorProtagFactory = function(ally){
+	var chaseFunc = function(self, dirs){
+		var pivot = brain.protag.get_coord();
+		var other = ally.get_coord();
+		var destination = pair(
+			pivot.x*2 - other.x,
+			pivot.y*2 - other.y
+		);
+		return _chaseToCoord(self, dirs, destination);
+	};
+	return chaseFunc;
 }
 
 function drawGrid(){
@@ -401,6 +416,8 @@ function checkCollisions(){
 		if(collision && e.alive){
 			if(brain.isChariot){
 				e.kill();
+			} else if(brain.invuln){
+				// do nothing
 			} else {
 				brain.gameover = true;
 			}
@@ -479,8 +496,9 @@ function start(){
 
 	brain.protag = makeProtag(brain.asset.polnareff);
 	var red = makeEnemy(brain.asset.iggy, chaseProtag);
-	var blue = makeEnemy(brain.asset.toilet, predictProtag);
-	brain.enemies = [red, blue];
+	var pink = makeEnemy(brain.asset.iggy_pink, predictProtag);
+	var blue = makeEnemy(brain.asset.toilet, vectorProtagFactory(red));
+	brain.enemies = [red, pink, blue];
 	brain.everybody = [brain.protag].concat(brain.enemies);
 
 	var pellets = []
@@ -495,6 +513,7 @@ function start(){
 	brain.pelletCount = 0;
 	brain.tryChariot = false;
 	brain.isChariot = false;
+	brain.invuln = false;
 
 	turn();
 };
@@ -535,6 +554,11 @@ $(document).ready(function(){
 	brain.asset.iggy = sprite('red', iggy_left, iggy_right);
 	brain.asset.iggy.spawn = pair(
 		grid_size*grid_x - grid_size*1.5,
+		grid_size*grid_y - grid_size*1.5
+	);
+	brain.asset.iggy_pink = sprite('pink', iggy_left, iggy_right);
+	brain.asset.iggy_pink.spawn = pair(
+		grid_size*1.5,
 		grid_size*grid_y - grid_size*1.5
 	);
 
