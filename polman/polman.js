@@ -110,6 +110,8 @@ grid_blocks = [
 ];
 grid_x = grid_blocks[0].length;
 grid_y = grid_blocks.length;
+grid_x_real = grid_size*grid_x;
+grid_y_real = grid_size*grid_y;
 
 function pair(x,y){
 	var self = {};
@@ -166,13 +168,13 @@ var makeBody = function(asset) {
 
 	var self = {};
 
-	self.asset = asset;
-
 	self.dx = 0;
 	self.dy = 0;
 
-	self.x = grid_size*1.5;
-	self.y = grid_size*1.5;
+	self.respawn = function(){
+		self.x = (grid_x_real + asset.spawn.x*grid_size*1.5) % grid_x_real;
+		self.y = (grid_y_real + asset.spawn.y*grid_size*1.5) % grid_y_real;
+	}
 
 	self.atIntersection = function(){
 		return atIntersection(self.x, self.y);
@@ -193,9 +195,9 @@ var makeBody = function(asset) {
 
 	self.draw = function(){
 		if(self.dx < 0 || self.dy < 0){
-			img = self.asset.leftImg;
+			img = asset.leftImg;
 		} else {
-			img = self.asset.rightImg;
+			img = asset.rightImg;
 		}
 		ctx.drawImage(
 			img,
@@ -205,7 +207,7 @@ var makeBody = function(asset) {
 		);
 
 		ctx.beginPath();
-		ctx.strokeStyle = self.asset.color;
+		ctx.strokeStyle = asset.color;
 		ctx.rect(
 			self.x - half_grid_size,
 			self.y - half_grid_size,
@@ -214,15 +216,13 @@ var makeBody = function(asset) {
 		ctx.stroke();
 	};
 
+	self.respawn();
 	return self;
 }
 
 var makeEnemy = function(asset, chaseFunc) {
 
 	var self = makeBody(asset);
-
-	self.x = asset.spawn.x;
-	self.y = asset.spawn.y;
 
 	self.alive = true;
 	self.kill = function(){
@@ -374,7 +374,7 @@ var vectorProtagFactory = function(ally){
 
 function drawGrid(){
 	ctx.fillStyle = "#000000";
-	ctx.fillRect(0,0,grid_size*grid_x,grid_size*grid_y);
+	ctx.fillRect(0, 0, grid_x_real, grid_y_real);
 
 	var gridColor = "#888888";
 	if(brain.isChariot){
@@ -405,7 +405,7 @@ function drawGrid(){
 	ctx.font = "48px serif";
 	ctx.fillText("Pellet count: " + brain.pelletCount, 10, 50);
 	if(!brain.isChariot && brain.pelletCount >= CHARIOT_PELLET_MIN){
-		ctx.fillText("PRESS C TO ACTIVATE CHARIOT", 10, grid_y*grid_size - 10);
+		ctx.fillText("PRESS C TO ACTIVATE CHARIOT", 10, grid_y_real - 10);
 	}
 };
 
@@ -540,6 +540,7 @@ $(document).ready(function(){
 	var pol_right = new Image();
 	pol_right.src = IMG_PATH + "pol_right.png";
 	brain.asset.polnareff = sprite('white', pol_left, pol_right);
+	brain.asset.polnareff.spawn = pair(1, 1);
 	
 	var char_left = new Image();
 	char_left.src = IMG_PATH + "char_left.png";
@@ -552,25 +553,18 @@ $(document).ready(function(){
 	var iggy_right = new Image();
 	iggy_right.src = IMG_PATH + "iggy_right.png";
 	brain.asset.iggy = sprite('red', iggy_left, iggy_right);
-	brain.asset.iggy.spawn = pair(
-		grid_size*grid_x - grid_size*1.5,
-		grid_size*grid_y - grid_size*1.5
-	);
+	brain.asset.iggy.spawn = pair(-1, 1);
+
+	//todo find original sprite
 	brain.asset.iggy_pink = sprite('pink', iggy_left, iggy_right);
-	brain.asset.iggy_pink.spawn = pair(
-		grid_size*1.5,
-		grid_size*grid_y - grid_size*1.5
-	);
+	brain.asset.iggy_pink.spawn = pair(1, -1);
 
 	var toilet_left = new Image();
 	toilet_left.src = IMG_PATH + "toilet_left.png";
 	var toilet_right = new Image();
 	toilet_right.src = IMG_PATH + "toilet_right.png";
 	brain.asset.toilet = sprite('blue', toilet_left, toilet_right);
-	brain.asset.toilet.spawn = pair(
-		grid_size*grid_x - grid_size*1.5,
-		grid_size*1.5
-	);
+	brain.asset.toilet.spawn = pair(-1, -1);
 
 	start();
 });
