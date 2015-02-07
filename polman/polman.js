@@ -472,7 +472,12 @@ function drawGrid(){
 		ctx.fillText("PRESS C TO ACTIVATE CHARIOT", 10, grid_y_real - 10);
 	}
 	if(brain.latestEvent){
-		ctx.fillText(brain.latestEvent.pageX + '/' + width + ' ' + brain.latestEvent.pageY + '/' + height, 10, grid_y_real - 10);
+		ctx.fillText(
+			brain.latestEvent.pageX + '/' + width + ' ' + 
+			brain.latestEvent.pageY + '/' + height + ' ' + 
+			brain.protag.dx + '/' + brain.protag.dy,
+			10, grid_y_real - 10
+		);
 	}
 };
 
