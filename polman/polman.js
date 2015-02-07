@@ -123,6 +123,11 @@ var makeKeyin = function() {
 
 	var handleTouch = function(e){
 		console.log(e);
+		brain.latestEvent = e;
+		if(e.changedTouches){
+			e = e.changedTouches[0];
+		}
+
 		e.preventDefault();
 		if (e.pageX > width/4 &&
 			e.pageX < width/4*3 &&
@@ -165,8 +170,8 @@ var makeKeyin = function() {
 		}
 	}
 
-	document.onmousedown = handleTouch;
-	document.touchend = handleTouch;
+	document.addEventListener("mousedown", handleTouch, false);
+	document.addEventListener("touchend", handleTouch, false);
 
 	return self;
 };
@@ -464,6 +469,9 @@ function drawGrid(){
 	ctx.fillText("GS:" + grid_size + " Pellet count: " + brain.pelletCount, 10, 50);
 	if(!brain.isChariot && brain.pelletCount >= CHARIOT_PELLET_MIN){
 		ctx.fillText("PRESS C TO ACTIVATE CHARIOT", 10, grid_y_real - 10);
+	}
+	if(brain.latestEvent){
+		ctx.fillText(brain.latestEvent, 10, grid_y_real - 10);
 	}
 };
 
