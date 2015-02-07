@@ -129,48 +129,46 @@ var makeKeyin = function() {
 		}
 		brain.latestEvent = e;
 
-
-		// e.preventDefault();
-		// if (e.pageX > width/4 &&
-		// 	e.pageX < width/4*3 &&
-		// 	e.pageY > height/4 &&
-		// 	e.pageY < height/4*3){
-		// 	brain.tryChariot = true;
-		// } else {
-		var slope = height/width;
-		var f = function(x){
-			return -1*slope*x + height;
-		}
-		var g = function(x){
-			return slope*x;
-		}
-		var possible = {
-			UP: true,
-			DOWN: true,
-			LEFT: true,
-			RIGHT: true
-		};
-		if(f(e.pageX) > e.pageY){
-			possible[DOWN] = false;
-			possible[RIGHT] = false;
+		if (e.pageX > width/4 &&
+			e.pageX < width/4*3 &&
+			e.pageY > height/4 &&
+			e.pageY < height/4*3){
+			brain.tryChariot = true;
 		} else {
-			possible[UP] = false;
-			possible[LEFT] = false;
-		}
-		if(g(e.pageX) > e.pageY){
-			possible[DOWN] = false;
-			possible[LEFT] = false;
-		} else {
-			possible[UP] = false;
-			possible[RIGHT] = false;
-		}
-		brain.latestPossible = possible;
-		for(var dir in possible){
-			if(possible[dir]){
-				buttons[dir] = buffer;
+			var slope = height/width;
+			var f = function(x){
+				return -1*slope*x + height;
+			}
+			var g = function(x){
+				return slope*x;
+			}
+			var possible = {
+				UP: true,
+				DOWN: true,
+				LEFT: true,
+				RIGHT: true
+			};
+			if(f(e.pageX) > e.pageY){
+				possible[DOWN] = false;
+				possible[RIGHT] = false;
+			} else {
+				possible[UP] = false;
+				possible[LEFT] = false;
+			}
+			if(g(e.pageX) > e.pageY){
+				possible[DOWN] = false;
+				possible[LEFT] = false;
+			} else {
+				possible[UP] = false;
+				possible[RIGHT] = false;
+			}
+			brain.latestPossible = possible;
+			for(var dir in possible){
+				if(possible[dir]){
+					buttons[dir] = buffer;
+				}
 			}
 		}
-		// }
 	}
 
 	document.addEventListener("mousedown", handleTouch, false);
