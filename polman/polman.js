@@ -164,6 +164,7 @@ var makeKeyin = function() {
 			possible[UP] = false;
 			possible[RIGHT] = false;
 		}
+		brain.latestPossible = possible;
 		for(var dir in possible){
 			if(possible[dir]){
 				buttons[dir] = buffer;
@@ -483,6 +484,10 @@ function drawGrid(){
 		ctx.fillText(
 			JSON.stringify(brain.keyreader.buttons),
 			10, grid_y_real - 50
+		);
+		ctx.fillText(
+			JSON.stringify(brain.latestPossible),
+			10, grid_y_real - 90
 		);
 	}
 };
