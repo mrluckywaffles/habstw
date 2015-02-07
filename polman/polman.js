@@ -67,6 +67,7 @@ var makeKeyin = function() {
 		LEFT: 0,
 		RIGHT: 0
 	};
+	self.buttons = buttons;
 
 	self.empty = function(){
 		for(var dir in buttons){
@@ -136,38 +137,38 @@ var makeKeyin = function() {
 		// 	e.pageY < height/4*3){
 		// 	brain.tryChariot = true;
 		// } else {
-			var slope = height/width;
-			var f = function(x){
-				return -1*slope*x + height;
+		var slope = height/width;
+		var f = function(x){
+			return -1*slope*x + height;
+		}
+		var g = function(x){
+			return slope*x;
+		}
+		var possible = {
+			UP: true,
+			DOWN: true,
+			LEFT: true,
+			RIGHT: true
+		};
+		if(f(e.pageX) > e.pageY){
+			possible[DOWN] = false;
+			possible[RIGHT] = false;
+		} else {
+			possible[UP] = false;
+			possible[LEFT] = false;
+		}
+		if(g(e.pageX) > e.pageY){
+			possible[DOWN] = false;
+			possible[LEFT] = false;
+		} else {
+			possible[UP] = false;
+			possible[RIGHT] = false;
+		}
+		for(var dir in possible){
+			if(possible[dir]){
+				buttons[dir] = buffer;
 			}
-			var g = function(x){
-				return slope*x;
-			}
-			var possible = {
-				UP: true,
-				DOWN: true,
-				LEFT: true,
-				RIGHT: true
-			};
-			if(f(e.pageX) > e.pageY){
-				possible[DOWN] = false;
-				possible[RIGHT] = false;
-			} else {
-				possible[UP] = false;
-				possible[LEFT] = false;
-			}
-			if(g(e.pageX) > e.pageY){
-				possible[DOWN] = false;
-				possible[LEFT] = false;
-			} else {
-				possible[UP] = false;
-				possible[RIGHT] = false;
-			}
-			for(var dir in possible){
-				if(possible[dir]){
-					buttons[dir] = buffer;
-				}
-			}
+		}
 		// }
 	}
 
@@ -475,8 +476,13 @@ function drawGrid(){
 		ctx.fillText(
 			brain.latestEvent.pageX + '/' + width + ' ' + 
 			brain.latestEvent.pageY + '/' + height + ' ' + 
-			brain.protag.dx + '/' + brain.protag.dy,
+			brain.protag.dx + '/' + brain.protag.dy + ' ' +
+			'',
 			10, grid_y_real - 10
+		);
+		ctx.fillText(
+			JSON.stringify(brain.keyreader.buttons),
+			10, grid_y_real - 50
 		);
 	}
 };
