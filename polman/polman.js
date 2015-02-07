@@ -1,6 +1,8 @@
 
 $(document).ready(function(){
 
+var debug = location.search.indexOf("?debug") > -1;
+
 var brain = {};
 
 var IMG_PATH = 'img/';
@@ -9,9 +11,12 @@ var DOWN = 'DOWN';
 var LEFT = 'LEFT';
 var RIGHT = 'RIGHT';
 
+var GRID_BLOCK = 1;
+var GRID_PELLET = 0;
+var GRID_EMPTY = 2; //unused
 var grid_blocks = [
 	[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-	[1,2,0,0,0,0,0,1,0,0,0,0,0,2,1],
+	[1,2,0,0,0,0,0,1,0,0,0,0,0,0,1],
 	[1,0,1,1,0,1,0,1,0,1,0,1,1,0,1],
 	[1,0,0,0,0,1,0,0,0,1,0,0,0,0,1],
 	[1,0,1,1,0,1,0,1,0,1,0,1,1,0,1],
@@ -31,7 +36,7 @@ var grid_blocks = [
 	[1,1,0,1,1,0,1,1,1,0,1,1,0,1,1],
 	[1,0,0,0,0,0,0,1,0,0,0,0,0,0,1],
 	[1,0,1,1,1,1,0,1,0,1,1,1,1,0,1],
-	[1,2,0,0,0,0,0,0,0,0,0,0,0,2,1],
+	[1,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
 	[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
 ];
 var grid_x = grid_blocks[0].length;
@@ -179,11 +184,9 @@ function pair(x,y){
 	var self = {};
 	self.x = x;
 	self.y = y;
-
 	self.equals = function(other){
 		return self.x == other.x && self.y == other.y;
 	}
-
 	return self;
 };
 
@@ -204,13 +207,13 @@ var reverseCoord = function (n) {
 
 var get_grid = function(coord){
 	if(coord.x < 0 || coord.x >= grid_x || coord.y < 0 || coord.y >= grid_y){
-		return false;
+		return -1;
 	}
 	return grid_blocks[coord.y][coord.x];
 }
 
 var is_grid = function(coord){
-	return get_grid(coord) == 1;
+	return get_grid(coord) == GRID_BLOCK;
 };
 
 var is_pellet = function(coord){
@@ -469,10 +472,6 @@ var vectorProtagFactory = function(ally){
 }
 
 function drawGridSquare(crd){
-	// ctx.fillRect(
-	// 	crd.x*grid_size, crd.y*grid_size,
-	// 	grid_size, grid_size
-	// );
 	ctx.fillRect(
 		crd.x*grid_size + grid_size*7/16,
 		crd.y*grid_size + grid_size*7/16,
@@ -554,9 +553,12 @@ function drawGrid(){
 
 	ctx.fillStyle = "#DDDDDD";
 	ctx.font = grid_size + "px serif";
-	ctx.fillText("GS:" + grid_size + " Pellet count: " + brain.pelletCount, 10, grid_size/6*5);
+	ctx.fillText("Pellet count: " + brain.pelletCount, 10, grid_size/6*5);
 	if(!brain.isChariot && brain.pelletCount >= CHARIOT_PELLET_MIN){
 		ctx.fillText("PRESS C TO ACTIVATE CHARIOT", 10, grid_y_real - grid_size/6);
+	}
+	if(debug){
+		ctx.fillText("GS:" + grid_size, grid_x_real/2, grid_size/6*5);
 	}
 };
 
@@ -657,14 +659,17 @@ function start(){
 		pellets[b] = [];
 		for(var a = 0; a < grid_x; a++){
 			var p = pair(a,b);
-			pellets[b][a] = get_grid(p) == 0;
+			pellets[b][a] = get_grid(p) == GRID_PELLET;
 		}
 	}
 	brain.pellets = pellets;
 	brain.pelletCount = 0;
 	brain.tryChariot = false;
 	brain.isChariot = false;
-	brain.invuln = true;
+	brain.invuln = debug;
+	if(debug){
+		brain.pelletCount = 50;
+	}
 
 	turn();
 };
