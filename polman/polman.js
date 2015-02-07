@@ -187,9 +187,20 @@ function pair(x,y){
 	return self;
 };
 
+var dir_pairs = [
+	pair(-1,0),
+	pair(1,0),
+	pair(0,-1),
+	pair(0,1),
+]
+
 var coord = function(x, y) {
 	return pair(parseInt(x/grid_size), parseInt(y/grid_size));
 };
+
+var reverseCoord = function (n) {
+	return n*grid_size + half_grid_size;
+}
 
 var get_grid = function(coord){
 	if(coord.x < 0 || coord.x >= grid_x || coord.y < 0 || coord.y >= grid_y){
@@ -238,13 +249,15 @@ var makeBody = function(asset) {
 	var self = {};
 
 	self.img = asset.img; //store so we can dynamically change it
+	self.spawn = asset.spawn;
 
+	self.alive = true;
 	self.dx = 0;
 	self.dy = 0;
 
 	self.respawn = function(){
-		self.x = parseInt(grid_x_real + asset.spawn.x*grid_size*1.5) % grid_x_real;
-		self.y = parseInt(grid_y_real + asset.spawn.y*grid_size*1.5) % grid_y_real;
+		self.x = reverseCoord(self.spawn.x);
+		self.y = reverseCoord(self.spawn.y);
 	}
 
 	self.atIntersection = function(){
@@ -274,21 +287,18 @@ var makeBody = function(asset) {
 		var half = grid_size;
 		var full = half*2;
 
+		if(!self.alive){
+			ctx.globalAlpha = 0.5;
+		}
 		ctx.drawImage(
 			img,
 			self.x - half,
 			self.y - half,
 			full, full
 		);
-
-		// ctx.beginPath();
-		// ctx.strokeStyle = self.img.color;
-		// ctx.rect(
-		// 	self.x - half,
-		// 	self.y - half,
-		// 	full, full
-		// );
-		// ctx.stroke();
+		if(!self.alive){
+			ctx.globalAlpha = 1;
+		}
 	};
 
 	self.respawn();
@@ -299,11 +309,20 @@ var makeEnemy = function(asset, chaseFunc) {
 
 	var self = makeBody(asset);
 
-	self.alive = true;
 	self.kill = function(){
-		self.alive = false;
-		self.dx = 0;
-		self.dy = 0;
+		if(self.alive){
+			self.alive = false;
+			self.dx = 0;
+			self.dy = 0;
+		}
+	}
+
+	self.is_still = function(){
+		return self.dx == 0 && self.dy == 0;
+	}
+
+	self.is_home = function(){
+		return self.get_coord().equals(self.spawn);
 	}
 
 	self.panic = function(){
@@ -312,15 +331,9 @@ var makeEnemy = function(asset, chaseFunc) {
 	}
 
 	var possibleDirections = function(){
-		dirs = [
-			pair(-1,0),
-			pair(1,0),
-			pair(0,-1),
-			pair(0,1),
-		]
 		good_dirs = [];
 
-		dirs.forEach(function (d){
+		dir_pairs.forEach(function (d){
 			if(d.x == -1*self.dx && d.y == -1*self.dy){
 				//do nothing
 			}
@@ -333,12 +346,17 @@ var makeEnemy = function(asset, chaseFunc) {
 	}
 
 	var determineDirection = function(){
-		if(self.atIntersection()){
+		if(self.atIntersection() || self.is_still()){
+			var chosen_dir;
 			var valid_dirs = possibleDirections();
-			var result_dirs = chaseFunc(self, valid_dirs);
-			var chosen_dir = result_dirs[0];
-			if(brain.isChariot){
-				chosen_dir = result_dirs[1];
+			if(self.alive){
+				var result_dirs = chaseFunc(self, valid_dirs);
+				chosen_dir = result_dirs[0];
+				if(brain.isChariot){
+					chosen_dir = result_dirs[1];
+				}
+			} else {
+				chosen_dir = get_home(self, valid_dirs);
 			}
 			self.dx = chosen_dir.x;
 			self.dy = chosen_dir.y;
@@ -349,6 +367,9 @@ var makeEnemy = function(asset, chaseFunc) {
 	self.step = function(){
 		determineDirection();
 		self._step();
+		if(self.is_home()){
+			self.alive = true;
+		}
 	}
 
 	return self;
@@ -420,6 +441,10 @@ var _chaseToCoord = function(self, dirs, destination){
 		}
 	});
 	return [best_dir, worst_dir];
+}
+
+var get_home = function(self, dirs){
+	return _chaseToCoord(self, dirs, self.spawn)[0];
 }
 
 var chaseProtag = function(self, dirs){
@@ -681,12 +706,12 @@ var iggy_right = new Image();
 iggy_right.src = IMG_PATH + "iggy_right.png";
 brain.asset.iggy = {};
 brain.asset.iggy.img = sprite('red', iggy_left, iggy_right);
-brain.asset.iggy.spawn = pair(-1, 1);
+brain.asset.iggy.spawn = pair(grid_x - 2, 1);
 
 //todo find original sprite
 brain.asset.iggy_pink = {};
 brain.asset.iggy_pink.img = sprite('pink', iggy_left, iggy_right);
-brain.asset.iggy_pink.spawn = pair(1, -1);
+brain.asset.iggy_pink.spawn = pair(1, grid_y - 2);
 
 var toilet_left = new Image();
 toilet_left.src = IMG_PATH + "toilet_left.png";
@@ -694,7 +719,7 @@ var toilet_right = new Image();
 toilet_right.src = IMG_PATH + "toilet_right.png";
 brain.asset.toilet = {};
 brain.asset.toilet.img = sprite('blue', toilet_left, toilet_right);
-brain.asset.toilet.spawn = pair(-1, -1);
+brain.asset.toilet.spawn = pair(grid_x - 2, grid_y - 2);
 
 start();
 
