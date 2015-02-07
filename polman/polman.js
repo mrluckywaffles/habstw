@@ -237,6 +237,8 @@ var makeBody = function(asset) {
 
 	var self = {};
 
+	self.img = asset.img; //store so we can dynamically change it
+
 	self.dx = 0;
 	self.dy = 0;
 
@@ -264,9 +266,9 @@ var makeBody = function(asset) {
 
 	self.draw = function(){
 		if(self.dx < 0 || self.dy < 0){
-			img = asset.leftImg;
+			img = self.img.leftImg;
 		} else {
-			img = asset.rightImg;
+			img = self.img.rightImg;
 		}
 
 		var half = grid_size;
@@ -280,7 +282,7 @@ var makeBody = function(asset) {
 		);
 
 		// ctx.beginPath();
-		// ctx.strokeStyle = asset.color;
+		// ctx.strokeStyle = self.img.color;
 		// ctx.rect(
 		// 	self.x - half,
 		// 	self.y - half,
@@ -560,7 +562,7 @@ function stepChariot(){
 	if(brain.tryChariot && !brain.isChariot){
 		if(brain.pelletCount >= CHARIOT_PELLET_MIN){
 			brain.isChariot = true;
-			brain.protag.asset = brain.asset.chariot;
+			brain.protag.img = brain.asset.chariot.img;
 			brain.enemies.forEach(function (e){
 				e.panic();
 			});
@@ -570,7 +572,7 @@ function stepChariot(){
 
 	if(brain.pelletCount == 0){
 		brain.isChariot = false;
-		brain.protag.asset = brain.asset.polnareff;
+		brain.protag.img = brain.asset.polnareff.img;
 	}
 
 	if(brain.isChariot){
@@ -662,31 +664,36 @@ var pol_left = new Image();
 pol_left.src = IMG_PATH + "pol_left.png";
 var pol_right = new Image();
 pol_right.src = IMG_PATH + "pol_right.png";
-brain.asset.polnareff = sprite('white', pol_left, pol_right);
+brain.asset.polnareff = {};
+brain.asset.polnareff.img = sprite('white', pol_left, pol_right);
 brain.asset.polnareff.spawn = pair(1, 1);
 
 var char_left = new Image();
 char_left.src = IMG_PATH + "char_left.png";
 var char_right = new Image();
 char_right.src = IMG_PATH + "char_right.png";
-brain.asset.chariot = sprite('white', char_left, char_right);
+brain.asset.chariot = {};
+brain.asset.chariot.img = sprite('white', char_left, char_right);
 
 var iggy_left = new Image();
 iggy_left.src = IMG_PATH + "iggy_left.png";
 var iggy_right = new Image();
 iggy_right.src = IMG_PATH + "iggy_right.png";
-brain.asset.iggy = sprite('red', iggy_left, iggy_right);
+brain.asset.iggy = {};
+brain.asset.iggy.img = sprite('red', iggy_left, iggy_right);
 brain.asset.iggy.spawn = pair(-1, 1);
 
 //todo find original sprite
-brain.asset.iggy_pink = sprite('pink', iggy_left, iggy_right);
+brain.asset.iggy_pink = {};
+brain.asset.iggy_pink.img = sprite('pink', iggy_left, iggy_right);
 brain.asset.iggy_pink.spawn = pair(1, -1);
 
 var toilet_left = new Image();
 toilet_left.src = IMG_PATH + "toilet_left.png";
 var toilet_right = new Image();
 toilet_right.src = IMG_PATH + "toilet_right.png";
-brain.asset.toilet = sprite('blue', toilet_left, toilet_right);
+brain.asset.toilet = {};
+brain.asset.toilet.img = sprite('blue', toilet_left, toilet_right);
 brain.asset.toilet.spawn = pair(-1, -1);
 
 start();
