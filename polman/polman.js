@@ -2,9 +2,10 @@ ctx = null;
 
 brain = null;
 
-grid_size = 30;
+grid_size = 30; //must be divisible by 2
+half_grid_size = grid_size/2;
 TIMEOUT = 8;
-TURNS_PER_SEC = 1000/TIMEOUT;
+TURNS_PER_SEC = parseInt(1000/TIMEOUT);
 DRAW_BUFFER = 2;
 DRAW_COUNT = 0;
 
@@ -145,9 +146,9 @@ var will_overlap_grid = function(x, y, dx, dy){
 		var far_y = y + (dy*grid_size);
 		return is_grid(coord(far_x, far_y));
 	} else {
-		if(x % grid_size == grid_size/2){
+		if(x % grid_size == half_grid_size){
 			return dx != 0;
-		} else if(y % grid_size == grid_size/2){
+		} else if(y % grid_size == half_grid_size){
 			return dy != 0;
 		}
 	}
@@ -156,7 +157,7 @@ var will_overlap_grid = function(x, y, dx, dy){
 };
 
 var atIntersection = function(x, y){
-	return x % grid_size == grid_size/2 && y % grid_size == grid_size/2;
+	return x % grid_size == half_grid_size && y % grid_size == half_grid_size;
 }
 
 var makeBody = function(asset) {
@@ -196,16 +197,16 @@ var makeBody = function(asset) {
 		}
 		ctx.drawImage(
 			img,
-			self.x - grid_size/2,
-			self.y - grid_size/2,
+			self.x - half_grid_size,
+			self.y - half_grid_size,
 			grid_size, grid_size
 		);
 
 		ctx.beginPath();
 		ctx.strokeStyle = self.asset.color;
 		ctx.rect(
-			self.x - grid_size/2,
-			self.y - grid_size/2,
+			self.x - half_grid_size,
+			self.y - half_grid_size,
 			grid_size, grid_size
 		);
 		ctx.stroke();
@@ -377,8 +378,8 @@ function drawGrid(){
 			} else if(is_pellet(crd)){
 				ctx.fillStyle = "#bbbb00";
 				ctx.fillRect(
-					x*grid_size + grid_size/2 - grid_size/16,
-					y*grid_size + grid_size/2 - grid_size/16,
+					x*grid_size + half_grid_size - grid_size/16,
+					y*grid_size + half_grid_size - grid_size/16,
 					grid_size/8, grid_size/8
 				);
 			}
@@ -408,7 +409,7 @@ function checkCollisions(){
 }
 
 CHARIOT_PELLET_MIN = 20;
-CHARIOT_COUNTDOWN_BUFFER = TURNS_PER_SEC/20;
+CHARIOT_COUNTDOWN_BUFFER = parseInt(TURNS_PER_SEC/20);
 CHARIOT_COUNTDOWN_COUNT = 0;
 
 function stepChariot(){
