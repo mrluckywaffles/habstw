@@ -268,7 +268,7 @@ var makeBody = function(asset) {
 		return coord(self.x, self.y);
 	};
 
-	self.step = function(){
+	self.base_step = function(){
 		if(will_overlap_grid(self.x, self.y, self.dx, self.dy)){
 			return;
 		}
@@ -332,7 +332,6 @@ var makeEnemy = function(asset, chaseFunc) {
 
 	var possibleDirections = function(){
 		good_dirs = [];
-
 		dir_pairs.forEach(function (d){
 			if(d.x == -1*self.dx && d.y == -1*self.dy){
 				//do nothing
@@ -341,7 +340,6 @@ var makeEnemy = function(asset, chaseFunc) {
 				good_dirs.push(d);
 			}
 		})
-
 		return good_dirs;
 	}
 
@@ -363,10 +361,9 @@ var makeEnemy = function(asset, chaseFunc) {
 		}
 	};
 
-	self._step = self.step;
 	self.step = function(){
 		determineDirection();
-		self._step();
+		self.base_step();
 		if(self.is_home()){
 			self.alive = true;
 		}
@@ -404,12 +401,11 @@ var makeProtag = function(asset) {
 		self.dy = new_dy;
 	};
 
-	self._step = self.step;
 	self.step = function(){
 		if(self.atIntersection()){
 			eatPellet(self.get_coord());
 		}
-		self._step();
+		self.base_step();
 	}
 
 	return self;
@@ -512,23 +508,41 @@ function drawGridSquare(crd){
 	}
 }
 
-function drawGrid(){
+function drawBaseGrid(color){
 	ctx.fillStyle = "#000000";
 	ctx.fillRect(0, 0, grid_x_real, grid_y_real);
 
-	var gridColor = "#551a8b";
-	if(brain.isChariot){
-		gridColor = '#bbbb00';
-	}
-
+	ctx.fillStyle = color;
 	for(var x = 0; x < grid_x; x++){
 		for(var y = 0; y < grid_y; y++){
 			crd = pair(x,y);
 			if(is_grid(crd)){
-				ctx.fillStyle = gridColor;
 				drawGridSquare(crd);
-			} else if(is_pellet(crd)){
-				ctx.fillStyle = "#bbbb00";
+			}
+		}
+	}
+
+	var img_url = canvas.toDataURL();
+	console.log(img_url);
+	return img_url;
+};
+
+function drawGrid(){
+
+	var base_img = brain.base_grid;
+	if(brain.isChariot){
+		base_img = brain.base_grid_chariot;
+	}
+	ctx.drawImage(
+		base_img,
+		0, 0, width, height
+	);
+
+	ctx.fillStyle = brain.asset.chariot.img.color;
+	for(var x = 0; x < grid_x; x++){
+		for(var y = 0; y < grid_y; y++){
+			crd = pair(x,y);
+			if(is_pellet(crd)){
 				ctx.fillRect(
 					crd.x*grid_size + grid_size*7/16,
 					crd.y*grid_size + grid_size*7/16,
@@ -544,23 +558,6 @@ function drawGrid(){
 	if(!brain.isChariot && brain.pelletCount >= CHARIOT_PELLET_MIN){
 		ctx.fillText("PRESS C TO ACTIVATE CHARIOT", 10, grid_y_real - grid_size/6);
 	}
-	// if(brain.latestEvent){
-	// 	ctx.fillText(
-	// 		brain.latestEvent.pageX + '/' + width + ' ' + 
-	// 		brain.latestEvent.pageY + '/' + height + ' ' + 
-	// 		brain.protag.dx + '/' + brain.protag.dy + ' ' +
-	// 		'',
-	// 		10, grid_y_real - 10
-	// 	);
-	// 	ctx.fillText(
-	// 		JSON.stringify(brain.keyreader.buttons),
-	// 		10, grid_y_real - 50
-	// 	);
-	// 	ctx.fillText(
-	// 		JSON.stringify(brain.latestPossible),
-	// 		10, grid_y_real - 90
-	// 	);
-	// }
 };
 
 function checkCollisions(){
@@ -698,7 +695,7 @@ char_left.src = IMG_PATH + "char_left.png";
 var char_right = new Image();
 char_right.src = IMG_PATH + "char_right.png";
 brain.asset.chariot = {};
-brain.asset.chariot.img = sprite('white', char_left, char_right);
+brain.asset.chariot.img = sprite('#bbbb00', char_left, char_right);
 
 var iggy_left = new Image();
 iggy_left.src = IMG_PATH + "iggy_left.png";
@@ -720,6 +717,11 @@ toilet_right.src = IMG_PATH + "toilet_right.png";
 brain.asset.toilet = {};
 brain.asset.toilet.img = sprite('blue', toilet_left, toilet_right);
 brain.asset.toilet.spawn = pair(grid_x - 2, grid_y - 2);
+
+brain.base_grid = new Image();
+brain.base_grid.src = drawBaseGrid('#551a8b');
+brain.base_grid_chariot = new Image();
+brain.base_grid_chariot.src = drawBaseGrid(brain.asset.chariot.img.color);
 
 start();
 
