@@ -3,11 +3,6 @@ $(document).ready(function(){
 
 var brain = {};
 
-var TIMEOUT = 8;
-var TURNS_PER_SEC = parseInt(1000/TIMEOUT);
-var DRAW_BUFFER = 2;
-var DRAW_COUNT = 0;
-
 var IMG_PATH = 'img/';
 var UP = 'UP';
 var DOWN = 'DOWN';
@@ -16,7 +11,7 @@ var RIGHT = 'RIGHT';
 
 var grid_blocks = [
 	[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-	[1,0,0,0,0,0,0,1,0,0,0,0,0,0,1],
+	[1,2,0,0,0,0,0,1,0,0,0,0,0,2,1],
 	[1,0,1,1,0,1,0,1,0,1,0,1,1,0,1],
 	[1,0,0,0,0,1,0,0,0,1,0,0,0,0,1],
 	[1,0,1,1,0,1,0,1,0,1,0,1,1,0,1],
@@ -25,18 +20,18 @@ var grid_blocks = [
 	[1,1,0,1,1,0,1,1,1,0,1,1,0,1,1],
 	[1,0,0,0,0,0,0,1,0,0,0,0,0,0,1],
 	[1,0,1,1,1,1,0,1,0,1,1,1,1,0,1],
-	[1,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+	[1,0,1,2,2,1,0,0,0,0,0,0,0,0,1],
 	[1,0,1,1,1,1,0,1,0,1,1,1,1,0,1],
 	[1,0,0,0,0,0,0,1,0,0,0,0,0,0,1],
-	[1,0,1,1,0,1,0,1,0,1,0,1,1,0,1],
-	[1,0,0,0,0,1,0,0,0,1,0,0,0,0,1],
-	[1,0,1,1,0,1,0,1,0,1,0,1,1,0,1],
-	[1,0,0,0,0,0,0,1,0,0,0,0,0,0,1],
-	[1,1,0,1,1,0,1,1,1,0,1,1,0,1,1],
+	[1,0,1,1,1,0,1,1,1,1,0,1,1,0,1],
+	[1,0,1,2,1,0,1,2,2,1,0,0,0,0,1],
+	[1,0,1,1,1,0,1,2,1,1,0,1,1,0,1],
+	[1,0,0,0,0,0,1,2,1,0,0,0,0,0,1],
+	[1,1,0,1,1,0,1,2,1,0,1,1,0,1,1],
 	[1,1,0,1,1,0,1,1,1,0,1,1,0,1,1],
 	[1,0,0,0,0,0,0,1,0,0,0,0,0,0,1],
 	[1,0,1,1,1,1,0,1,0,1,1,1,1,0,1],
-	[1,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+	[1,2,0,0,0,0,0,0,0,0,0,0,0,2,1],
 	[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
 ];
 var grid_x = grid_blocks[0].length;
@@ -53,6 +48,11 @@ var grid_size = parseInt(height/grid_y);
 var half_grid_size = parseInt(grid_size/2);
 var grid_x_real = grid_size*grid_x;
 var grid_y_real = grid_size*grid_y;
+
+var TIMEOUT = parseInt(8*20/grid_size);
+var TURNS_PER_SEC = parseInt(1000/TIMEOUT);
+var DRAW_BUFFER = 2;
+var DRAW_COUNT = 0;
 
 var makeKeyin = function() {
 	var self = {};
@@ -191,8 +191,15 @@ var coord = function(x, y) {
 	return pair(parseInt(x/grid_size), parseInt(y/grid_size));
 };
 
-var is_grid = function(coord){
+var get_grid = function(coord){
+	if(coord.x < 0 || coord.x >= grid_x || coord.y < 0 || coord.y >= grid_y){
+		return false;
+	}
 	return grid_blocks[coord.y][coord.x];
+}
+
+var is_grid = function(coord){
+	return get_grid(coord) == 1;
 };
 
 var is_pellet = function(coord){
@@ -261,21 +268,25 @@ var makeBody = function(asset) {
 		} else {
 			img = asset.rightImg;
 		}
+
+		var half = grid_size;
+		var full = grid_size*2;
+
 		ctx.drawImage(
 			img,
-			self.x - half_grid_size,
-			self.y - half_grid_size,
-			grid_size, grid_size
+			self.x - half,
+			self.y - half,
+			full, full
 		);
 
-		ctx.beginPath();
-		ctx.strokeStyle = asset.color;
-		ctx.rect(
-			self.x - half_grid_size,
-			self.y - half_grid_size,
-			grid_size, grid_size
-		);
-		ctx.stroke();
+		// ctx.beginPath();
+		// ctx.strokeStyle = asset.color;
+		// ctx.rect(
+		// 	self.x - half,
+		// 	self.y - half,
+		// 	full, full
+		// );
+		// ctx.stroke();
 	};
 
 	self.respawn();
@@ -434,11 +445,51 @@ var vectorProtagFactory = function(ally){
 	return chaseFunc;
 }
 
+function drawGridSquare(crd){
+	// ctx.fillRect(
+	// 	crd.x*grid_size, crd.y*grid_size,
+	// 	grid_size, grid_size
+	// );
+	ctx.fillRect(
+		crd.x*grid_size + grid_size*7/16,
+		crd.y*grid_size + grid_size*7/16,
+		grid_size/8, grid_size/8
+	);
+	if(is_grid(pair(crd.x, crd.y - 1))){
+		ctx.fillRect(
+			crd.x*grid_size + grid_size*7/16,
+			crd.y*grid_size,
+			grid_size/8, grid_size/2
+		);
+	}
+	if(is_grid(pair(crd.x, crd.y + 1))){
+		ctx.fillRect(
+			crd.x*grid_size + grid_size*7/16,
+			crd.y*grid_size + grid_size/2,
+			grid_size/8, grid_size/2
+		);
+	}
+	if(is_grid(pair(crd.x - 1, crd.y))){
+		ctx.fillRect(
+			crd.x*grid_size,
+			crd.y*grid_size + grid_size*7/16,
+			grid_size/2, grid_size/8
+		);
+	}
+	if(is_grid(pair(crd.x + 1, crd.y))){
+		ctx.fillRect(
+			crd.x*grid_size + grid_size/2,
+			crd.y*grid_size + grid_size*7/16,
+			grid_size/2, grid_size/8
+		);
+	}
+}
+
 function drawGrid(){
 	ctx.fillStyle = "#000000";
 	ctx.fillRect(0, 0, grid_x_real, grid_y_real);
 
-	var gridColor = "#888888";
+	var gridColor = "#551a8b";
 	if(brain.isChariot){
 		gridColor = '#bbbb00';
 	}
@@ -448,15 +499,12 @@ function drawGrid(){
 			crd = pair(x,y);
 			if(is_grid(crd)){
 				ctx.fillStyle = gridColor;
-				ctx.fillRect(
-					x*grid_size, y*grid_size,
-					grid_size, grid_size
-				);
+				drawGridSquare(crd);
 			} else if(is_pellet(crd)){
 				ctx.fillStyle = "#bbbb00";
 				ctx.fillRect(
-					x*grid_size + half_grid_size - grid_size/16,
-					y*grid_size + half_grid_size - grid_size/16,
+					crd.x*grid_size + grid_size*7/16,
+					crd.y*grid_size + grid_size*7/16,
 					grid_size/8, grid_size/8
 				);
 			}
@@ -585,7 +633,7 @@ function start(){
 		pellets[b] = [];
 		for(var a = 0; a < grid_x; a++){
 			var p = pair(a,b);
-			pellets[b][a] = !is_grid(p);
+			pellets[b][a] = get_grid(p) == 0;
 		}
 	}
 	brain.pellets = pellets;
