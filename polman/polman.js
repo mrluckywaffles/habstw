@@ -461,7 +461,7 @@ function drawGrid(){
 
 	ctx.fillStyle = "#DDDDDD";
 	ctx.font = "48px serif";
-	ctx.fillText("Pellet count: " + brain.pelletCount, 10, 50);
+	ctx.fillText("GS:" + grid_size + " Pellet count: " + brain.pelletCount, 10, 50);
 	if(!brain.isChariot && brain.pelletCount >= CHARIOT_PELLET_MIN){
 		ctx.fillText("PRESS C TO ACTIVATE CHARIOT", 10, grid_y_real - 10);
 	}
