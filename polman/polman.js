@@ -28,17 +28,17 @@ var grid_blocks = [
 	[1,0,0,0,0,0,0,1,0,0,0,0,0,0,1],
 	[1,0,1,1,1,1,0,1,0,1,1,1,1,0,1],
 	[1,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-	// [1,0,1,1,1,1,0,1,0,1,1,1,1,0,1],
-	// [1,0,0,0,0,0,0,1,0,0,0,0,0,0,1],
-	// [1,0,1,1,0,1,0,1,0,1,0,1,1,0,1],
-	// [1,0,0,0,0,1,0,0,0,1,0,0,0,0,1],
-	// [1,0,1,1,0,1,0,1,0,1,0,1,1,0,1],
-	// [1,0,0,0,0,0,0,1,0,0,0,0,0,0,1],
-	// [1,1,0,1,1,0,1,1,1,0,1,1,0,1,1],
-	// [1,1,0,1,1,0,1,1,1,0,1,1,0,1,1],
-	// [1,0,0,0,0,0,0,1,0,0,0,0,0,0,1],
-	// [1,0,1,1,1,1,0,1,0,1,1,1,1,0,1],
-	// [1,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+	[1,0,1,1,1,1,0,1,0,1,1,1,1,0,1],
+	[1,0,0,0,0,0,0,1,0,0,0,0,0,0,1],
+	[1,0,1,1,0,1,0,1,0,1,0,1,1,0,1],
+	[1,0,0,0,0,1,0,0,0,1,0,0,0,0,1],
+	[1,0,1,1,0,1,0,1,0,1,0,1,1,0,1],
+	[1,0,0,0,0,0,0,1,0,0,0,0,0,0,1],
+	[1,1,0,1,1,0,1,1,1,0,1,1,0,1,1],
+	[1,1,0,1,1,0,1,1,1,0,1,1,0,1,1],
+	[1,0,0,0,0,0,0,1,0,0,0,0,0,0,1],
+	[1,0,1,1,1,1,0,1,0,1,1,1,1,0,1],
+	[1,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
 	[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
 ];
 var grid_x = grid_blocks[0].length;
@@ -123,11 +123,11 @@ var makeKeyin = function() {
 	}
 
 	var handleTouch = function(e){
-		console.log(e);
+		// console.log(e);
 		if(e.changedTouches){
 			e = e.changedTouches[0];
 		}
-		brain.latestEvent = e;
+		// brain.latestEvent = e;
 
 		if (e.pageX > width/4 &&
 			e.pageX < width/4*3 &&
@@ -162,7 +162,7 @@ var makeKeyin = function() {
 				possible[UP] = false;
 				possible[RIGHT] = false;
 			}
-			brain.latestPossible = possible;
+			// brain.latestPossible = possible;
 			for(var dir in possible){
 				if(possible[dir]){
 					buttons[dir] = buffer;
@@ -471,23 +471,23 @@ function drawGrid(){
 	if(!brain.isChariot && brain.pelletCount >= CHARIOT_PELLET_MIN){
 		ctx.fillText("PRESS C TO ACTIVATE CHARIOT", 10, grid_y_real - 10);
 	}
-	if(brain.latestEvent){
-		ctx.fillText(
-			brain.latestEvent.pageX + '/' + width + ' ' + 
-			brain.latestEvent.pageY + '/' + height + ' ' + 
-			brain.protag.dx + '/' + brain.protag.dy + ' ' +
-			'',
-			10, grid_y_real - 10
-		);
-		ctx.fillText(
-			JSON.stringify(brain.keyreader.buttons),
-			10, grid_y_real - 50
-		);
-		ctx.fillText(
-			JSON.stringify(brain.latestPossible),
-			10, grid_y_real - 90
-		);
-	}
+	// if(brain.latestEvent){
+	// 	ctx.fillText(
+	// 		brain.latestEvent.pageX + '/' + width + ' ' + 
+	// 		brain.latestEvent.pageY + '/' + height + ' ' + 
+	// 		brain.protag.dx + '/' + brain.protag.dy + ' ' +
+	// 		'',
+	// 		10, grid_y_real - 10
+	// 	);
+	// 	ctx.fillText(
+	// 		JSON.stringify(brain.keyreader.buttons),
+	// 		10, grid_y_real - 50
+	// 	);
+	// 	ctx.fillText(
+	// 		JSON.stringify(brain.latestPossible),
+	// 		10, grid_y_real - 90
+	// 	);
+	// }
 };
 
 function checkCollisions(){
