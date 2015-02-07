@@ -1,3 +1,4 @@
+canvas = null;
 ctx = null;
 
 brain = null;
@@ -78,6 +79,54 @@ var makeKeyin = function() {
     		buttons[pressed] = buffer;
     	}
 	}
+
+	canvas.onmousedown = function(e){
+		var chariot_window = grid_size*4;
+
+		if(e.button == 0){ // left click
+			if (e.pageX > grid_x_real/2 - chariot_window &&
+				e.pageX < grid_x_real/2 + chariot_window &&
+				e.pageY > grid_y_real/2 - chariot_window &&
+				e.pageY < grid_y_real/2 + chariot_window){
+				brain.tryChariot = true;
+				console.log('chariot');
+			} else {
+				var slope = grid_y_real/grid_x_real;
+				var f = function(x){
+					return -1*slope*x + grid_y_real;
+				}
+				var g = function(x){
+					return slope*x;
+				}
+				var possible = {
+					UP: true,
+					DOWN: true,
+					LEFT: true,
+					RIGHT: true
+				};
+				if(f(e.pageX) > e.pageY){
+					possible[DOWN] = false;
+					possible[RIGHT] = false;
+				} else {
+					possible[UP] = false;
+					possible[LEFT] = false;
+				}
+				if(g(e.pageX) > e.pageY){
+					possible[DOWN] = false;
+					possible[LEFT] = false;
+				} else {
+					possible[UP] = false;
+					possible[RIGHT] = false;
+				}
+				for(var dir in possible){
+					if(possible[dir]){
+						buttons[dir] = buffer;
+					}
+				}
+			}
+		}
+	}
+
 
 	return self;
 };
