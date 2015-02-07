@@ -1,16 +1,14 @@
 
 $(document).ready(function(){
 
-var canvas = null;
-var ctx = null;
-
-var brain = null;
+var brain = {};
 
 var TIMEOUT = 8;
 var TURNS_PER_SEC = parseInt(1000/TIMEOUT);
 var DRAW_BUFFER = 2;
 var DRAW_COUNT = 0;
 
+var IMG_PATH = 'img/';
 var UP = 'UP';
 var DOWN = 'DOWN';
 var LEFT = 'LEFT';
@@ -466,10 +464,10 @@ function drawGrid(){
 	}
 
 	ctx.fillStyle = "#DDDDDD";
-	ctx.font = "48px serif";
-	ctx.fillText("GS:" + grid_size + " Pellet count: " + brain.pelletCount, 10, 50);
+	ctx.font = grid_size + "px serif";
+	ctx.fillText("GS:" + grid_size + " Pellet count: " + brain.pelletCount, 10, grid_size - 5);
 	if(!brain.isChariot && brain.pelletCount >= CHARIOT_PELLET_MIN){
-		ctx.fillText("PRESS C TO ACTIVATE CHARIOT", 10, grid_y_real - 10);
+		ctx.fillText("PRESS C TO ACTIVATE CHARIOT", 10, grid_y_real - 5);
 	}
 	// if(brain.latestEvent){
 	// 	ctx.fillText(
@@ -599,7 +597,6 @@ function start(){
 	turn();
 };
 
-var IMG_PATH = 'img/'
 function sprite(color, leftImg, rightImg){
 	var self = {};
 	self.color = color;
@@ -610,7 +607,6 @@ function sprite(color, leftImg, rightImg){
 
 // run
 
-brain = {};
 brain.asset = {};
 brain.keyreader = makeKeyin();
 
