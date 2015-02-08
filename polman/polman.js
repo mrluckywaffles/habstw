@@ -53,6 +53,7 @@ var grid_size = parseInt(height/grid_y);
 var half_grid_size = parseInt(grid_size/2);
 var grid_x_real = grid_size*grid_x;
 var grid_y_real = grid_size*grid_y;
+var grid_x_offset = parseInt((width - grid_x_real)/2);
 
 var TIMEOUT = parseInt(8*20/grid_size);
 var TURNS_PER_SEC = parseInt(1000/TIMEOUT);
@@ -310,7 +311,7 @@ var makeBody = function(asset) {
 		}
 		ctx.drawImage(
 			img,
-			self.x - half,
+			grid_x_offset + self.x - half,
 			self.y - half,
 			full, full
 		);
@@ -502,34 +503,34 @@ var vectorProtagFactory = function(ally){
 
 function drawGridSquare(crd){
 	ctx.fillRect(
-		crd.x*grid_size + grid_size*7/16,
+		grid_x_offset + crd.x*grid_size + grid_size*7/16,
 		crd.y*grid_size + grid_size*7/16,
 		grid_size/8, grid_size/8
 	);
 	if(is_grid(pair(crd.x, crd.y - 1))){
 		ctx.fillRect(
-			crd.x*grid_size + grid_size*7/16,
+			grid_x_offset + crd.x*grid_size + grid_size*7/16,
 			crd.y*grid_size,
 			grid_size/8, grid_size/2
 		);
 	}
 	if(is_grid(pair(crd.x, crd.y + 1))){
 		ctx.fillRect(
-			crd.x*grid_size + grid_size*7/16,
+			grid_x_offset + crd.x*grid_size + grid_size*7/16,
 			crd.y*grid_size + grid_size/2,
 			grid_size/8, grid_size/2
 		);
 	}
 	if(is_grid(pair(crd.x - 1, crd.y))){
 		ctx.fillRect(
-			crd.x*grid_size,
+			grid_x_offset + crd.x*grid_size,
 			crd.y*grid_size + grid_size*7/16,
 			grid_size/2, grid_size/8
 		);
 	}
 	if(is_grid(pair(crd.x + 1, crd.y))){
 		ctx.fillRect(
-			crd.x*grid_size + grid_size/2,
+			grid_x_offset + crd.x*grid_size + grid_size/2,
 			crd.y*grid_size + grid_size*7/16,
 			grid_size/2, grid_size/8
 		);
@@ -572,7 +573,7 @@ function drawGrid(){
 			crd = pair(x,y);
 			if(is_pellet(crd)){
 				ctx.fillRect(
-					crd.x*grid_size + grid_size*7/16,
+					grid_x_offset + crd.x*grid_size + grid_size*7/16,
 					crd.y*grid_size + grid_size*7/16,
 					grid_size/8, grid_size/8
 				);
@@ -582,15 +583,15 @@ function drawGrid(){
 
 	ctx.fillStyle = "#DDDDDD";
 	ctx.font = grid_size + "px serif";
-	ctx.fillText("Pellet count: " + brain.pelletCount, 10, grid_size/6*5);
+	ctx.fillText("Pellet count: " + brain.pelletCount, grid_x_offset + 10, grid_size/6*5);
 	if(!brain.isChariot && brain.pelletCount >= CHARIOT_PELLET_MIN){
-		ctx.fillText("PRESS C TO ACTIVATE STAND", 10, grid_y_real - grid_size/6);
+		ctx.fillText("PRESS C TO ACTIVATE STAND", grid_x_offset + 10, grid_y_real - grid_size/6);
 	}
 	if(debug){
-		ctx.fillText("GS:" + grid_size, grid_x_real/2, grid_size/6*5);
+		ctx.fillText("GS:" + grid_size, grid_x_offset + grid_x_real/2, grid_size/6*5);
 		ctx.fillText(
 			JSON.stringify(brain.keyreader.buttons),
-			10, grid_y_real - 50
+			grid_x_offset + 10, grid_y_real - 50
 		);
 	}
 };
