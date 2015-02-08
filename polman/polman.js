@@ -62,7 +62,7 @@ var DRAW_COUNT = 0;
 var makeKeyin = function() {
 	var self = {};
 
-	var buffer = grid_size;
+	var buffer = grid_size*2;
 
 	var buttons = {
 		UP: 0,
