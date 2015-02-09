@@ -1,11 +1,14 @@
 
 $(document).ready(function(){
 
+var LAST_UPDATED = '2/8';
+
 var debug = location.search.indexOf("?debug") > -1;
 
 // only thing not using var for debug
 brain = {};
 brain.invuln = debug;
+brain.started = false;
 
 var IMG_PATH = 'img/';
 var UP = 'UP';
@@ -111,6 +114,10 @@ var makeKeyin = function() {
 
 	window.onkeydown = function(e) {
     	var key = e.keyCode ? e.keyCode : e.which;
+
+    	if(!brain.started){
+    		return start();
+    	}
 
     	var pressed = null;
     	if (key == 38){
@@ -574,12 +581,16 @@ function drawGridSquare(crd){
 	}
 }
 
-function drawBaseGrid(color){
+function clearCanvas(){
 	ctx.fillStyle = "#000000";
 	ctx.fillRect(
 		grid_x_offset, 0, 
 		grid_x_real, grid_y_real
 	);
+};
+
+function drawBaseGrid(color){
+	clearCanvas();
 
 	ctx.fillStyle = color;
 	for(var x = 0; x < grid_x; x++){
@@ -730,6 +741,7 @@ function turn(){
 
 
 function start(){
+	brain.started = true;
 	brain.gameover = false;
 	brain.victory = false;
 
@@ -775,6 +787,36 @@ function winScreen(){
 		parseInt(height/2 - grid_x_real/2),
 		grid_x_real, grid_x_real
 	);
+}
+
+function loadScreen(){
+	clearCanvas();
+
+	ctx.fillStyle = "#DDDDDD";
+	var messages = [
+		"POLMAN",
+		"",
+		"last updated: " + LAST_UPDATED,
+		"",
+		"",
+		"",
+		"",
+		"use arrow keys to move",
+		"",
+		"on mobile:",
+		"touch sides to move",
+		"touch center for powerup",
+		"",
+		"",
+		"",
+		"",
+		"press any key to start"
+	];
+	var message_x = width/2;
+
+	for(var i = 0; i < messages.length; i++){
+		ctx.fillText(messages[i], message_x, grid_size*(5+i));
+	}
 }
 
 function sprite(color, leftImg, rightImg){
@@ -835,6 +877,7 @@ brain.base_grid_chariot = load_image(drawBaseGrid(brain.asset.chariot.img.color)
 brain.asset.victory = {};
 brain.asset.victory.happy = load_image(IMG_PATH + 'happy.jpg');
 
-start();
+//start
+loadScreen();
 
 });
