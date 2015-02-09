@@ -3,7 +3,7 @@ $(document).ready(function(){
 
 var debug = location.search.indexOf("?debug") > -1;
 
-var brain = {};
+brain = {};
 brain.invuln = debug;
 
 var IMG_PATH = 'img/';
@@ -231,6 +231,10 @@ var eatPellet = function(coord){
 	if(is_pellet(coord)){
 		brain.pellets[coord.y][coord.x] = false;
 		brain.pelletCount++;
+		brain.totalPelletsEaten++;
+		if(brain.totalPelletsEaten >= brain.totalPelletCount){
+			brain.victory = true;
+		}
 	}
 };
 
@@ -652,6 +656,9 @@ function turn(){
 	if(brain.gameover){
 		return start();
 	}
+	if(brain.victory){
+		return winScreen();
+	}
 
 	window.setTimeout(turn, TIMEOUT);
 
@@ -678,6 +685,7 @@ function turn(){
 
 function start(){
 	brain.gameover = false;
+	brain.victory = false;
 
 	brain.keyreader.empty();
 
@@ -688,12 +696,17 @@ function start(){
 	brain.enemies = [red, pink, blue];
 	brain.everybody = [brain.protag].concat(brain.enemies);
 
+	brain.totalPelletCount = 0;
+	brain.totalPelletsEaten = 0;
 	var pellets = []
 	for(var b = 0; b < grid_y; b++){
 		pellets[b] = [];
 		for(var a = 0; a < grid_x; a++){
 			var p = pair(a,b);
 			pellets[b][a] = get_grid(p) == GRID_PELLET;
+			if(pellets[b][a]){
+				brain.totalPelletCount++;
+			}
 		}
 	}
 	brain.pellets = pellets;
@@ -707,6 +720,15 @@ function start(){
 	turn();
 };
 
+function winScreen(){
+	ctx.drawImage(
+		brain.asset.victory.happy,
+		grid_x_offset,
+		parseInt(height/2 - grid_x_real/2),
+		grid_x_real, grid_x_real
+	);
+}
+
 function sprite(color, leftImg, rightImg){
 	var self = {};
 	self.color = color;
@@ -715,31 +737,31 @@ function sprite(color, leftImg, rightImg){
 	return self;
 }
 
+function load_image(src){
+	var i = new Image();
+	i.src = src;
+	return i;
+}
+
 // run
 
 brain.asset = {};
 brain.keyreader = makeKeyin();
 
-var pol_left = new Image();
-pol_left.src = IMG_PATH + "pol_left2.png";
-var pol_right = new Image();
-pol_right.src = IMG_PATH + "pol_right2.png";
+var pol_left = load_image(IMG_PATH + "pol_left2.png");
+var pol_right = load_image(IMG_PATH + "pol_right2.png");
 brain.asset.polnareff = {};
 brain.asset.polnareff.img = sprite('white', pol_left, pol_right);
 brain.asset.polnareff.spawn = pair(1, 1);
 brain.asset.polnareff.step_freq = 1.0;
 
-var char_left = new Image();
-char_left.src = IMG_PATH + "char_left.png";
-var char_right = new Image();
-char_right.src = IMG_PATH + "char_right.png";
+var char_left = load_image(IMG_PATH + "char_left.png");
+var char_right = load_image(IMG_PATH + "char_right.png");
 brain.asset.chariot = {};
 brain.asset.chariot.img = sprite('#bbbb00', char_left, char_right);
 
-var iggy_left = new Image();
-iggy_left.src = IMG_PATH + "iggy_left.png";
-var iggy_right = new Image();
-iggy_right.src = IMG_PATH + "iggy_right.png";
+var iggy_left = load_image(IMG_PATH + "iggy_left.png");
+var iggy_right = load_image(IMG_PATH + "iggy_right.png");
 brain.asset.iggy = {};
 brain.asset.iggy.img = sprite('red', iggy_left, iggy_right);
 brain.asset.iggy.spawn = pair(grid_x - 2, 1);
@@ -751,19 +773,18 @@ brain.asset.iggy_pink.img = sprite('pink', iggy_left, iggy_right);
 brain.asset.iggy_pink.spawn = pair(1, grid_y - 2);
 brain.asset.iggy_pink.step_freq = 0.9;
 
-var toilet_left = new Image();
-toilet_left.src = IMG_PATH + "toilet_left.png";
-var toilet_right = new Image();
-toilet_right.src = IMG_PATH + "toilet_right.png";
+var toilet_left = load_image(IMG_PATH + "toilet_left.png");
+var toilet_right = load_image(IMG_PATH + "toilet_right.png");
 brain.asset.toilet = {};
 brain.asset.toilet.img = sprite('blue', toilet_left, toilet_right);
 brain.asset.toilet.spawn = pair(grid_x - 2, grid_y - 2);
 brain.asset.toilet.step_freq = 0.9;
 
-brain.base_grid = new Image();
-brain.base_grid.src = drawBaseGrid('#551a8b');
-brain.base_grid_chariot = new Image();
-brain.base_grid_chariot.src = drawBaseGrid(brain.asset.chariot.img.color);
+brain.base_grid = load_image(drawBaseGrid('#551a8b'));
+brain.base_grid_chariot = load_image(drawBaseGrid(brain.asset.chariot.img.color));
+
+brain.asset.victory = {};
+brain.asset.victory.happy = load_image(IMG_PATH + 'happy.jpg');
 
 start();
 
