@@ -4,6 +4,7 @@ $(document).ready(function(){
 var debug = location.search.indexOf("?debug") > -1;
 
 var brain = {};
+brain.invuln = debug;
 
 var IMG_PATH = 'img/';
 var UP = 'UP';
@@ -55,10 +56,15 @@ var grid_x_real = grid_size*grid_x;
 var grid_y_real = grid_size*grid_y;
 var grid_x_offset = parseInt((width - grid_x_real)/2);
 
-var TIMEOUT = parseInt(8*20/grid_size);
-var TURNS_PER_SEC = parseInt(1000/TIMEOUT);
-var DRAW_BUFFER = 2;
+var TIMEOUT = 8;
+var DESIRED_FPS = 60;
+var DRAW_BUFFER = (1000.0/TIMEOUT)/DESIRED_FPS;
+console.log('draw buffer:' + DRAW_BUFFER);
 var DRAW_COUNT = 0;
+
+var CHARIOT_PELLET_MIN = 20;
+var CHARIOT_COUNTDOWN_BUFFER = grid_size;
+var CHARIOT_COUNTDOWN_COUNT = 0;
 
 var makeKeyin = function() {
 	var self = {};
@@ -111,9 +117,9 @@ var makeKeyin = function() {
     		pressed = LEFT;
     	} else if (key == 39){
     		pressed = RIGHT;
-    	} else if (key == 67){ // c
+    	} else if (key == 67){ // C
     		brain.tryChariot = true;
-		} else if (key == 82){ // r
+		} else if (key == 82){ // R
 			brain.gameover = true;
 		} else if (key == 49){ // 1
 			brain.pelletCount += 10;
@@ -289,6 +295,7 @@ var makeBody = function(asset) {
 	};
 
 	self.step = function(){
+		stepChariot();
 		self.step_sum += self.get_step_freq();
 		while(self.step_sum > 1){
 			self.step_sum--;
@@ -382,7 +389,10 @@ var makeEnemy = function(asset, chaseFunc) {
 
 	self.get_step_freq = function(){
 		if(!self.alive){
-			return 0.5;
+			return 0.7;
+		}
+		if(brain.isChariot){
+			return 0.4;
 		}
 		return self.step_freq;
 	}
@@ -429,7 +439,7 @@ var makeProtag = function(asset) {
 
 	self.get_step_freq = function(){
 		if(brain.isChariot){
-			return 2;
+			return 1.2;
 		}
 		return self.step_freq;
 	}
@@ -612,10 +622,6 @@ function checkCollisions(){
 	});
 }
 
-var CHARIOT_PELLET_MIN = 20;
-var CHARIOT_COUNTDOWN_BUFFER = parseInt(TURNS_PER_SEC/20);
-var CHARIOT_COUNTDOWN_COUNT = 0;
-
 function stepChariot(){
 	if(brain.tryChariot && !brain.isChariot){
 		if(brain.pelletCount >= CHARIOT_PELLET_MIN){
@@ -651,8 +657,6 @@ function turn(){
 
 	brain.protag.keyin(brain.keyreader.get());
 
-	stepChariot();
-
 	brain.everybody.forEach(function(e){
 		e.step()
 	});
@@ -661,8 +665,8 @@ function turn(){
 
 	checkCollisions();
 
-	if(DRAW_COUNT == 0){
-		DRAW_COUNT = DRAW_BUFFER;
+	if(DRAW_COUNT < 1){
+		DRAW_COUNT += DRAW_BUFFER;
 		drawGrid();
 		brain.everybody.forEach(function(e){
 			e.draw()
@@ -696,7 +700,6 @@ function start(){
 	brain.pelletCount = 0;
 	brain.tryChariot = false;
 	brain.isChariot = false;
-	brain.invuln = debug;
 	if(debug){
 		brain.pelletCount = 50;
 	}
