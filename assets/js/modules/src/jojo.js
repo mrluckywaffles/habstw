@@ -26,9 +26,12 @@
 		//jojo and dio face off
 	
 	text.waiting = "not yet...";
-	text.waitingFollowup = "check back Friday afternoonish";
+	text.waitingFollowup = "check back Friday afternoonish" + 
+		"<br/><br/>" + 
+		"in the meantime, you can play <a href='polman/'>this game</a> i made ^_^";
 
 	music.tracks = [
+		'assets/jojo/last_train_home.mp3',
 		'assets/music/egyptian.mp3',
 		'assets/music/roundabout.mp3',
 	];

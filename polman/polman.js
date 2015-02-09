@@ -1,11 +1,14 @@
 
 $(document).ready(function(){
 
+var LAST_UPDATED = '2/8';
+
 var debug = location.search.indexOf("?debug") > -1;
 
 // only thing not using var for debug
 brain = {};
 brain.invuln = debug;
+brain.started = false;
 
 var IMG_PATH = 'img/';
 var UP = 'UP';
@@ -17,7 +20,6 @@ var GRID_BLOCK = 1;
 var GRID_PELLET = 0;
 var GRID_EMPTY = 2; //unused
 var grid_blocks = [
-	[2,2,2,2,2,2,2,2,2,2,2,2,2,2,2],
 	[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
 	[1,2,0,0,0,0,0,1,0,0,0,0,0,0,1],
 	[1,0,1,1,0,1,0,1,0,1,0,1,1,0,1],
@@ -58,6 +60,9 @@ var half_grid_size = parseInt(grid_size/2);
 var grid_x_real = grid_size*grid_x;
 var grid_y_real = grid_size*grid_y;
 var grid_x_offset = parseInt((width - grid_x_real)/2);
+
+ctx.textAlign = 'center';
+ctx.font = grid_size + "px serif";
 
 var TIMEOUT = 8;
 var DESIRED_FPS = 60;
@@ -110,6 +115,10 @@ var makeKeyin = function() {
 	window.onkeydown = function(e) {
     	var key = e.keyCode ? e.keyCode : e.which;
 
+    	if(!brain.started){
+    		return start();
+    	}
+
     	var pressed = null;
     	if (key == 38){
     		pressed = UP;
@@ -147,6 +156,10 @@ var makeKeyin = function() {
 	}
 
 	var handleTouch = function(e){
+    	if(!brain.started){
+    		return start();
+    	}
+
 		e.preventDefault();
 		if(e.changedTouches){
 			e = e.changedTouches[0];
@@ -572,9 +585,16 @@ function drawGridSquare(crd){
 	}
 }
 
-function drawBaseGrid(color){
+function clearCanvas(){
 	ctx.fillStyle = "#000000";
-	ctx.fillRect(0, 0, width, height);
+	ctx.fillRect(
+		grid_x_offset, 0, 
+		grid_x_real, grid_y_real
+	);
+};
+
+function drawBaseGrid(color){
+	clearCanvas();
 
 	ctx.fillStyle = color;
 	for(var x = 0; x < grid_x; x++){
@@ -616,24 +636,29 @@ function drawGrid(){
 	}
 
 	ctx.fillStyle = "#DDDDDD";
-	ctx.font = grid_size + "px serif";
-	if(!brain.superChariot){
-		ctx.fillText("Pellet count: " + brain.pelletCount, grid_x_offset + 10, grid_size/6*5);
-	}
+	var message;
+	var message_x = width/2;
+	var message_y = grid_y_real - grid_size/3;
 
 	if(brain.victory){
-		ctx.fillText("YOU WIN! CONGRATULATIONS!", grid_x_offset + 10, grid_y_real - grid_size/6);
+		message = "YOU WIN!!";
 	} else if(brain.superChariot){
-		ctx.fillText("TIME FOR REVENGE! GET EM!", grid_x_offset + 10, grid_y_real - grid_size/6);
+		message = "TIME FOR REVENGE! GET EM!";
 	} else if(!brain.isChariot && brain.pelletCount >= CHARIOT_PELLET_MIN){
-		ctx.fillText("PRESS C TO ACTIVATE STAND", grid_x_offset + 10, grid_y_real - grid_size/6);
+		message = "PRESS C TO ACTIVATE STAND";
+	} else {
+		var courage = parseInt(100*brain.pelletCount/CHARIOT_PELLET_MIN);
+		message = "Courage: " + courage + '%';
+	}
+	if(message){
+		ctx.fillText(message, message_x, message_y);
 	}
 
 	if(debug){
-		ctx.fillText("GS:" + grid_size, grid_x_offset + grid_x_real/2, grid_size/6*5);
+		ctx.fillText("GS:" + grid_size, message_x, grid_size/6*5);
 		ctx.fillText(
 			JSON.stringify(brain.keyreader.buttons),
-			grid_x_offset + 10, grid_y_real - 50
+			message_x, grid_y_real - 50
 		);
 	}
 };
@@ -720,6 +745,7 @@ function turn(){
 
 
 function start(){
+	brain.started = true;
 	brain.gameover = false;
 	brain.victory = false;
 
@@ -727,7 +753,7 @@ function start(){
 
 	brain.protag = makeProtag(brain.asset.polnareff);
 	var red = makeEnemy(brain.asset.iggy, chaseProtag);
-	var pink = makeEnemy(brain.asset.iggy_pink, predictProtag);
+	var pink = makeEnemy(brain.asset.horse, predictProtag);
 	var blue = makeEnemy(brain.asset.toilet, vectorProtagFactory(red));
 	brain.enemies = [red, pink, blue];
 	brain.everybody = [brain.protag].concat(brain.enemies);
@@ -751,9 +777,6 @@ function start(){
 	brain.tryChariot = false;
 	brain.isChariot = false;
 	brain.superChariot = false;
-	if(debug){
-		brain.pelletCount = 50;
-	}
 
 	turn();
 };
@@ -768,6 +791,36 @@ function winScreen(){
 		parseInt(height/2 - grid_x_real/2),
 		grid_x_real, grid_x_real
 	);
+}
+
+function loadScreen(){
+	clearCanvas();
+
+	ctx.fillStyle = "#DDDDDD";
+	var messages = [
+		"POLMAN",
+		"",
+		"last updated: " + LAST_UPDATED,
+		"",
+		"",
+		"",
+		"",
+		"use arrow keys to move",
+		"",
+		"on mobile:",
+		"touch sides to move",
+		"touch center for powerup",
+		"",
+		"",
+		"",
+		"",
+		"press any key to start"
+	];
+	var message_x = width/2;
+
+	for(var i = 0; i < messages.length; i++){
+		ctx.fillText(messages[i], message_x, grid_size*(5+i));
+	}
 }
 
 function sprite(color, leftImg, rightImg){
@@ -793,7 +846,7 @@ var pol_left = load_image(IMG_PATH + "pol_left2.png");
 var pol_right = load_image(IMG_PATH + "pol_right2.png");
 brain.asset.polnareff = {};
 brain.asset.polnareff.img = sprite('white', pol_left, pol_right);
-brain.asset.polnareff.spawn = pair(1, 2);
+brain.asset.polnareff.spawn = pair(1, 1);
 brain.asset.polnareff.step_freq = 1.0;
 
 var char_left = load_image(IMG_PATH + "char_left.png");
@@ -805,14 +858,15 @@ var iggy_left = load_image(IMG_PATH + "iggy_left.png");
 var iggy_right = load_image(IMG_PATH + "iggy_right.png");
 brain.asset.iggy = {};
 brain.asset.iggy.img = sprite('red', iggy_left, iggy_right);
-brain.asset.iggy.spawn = pair(grid_x - 2, 2);
+brain.asset.iggy.spawn = pair(grid_x - 2, 1);
 brain.asset.iggy.step_freq = 0.9;
 
-//todo find original sprite
-brain.asset.iggy_pink = {};
-brain.asset.iggy_pink.img = sprite('pink', iggy_left, iggy_right);
-brain.asset.iggy_pink.spawn = pair(1, grid_y - 3);
-brain.asset.iggy_pink.step_freq = 0.9;
+var horse_left = load_image(IMG_PATH + "horse_left.png");
+var horse_right = load_image(IMG_PATH + "horse_right.png");
+brain.asset.horse = {};
+brain.asset.horse.img = sprite('pink', horse_left, horse_right);
+brain.asset.horse.spawn = pair(1, grid_y - 3);
+brain.asset.horse.step_freq = 0.9;
 
 var toilet_left = load_image(IMG_PATH + "toilet_left.png");
 var toilet_right = load_image(IMG_PATH + "toilet_right.png");
@@ -827,6 +881,7 @@ brain.base_grid_chariot = load_image(drawBaseGrid(brain.asset.chariot.img.color)
 brain.asset.victory = {};
 brain.asset.victory.happy = load_image(IMG_PATH + 'happy.jpg');
 
-start();
+//start
+loadScreen();
 
 });

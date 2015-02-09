@@ -1,5 +1,10 @@
+http://hasanimebeensavedthisweek.com/polman/
+
 todo:
 
-- input more forgiving
-- refresh based on resolution/device
+- REFACTOR INTO MULTIPLE FILES
+- more/different levels
+- more enemies/ai
+- speed up mobile
+- designated spawn area?
 - scatter
