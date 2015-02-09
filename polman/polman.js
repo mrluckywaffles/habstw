@@ -3,7 +3,9 @@ $(document).ready(function(){
 
 var debug = location.search.indexOf("?debug") > -1;
 
-var brain = {};
+// only thing not using var for debug
+brain = {};
+brain.invuln = debug;
 
 var IMG_PATH = 'img/';
 var UP = 'UP';
@@ -15,6 +17,7 @@ var GRID_BLOCK = 1;
 var GRID_PELLET = 0;
 var GRID_EMPTY = 2; //unused
 var grid_blocks = [
+	[2,2,2,2,2,2,2,2,2,2,2,2,2,2,2],
 	[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
 	[1,2,0,0,0,0,0,1,0,0,0,0,0,0,1],
 	[1,0,1,1,0,1,0,1,0,1,0,1,1,0,1],
@@ -38,6 +41,7 @@ var grid_blocks = [
 	[1,0,1,1,1,1,0,1,0,1,1,1,1,0,1],
 	[1,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
 	[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+	[2,2,2,2,2,2,2,2,2,2,2,2,2,2,2],
 ];
 var grid_x = grid_blocks[0].length;
 var grid_y = grid_blocks.length;
@@ -53,16 +57,21 @@ var grid_size = parseInt(height/grid_y);
 var half_grid_size = parseInt(grid_size/2);
 var grid_x_real = grid_size*grid_x;
 var grid_y_real = grid_size*grid_y;
+var grid_x_offset = parseInt((width - grid_x_real)/2);
 
-var TIMEOUT = parseInt(8*20/grid_size);
-var TURNS_PER_SEC = parseInt(1000/TIMEOUT);
-var DRAW_BUFFER = 2;
+var TIMEOUT = 8;
+var DESIRED_FPS = 60;
+var DRAW_BUFFER = (1000.0/TIMEOUT)/DESIRED_FPS;
 var DRAW_COUNT = 0;
+
+var CHARIOT_PELLET_MIN = 20;
+var CHARIOT_COUNTDOWN_BUFFER = grid_size;
+var CHARIOT_COUNTDOWN_COUNT = 0;
 
 var makeKeyin = function() {
 	var self = {};
 
-	var buffer = grid_size;
+	var buffer = grid_size*2;
 
 	var buttons = {
 		UP: 0,
@@ -110,14 +119,26 @@ var makeKeyin = function() {
     		pressed = LEFT;
     	} else if (key == 39){
     		pressed = RIGHT;
-    	} else if (key == 67){ // c
+    	} else if (key == 67){ // C
     		brain.tryChariot = true;
-		} else if (key == 82){ // r
+		} else if (key == 82){ // R
 			brain.gameover = true;
-		} else if (key == 49){ // 1
-			brain.pelletCount += 10;
-		} else if (key == 73){ // I
-			brain.invuln = !brain.invuln;
+		} 
+
+		if(debug){
+			if (key == 73){ // I
+				brain.invuln = !brain.invuln;
+			} else if (key == 49){ // 1
+				brain.pelletCount += 10;
+			} else if (key == 50){ // 2
+				// eat all the pellets
+				for(var x = 0; x < grid_x; x++){
+					for(var y = 0; y < grid_y; y++){
+						crd = pair(x,y);
+						eatPellet(crd);
+					}
+				}
+			}
 		}
 
     	if(pressed){
@@ -174,7 +195,6 @@ var makeKeyin = function() {
 		}
 	}
 
-	document.addEventListener("mousedown", handleTouch, false);
 	document.addEventListener("touchend", handleTouch, false);
 
 	return self;
@@ -224,6 +244,10 @@ var eatPellet = function(coord){
 	if(is_pellet(coord)){
 		brain.pellets[coord.y][coord.x] = false;
 		brain.pelletCount++;
+		brain.totalPelletsEaten++;
+		if(brain.totalPelletsEaten >= brain.totalPelletCount){
+			brain.superChariot = true;
+		}
 	}
 };
 
@@ -258,14 +282,21 @@ var makeBody = function(asset) {
 	self.dx = 0;
 	self.dy = 0;
 
+	self.step_sum = 0.0;
+	self.step_freq = asset.step_freq;
+
+	self.get_step_freq = function(){
+		throw 'implemented by children';
+	};
+
 	self.respawn = function(){
 		self.x = reverseCoord(self.spawn.x);
 		self.y = reverseCoord(self.spawn.y);
-	}
+	};
 
 	self.atIntersection = function(){
 		return atIntersection(self.x, self.y);
-	}
+	};
 
 	self.get_coord = function(){
 		return coord(self.x, self.y);
@@ -278,6 +309,15 @@ var makeBody = function(asset) {
 
 		self.x += self.dx;
 		self.y += self.dy;
+	};
+
+	self.step = function(){
+		stepChariot();
+		self.step_sum += self.get_step_freq();
+		while(self.step_sum > 1){
+			self.step_sum--;
+			self.inner_step();
+		}
 	};
 
 	self.draw = function(){
@@ -295,7 +335,7 @@ var makeBody = function(asset) {
 		}
 		ctx.drawImage(
 			img,
-			self.x - half,
+			grid_x_offset + self.x - half,
 			self.y - half,
 			full, full
 		);
@@ -312,12 +352,20 @@ var makeEnemy = function(asset, chaseFunc) {
 
 	var self = makeBody(asset);
 
-	self.kill = function(){
+	self.eat = function(){
 		if(self.alive){
 			self.alive = false;
 			self.dx = 0;
 			self.dy = 0;
 		}
+	}
+
+	self.kill = function(){
+		var index = brain.everybody.indexOf(self);
+		if(index >= 0){
+			brain.everybody.splice(index, 1);
+		}
+		brain.victory = brain.everybody.length == 1
 	}
 
 	self.is_still = function(){
@@ -364,7 +412,17 @@ var makeEnemy = function(asset, chaseFunc) {
 		}
 	};
 
-	self.step = function(){
+	self.get_step_freq = function(){
+		if(!self.alive){
+			return 0.7;
+		}
+		if(brain.isChariot){
+			return 0.4;
+		}
+		return self.step_freq;
+	}
+
+	self.inner_step = function(){
 		determineDirection();
 		self.base_step();
 		if(self.is_home()){
@@ -404,7 +462,14 @@ var makeProtag = function(asset) {
 		self.dy = new_dy;
 	};
 
-	self.step = function(){
+	self.get_step_freq = function(){
+		if(brain.isChariot){
+			return 1.2;
+		}
+		return self.step_freq;
+	}
+
+	self.inner_step = function(){
 		if(self.atIntersection()){
 			eatPellet(self.get_coord());
 		}
@@ -473,34 +538,34 @@ var vectorProtagFactory = function(ally){
 
 function drawGridSquare(crd){
 	ctx.fillRect(
-		crd.x*grid_size + grid_size*7/16,
+		grid_x_offset + crd.x*grid_size + grid_size*7/16,
 		crd.y*grid_size + grid_size*7/16,
 		grid_size/8, grid_size/8
 	);
 	if(is_grid(pair(crd.x, crd.y - 1))){
 		ctx.fillRect(
-			crd.x*grid_size + grid_size*7/16,
+			grid_x_offset + crd.x*grid_size + grid_size*7/16,
 			crd.y*grid_size,
 			grid_size/8, grid_size/2
 		);
 	}
 	if(is_grid(pair(crd.x, crd.y + 1))){
 		ctx.fillRect(
-			crd.x*grid_size + grid_size*7/16,
+			grid_x_offset + crd.x*grid_size + grid_size*7/16,
 			crd.y*grid_size + grid_size/2,
 			grid_size/8, grid_size/2
 		);
 	}
 	if(is_grid(pair(crd.x - 1, crd.y))){
 		ctx.fillRect(
-			crd.x*grid_size,
+			grid_x_offset + crd.x*grid_size,
 			crd.y*grid_size + grid_size*7/16,
 			grid_size/2, grid_size/8
 		);
 	}
 	if(is_grid(pair(crd.x + 1, crd.y))){
 		ctx.fillRect(
-			crd.x*grid_size + grid_size/2,
+			grid_x_offset + crd.x*grid_size + grid_size/2,
 			crd.y*grid_size + grid_size*7/16,
 			grid_size/2, grid_size/8
 		);
@@ -522,7 +587,6 @@ function drawBaseGrid(color){
 	}
 
 	var img_url = canvas.toDataURL();
-	console.log(img_url);
 	return img_url;
 };
 
@@ -543,7 +607,7 @@ function drawGrid(){
 			crd = pair(x,y);
 			if(is_pellet(crd)){
 				ctx.fillRect(
-					crd.x*grid_size + grid_size*7/16,
+					grid_x_offset + crd.x*grid_size + grid_size*7/16,
 					crd.y*grid_size + grid_size*7/16,
 					grid_size/8, grid_size/8
 				);
@@ -553,15 +617,23 @@ function drawGrid(){
 
 	ctx.fillStyle = "#DDDDDD";
 	ctx.font = grid_size + "px serif";
-	ctx.fillText("Pellet count: " + brain.pelletCount, 10, grid_size/6*5);
-	if(!brain.isChariot && brain.pelletCount >= CHARIOT_PELLET_MIN){
-		ctx.fillText("PRESS C TO ACTIVATE STAND", 10, grid_y_real - grid_size/6);
+	if(!brain.superChariot){
+		ctx.fillText("Pellet count: " + brain.pelletCount, grid_x_offset + 10, grid_size/6*5);
 	}
+
+	if(brain.victory){
+		ctx.fillText("YOU WIN! CONGRATULATIONS!", grid_x_offset + 10, grid_y_real - grid_size/6);
+	} else if(brain.superChariot){
+		ctx.fillText("TIME FOR REVENGE! GET EM!", grid_x_offset + 10, grid_y_real - grid_size/6);
+	} else if(!brain.isChariot && brain.pelletCount >= CHARIOT_PELLET_MIN){
+		ctx.fillText("PRESS C TO ACTIVATE STAND", grid_x_offset + 10, grid_y_real - grid_size/6);
+	}
+
 	if(debug){
-		ctx.fillText("GS:" + grid_size, grid_x_real/2, grid_size/6*5);
+		ctx.fillText("GS:" + grid_size, grid_x_offset + grid_x_real/2, grid_size/6*5);
 		ctx.fillText(
 			JSON.stringify(brain.keyreader.buttons),
-			10, grid_y_real - 50
+			grid_x_offset + 10, grid_y_real - 50
 		);
 	}
 };
@@ -571,8 +643,10 @@ function checkCollisions(){
 	brain.enemies.forEach(function (e){
 		var collision = e.get_coord().equals(protag_coord);
 		if(collision && e.alive){
-			if(brain.isChariot){
+			if(brain.superChariot){
 				e.kill();
+			} else if(brain.isChariot){
+				e.eat();
 			} else if(brain.invuln){
 				// do nothing
 			} else {
@@ -582,11 +656,13 @@ function checkCollisions(){
 	});
 }
 
-var CHARIOT_PELLET_MIN = 20;
-var CHARIOT_COUNTDOWN_BUFFER = parseInt(TURNS_PER_SEC/20);
-var CHARIOT_COUNTDOWN_COUNT = 0;
-
 function stepChariot(){
+	if(brain.superChariot){
+		brain.isChariot = true;
+		brain.protag.img = brain.asset.chariot.img;
+		return;
+	}
+
 	if(brain.tryChariot && !brain.isChariot){
 		if(brain.pelletCount >= CHARIOT_PELLET_MIN){
 			brain.isChariot = true;
@@ -616,16 +692,13 @@ function turn(){
 	if(brain.gameover){
 		return start();
 	}
+	if(brain.victory){
+		return winScreen();
+	}
 
 	window.setTimeout(turn, TIMEOUT);
 
 	brain.protag.keyin(brain.keyreader.get());
-
-	stepChariot();
-
-	if(brain.isChariot){
-		brain.protag.step() //gets double steps
-	}
 
 	brain.everybody.forEach(function(e){
 		e.step()
@@ -635,8 +708,8 @@ function turn(){
 
 	checkCollisions();
 
-	if(DRAW_COUNT == 0){
-		DRAW_COUNT = DRAW_BUFFER;
+	if(DRAW_COUNT < 1){
+		DRAW_COUNT += DRAW_BUFFER;
 		drawGrid();
 		brain.everybody.forEach(function(e){
 			e.draw()
@@ -648,6 +721,7 @@ function turn(){
 
 function start(){
 	brain.gameover = false;
+	brain.victory = false;
 
 	brain.keyreader.empty();
 
@@ -657,26 +731,44 @@ function start(){
 	var blue = makeEnemy(brain.asset.toilet, vectorProtagFactory(red));
 	brain.enemies = [red, pink, blue];
 	brain.everybody = [brain.protag].concat(brain.enemies);
+	// brain.everybody = [brain.protag, red];
 
+	brain.totalPelletCount = 0;
+	brain.totalPelletsEaten = 0;
 	var pellets = []
 	for(var b = 0; b < grid_y; b++){
 		pellets[b] = [];
 		for(var a = 0; a < grid_x; a++){
 			var p = pair(a,b);
 			pellets[b][a] = get_grid(p) == GRID_PELLET;
+			if(pellets[b][a]){
+				brain.totalPelletCount++;
+			}
 		}
 	}
 	brain.pellets = pellets;
 	brain.pelletCount = 0;
 	brain.tryChariot = false;
 	brain.isChariot = false;
-	brain.invuln = debug;
+	brain.superChariot = false;
 	if(debug){
 		brain.pelletCount = 50;
 	}
 
 	turn();
 };
+
+function winScreen(){
+	brain.victory = true;
+
+	drawGrid();
+	ctx.drawImage(
+		brain.asset.victory.happy,
+		grid_x_offset,
+		parseInt(height/2 - grid_x_real/2),
+		grid_x_real, grid_x_real
+	);
+}
 
 function sprite(color, leftImg, rightImg){
 	var self = {};
@@ -686,51 +778,54 @@ function sprite(color, leftImg, rightImg){
 	return self;
 }
 
+function load_image(src){
+	var i = new Image();
+	i.src = src;
+	return i;
+}
+
 // run
 
 brain.asset = {};
 brain.keyreader = makeKeyin();
 
-var pol_left = new Image();
-pol_left.src = IMG_PATH + "pol_left2.png";
-var pol_right = new Image();
-pol_right.src = IMG_PATH + "pol_right2.png";
+var pol_left = load_image(IMG_PATH + "pol_left2.png");
+var pol_right = load_image(IMG_PATH + "pol_right2.png");
 brain.asset.polnareff = {};
 brain.asset.polnareff.img = sprite('white', pol_left, pol_right);
-brain.asset.polnareff.spawn = pair(1, 1);
+brain.asset.polnareff.spawn = pair(1, 2);
+brain.asset.polnareff.step_freq = 1.0;
 
-var char_left = new Image();
-char_left.src = IMG_PATH + "char_left.png";
-var char_right = new Image();
-char_right.src = IMG_PATH + "char_right.png";
+var char_left = load_image(IMG_PATH + "char_left.png");
+var char_right = load_image(IMG_PATH + "char_right.png");
 brain.asset.chariot = {};
 brain.asset.chariot.img = sprite('#bbbb00', char_left, char_right);
 
-var iggy_left = new Image();
-iggy_left.src = IMG_PATH + "iggy_left.png";
-var iggy_right = new Image();
-iggy_right.src = IMG_PATH + "iggy_right.png";
+var iggy_left = load_image(IMG_PATH + "iggy_left.png");
+var iggy_right = load_image(IMG_PATH + "iggy_right.png");
 brain.asset.iggy = {};
 brain.asset.iggy.img = sprite('red', iggy_left, iggy_right);
-brain.asset.iggy.spawn = pair(grid_x - 2, 1);
+brain.asset.iggy.spawn = pair(grid_x - 2, 2);
+brain.asset.iggy.step_freq = 0.9;
 
 //todo find original sprite
 brain.asset.iggy_pink = {};
 brain.asset.iggy_pink.img = sprite('pink', iggy_left, iggy_right);
-brain.asset.iggy_pink.spawn = pair(1, grid_y - 2);
+brain.asset.iggy_pink.spawn = pair(1, grid_y - 3);
+brain.asset.iggy_pink.step_freq = 0.9;
 
-var toilet_left = new Image();
-toilet_left.src = IMG_PATH + "toilet_left.png";
-var toilet_right = new Image();
-toilet_right.src = IMG_PATH + "toilet_right.png";
+var toilet_left = load_image(IMG_PATH + "toilet_left.png");
+var toilet_right = load_image(IMG_PATH + "toilet_right.png");
 brain.asset.toilet = {};
 brain.asset.toilet.img = sprite('blue', toilet_left, toilet_right);
-brain.asset.toilet.spawn = pair(grid_x - 2, grid_y - 2);
+brain.asset.toilet.spawn = pair(grid_x - 2, grid_y - 3);
+brain.asset.toilet.step_freq = 0.9;
 
-brain.base_grid = new Image();
-brain.base_grid.src = drawBaseGrid('#551a8b');
-brain.base_grid_chariot = new Image();
-brain.base_grid_chariot.src = drawBaseGrid(brain.asset.chariot.img.color);
+brain.base_grid = load_image(drawBaseGrid('#551a8b'));
+brain.base_grid_chariot = load_image(drawBaseGrid(brain.asset.chariot.img.color));
+
+brain.asset.victory = {};
+brain.asset.victory.happy = load_image(IMG_PATH + 'happy.jpg');
 
 start();
 
