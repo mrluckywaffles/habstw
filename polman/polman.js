@@ -181,7 +181,7 @@ var makeKeyin = function() {
 		}
 	}
 
-	document.addEventListener("mousedown", handleTouch, false);
+	// document.addEventListener("mousedown", handleTouch, false);
 	document.addEventListener("touchend", handleTouch, false);
 
 	return self;
