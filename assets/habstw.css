@@ -115,6 +115,9 @@ body {
 .show.rero {
 	right: 170px;
 }
+.show.polman {
+	right: 210px;
+}
 .reloading-rss {
 	position: fixed;
 	top: 10px;
