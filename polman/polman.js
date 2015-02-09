@@ -3,6 +3,7 @@ $(document).ready(function(){
 
 var debug = location.search.indexOf("?debug") > -1;
 
+// only thing not using var for debug
 brain = {};
 brain.invuln = debug;
 
@@ -61,7 +62,6 @@ var grid_x_offset = parseInt((width - grid_x_real)/2);
 var TIMEOUT = 8;
 var DESIRED_FPS = 60;
 var DRAW_BUFFER = (1000.0/TIMEOUT)/DESIRED_FPS;
-console.log('draw buffer:' + DRAW_BUFFER);
 var DRAW_COUNT = 0;
 
 var CHARIOT_PELLET_MIN = 20;
@@ -123,12 +123,22 @@ var makeKeyin = function() {
     		brain.tryChariot = true;
 		} else if (key == 82){ // R
 			brain.gameover = true;
-		} else if (key == 73){ // I
-			brain.invuln = !brain.invuln;
-		} else if (key == 49){ // 1
-			brain.pelletCount += 10;
-		} else if (key == 50){ // 2
-			brain.totalPelletsEaten = brain.totalPelletCount;
+		} 
+
+		if(debug){
+			if (key == 73){ // I
+				brain.invuln = !brain.invuln;
+			} else if (key == 49){ // 1
+				brain.pelletCount += 10;
+			} else if (key == 50){ // 2
+				// eat all the pellets
+				for(var x = 0; x < grid_x; x++){
+					for(var y = 0; y < grid_y; y++){
+						crd = pair(x,y);
+						eatPellet(crd);
+					}
+				}
+			}
 		}
 
     	if(pressed){
@@ -577,7 +587,6 @@ function drawBaseGrid(color){
 	}
 
 	var img_url = canvas.toDataURL();
-	console.log(img_url);
 	return img_url;
 };
 
