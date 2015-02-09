@@ -156,6 +156,10 @@ var makeKeyin = function() {
 	}
 
 	var handleTouch = function(e){
+    	if(!brain.started){
+    		return start();
+    	}
+
 		e.preventDefault();
 		if(e.changedTouches){
 			e = e.changedTouches[0];
