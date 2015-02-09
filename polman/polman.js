@@ -727,7 +727,7 @@ function start(){
 
 	brain.protag = makeProtag(brain.asset.polnareff);
 	var red = makeEnemy(brain.asset.iggy, chaseProtag);
-	var pink = makeEnemy(brain.asset.iggy_pink, predictProtag);
+	var pink = makeEnemy(brain.asset.horse, predictProtag);
 	var blue = makeEnemy(brain.asset.toilet, vectorProtagFactory(red));
 	brain.enemies = [red, pink, blue];
 	brain.everybody = [brain.protag].concat(brain.enemies);
@@ -808,11 +808,12 @@ brain.asset.iggy.img = sprite('red', iggy_left, iggy_right);
 brain.asset.iggy.spawn = pair(grid_x - 2, 2);
 brain.asset.iggy.step_freq = 0.9;
 
-//todo find original sprite
-brain.asset.iggy_pink = {};
-brain.asset.iggy_pink.img = sprite('pink', iggy_left, iggy_right);
-brain.asset.iggy_pink.spawn = pair(1, grid_y - 3);
-brain.asset.iggy_pink.step_freq = 0.9;
+var horse_left = load_image(IMG_PATH + "horse_left.png");
+var horse_right = load_image(IMG_PATH + "horse_right.png");
+brain.asset.horse = {};
+brain.asset.horse.img = sprite('pink', horse_left, horse_right);
+brain.asset.horse.spawn = pair(1, grid_y - 3);
+brain.asset.horse.step_freq = 0.9;
 
 var toilet_left = load_image(IMG_PATH + "toilet_left.png");
 var toilet_right = load_image(IMG_PATH + "toilet_right.png");
