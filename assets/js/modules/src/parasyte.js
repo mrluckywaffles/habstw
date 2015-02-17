@@ -25,7 +25,7 @@
 	];
 	images.defaultMainImageTag = 'refresh pls';
 	
-	text.waiting = 'soon...';
+	text.waiting = 'not yet...';
 	text.waitingFollowup = 'check back Wednesday afternoon';
 	
 	music.tracks = [

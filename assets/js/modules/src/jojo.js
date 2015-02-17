@@ -29,7 +29,7 @@
 	text.waiting = "not yet...";
 	text.waitingFollowup = "check back Friday late evening" + 
 		"<br/><br/>" + 
-		"in the meantime, you can play <a href='polman/'>this game</a> i made ^_^";
+		"in the meantime, you can play <a href='polman/'>this JoJo game</a> i made ^_^";
 
 	music.tracks = [
 		'assets/jojo/last_train_home.mp3',
