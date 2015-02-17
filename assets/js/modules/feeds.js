@@ -80,13 +80,13 @@ var _src = _src || anime.module('src');
 				}
 		
 				var curr = new Date; // get current date
-				var first = curr.getDate() - curr.getDay(); // should return most recent monday
-				var lastMonday = new Date(curr.setDate(first)); // it returns the time of day so its only kinda an approx but whatevs
+				var first = curr.getDate() - curr.getDay(); // should return most recent Sunday
+				var lastSunday = new Date(curr.setDate(first)); // it returns the time of day so its only kinda an approx but whatevs
 		
 				for(var i = 0; i < data.entries.length; i++){
 					var latestUpload = data.entries[i];			
 					var latestDate = new Date(latestUpload['publishedDate']);
-					success = success || lastMonday < latestDate;				
+					success = success || lastSunday < latestDate;				
 				}
 		
 				feedToSet.success(success);

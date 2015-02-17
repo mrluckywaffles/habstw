@@ -5,8 +5,9 @@
 	module.savedForever = false;
 	
 	module.name = 'JoJo';
+	module.code = 'jojo';
 	
-	anime.module('src_links').addSource(module.name, 'jojo');
+	anime.module('src_links').addSource(module);
 
 	var images = {};
 	var music = {};
@@ -26,7 +27,7 @@
 		//jojo and dio face off
 	
 	text.waiting = "not yet...";
-	text.waitingFollowup = "check back Friday afternoonish" + 
+	text.waitingFollowup = "check back Friday late evening" + 
 		"<br/><br/>" + 
 		"in the meantime, you can play <a href='polman/'>this game</a> i made ^_^";
 

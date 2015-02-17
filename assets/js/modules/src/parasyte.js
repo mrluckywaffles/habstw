@@ -5,8 +5,9 @@
 	module.savedForever = false;
 	
 	module.name = 'Parasyte';
+	module.code = 'parasyte';
 	
-	anime.module('src_links').addSource(module.name, 'parasyte');
+	anime.module('src_links').addSource(module);
 
 	var images = {};
 	var music = {};
@@ -25,7 +26,7 @@
 	images.defaultMainImageTag = 'refresh pls';
 	
 	text.waiting = 'soon...';
-	text.waitingFollowup = "";
+	text.waitingFollowup = 'check back Wednesday afternoon';
 	
 	music.tracks = [
 		'assets/parasyte/op_tv.mp3'

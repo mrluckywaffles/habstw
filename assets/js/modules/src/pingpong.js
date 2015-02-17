@@ -5,8 +5,9 @@
 	module.savedForever = true;
 	
 	module.name = 'Ping Pong';
+	module.code = 'pingpong';
 	
-	anime.module('src_links').addSource(module.name, 'pingpong');
+	anime.module('src_links').addSource(module);
 
 	var images = {};
 	var music = {};
