@@ -1,16 +1,17 @@
 ; (function(module){
 
 	var _tools = anime.module('tools');
+	var _links = anime.module('src_links');
 	
 	var isIndex = true;  
-	var valueModuleName = 'src_jojo';
+	var showCode = _links.getRandomAiring().code;
 	var paramSrc = _tools.getParam('show');
 	if(paramSrc && paramSrc.length > 0){
-		valueModuleName = 'src_' + paramSrc;
+		showCode = paramSrc;
 		isIndex = false;
 	}
 		
-	anime.module.set(module.moduleName, valueModuleName);
+	anime.module.set(module.moduleName, 'src_' + showCode);
 	
 	var src = anime.module(module.moduleName);
 
@@ -19,6 +20,7 @@
 		src.savedForever = true;
 	}
 	
+	_tools.isIndex = isIndex;
 	_tools.askForSuggestions = isIndex && src.savedForever;
 
 })(anime.module('src'));
