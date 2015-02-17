@@ -26,8 +26,7 @@
 		'assets/yatterman/team_looking_right.jpg',
 		'assets/yatterman/oda.jpg'
 	];
-	images.defaultMainImageTag = '<img src="http://i.imgur.com/OfD6OXd.png" style="width: 700px;">';
-		//jojo and dio face off
+	images.defaultMainImageTag = 'refresh pls';
 	
 	text.waiting = "not yet...";
 	text.waitingFollowup = "check back Sunday morning";
