@@ -8,11 +8,15 @@ var _images = _images || anime.module('images');
 var _feeds = _feeds || anime.module('feeds');
 var _music = _music || anime.module('music');
 var _src = _src || anime.module('src');
+var _links = _links || anime.module("src_links")
 
 var lineBreak = '<br/>';
 var emailRaw = 'hasanimebeensavedthisweek@gmail.com';
 var emailHtml = '<a href="mailto:' + emailRaw
 	 + '?subject=Show Suggestion">' + emailRaw + '</a>';
+var pageBreak = lineBreak+lineBreak+lineBreak
+	+lineBreak+lineBreak+lineBreak+lineBreak+lineBreak
+	+lineBreak+lineBreak+lineBreak+lineBreak+lineBreak;
 
 function updateContent (checkedFeeds) {
 
@@ -44,20 +48,22 @@ function updateContent (checkedFeeds) {
 		if(_src.text.subtitle) {
 			followup.prepend('<b>' + _src.text.subtitle + '</b>' + lineBreak + lineBreak)
 		}
-		imgUrl = _src.images.success[0];
+		imgUrl = _images.getSuccess();
 	}
 	else{
 		answer.html(_src.text.waiting);
-		followup.html(lineBreak + _src.text.waitingFollowup);
-		imgUrl = _src.images.waiting[0];
+		followup.html(lineBreak + _src.text.waitingFollowup + lineBreak);
+		imgUrl = _images.getWaiting();
+	}
+
+	if(_links.isRandomFrontPage() && _tools.isIndex){
+		followup.append(lineBreak + 'wanna only see this show? save this permalink for ' + _links.permalink(_src));
 	}
 
 	$('body').css('background-image','url("' + imgUrl + '")');
 		
 	if(_tools.askForSuggestions){
-		$('#image-followup').html(lineBreak+lineBreak+lineBreak
-			+lineBreak+lineBreak+lineBreak+lineBreak+lineBreak
-			+lineBreak+lineBreak+lineBreak+lineBreak+lineBreak
+		$('#image-followup').html(pageBreak
 			+ 'This season has ended! Any suggestions for what this site should track next?'
 			+ lineBreak	+ 'Send them to ' + emailHtml
 		);
@@ -109,7 +115,7 @@ function fetchContent(){
 function addLinks(){
 	var links = $('#permalinks');
 	links.append("Permalinks:" + lineBreak);
-	var urls = anime.module("src_links").getSources();
+	var urls = _links.getSources();
 	urls.forEach(function (u){
 		links.append(u + lineBreak);
 	});

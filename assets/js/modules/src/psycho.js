@@ -5,8 +5,9 @@
 	module.savedForever = true;
 	
 	module.name = 'Psycho Pass';
+	module.code = 'psycho';
 	
-	anime.module('src_links').addSource(module.name, 'psycho');
+	anime.module('src_links').addSource(module);
 
 	var images = {};
 	var music = {};

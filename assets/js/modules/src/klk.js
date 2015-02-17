@@ -5,8 +5,9 @@
 	module.savedForever = true;
 	
 	module.name = 'Kill la Kill';
+	module.code = 'klk';
 	
-	anime.module('src_links').addSource(module.name, 'klk');
+	anime.module('src_links').addSource(module);
 
 	var images = {};
 	var music = {};
