@@ -2,7 +2,7 @@
 
 	var _tools = anime.module('tools');
 	
-	module.savedForever = false;
+	module.savedForever = true;
 	
 	module.name = 'Death Parade';
 	module.code = 'death_parade';
