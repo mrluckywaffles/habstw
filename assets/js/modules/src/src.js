@@ -20,7 +20,10 @@
 		src.savedForever = true;
 	}
 	
+	//manually change this for now
+	var seasonEnded = true;
+	
 	_tools.isIndex = isIndex;
-	_tools.askForSuggestions = isIndex && src.savedForever;
+	_tools.askForSuggestions = isIndex && (seasonEnded || src.savedForever);
 
 })(anime.module('src'));
