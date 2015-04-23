@@ -17,12 +17,28 @@
 	images.loadingRss = 'http://i.imgur.com/QzEuoVY.gif'; //dio stand punching
 	images.leftAnswerBookend = 'http://i.imgur.com/CpXcYP4.gif'; //dio standing
 	images.rightAnswerBookend = 'http://i.imgur.com/vbsR9w0.gif'; //jotaro win
-	images.waiting = [
-		'assets/jojo/iggy_hump.jpg'
+
+	var addPrefix = function(str){
+		return 'assets/jojo/' + str;
+	}
+	var waitingNames = [
+		// 'iggy_hump.jpg'
+		'alessi_lick.jpg',
+		'darby_fear.jpg',
+		'joseph_eyeball.jpg',
+		'mariah_angry.jpg',
+		'oh_my_god_1.jpg',
+		'oh_my_god_2.jpg'
 	];
-	images.success = [
-		'http://i.imgur.com/QFwkov1.gif'  //YES gif
-	];
+	images.waiting = waitingNames.map(addPrefix);
+	var successNames = [
+		// 'yes.gif',
+		'intro_leaping.jpg',
+		'intro_profile.jpg',
+		'intro_stands.jpg'
+	]
+	images.success = successNames.map(addPrefix);
+	
 	images.defaultMainImageTag = '<img src="http://i.imgur.com/OfD6OXd.png" style="width: 700px;">';
 		//jojo and dio face off
 	
