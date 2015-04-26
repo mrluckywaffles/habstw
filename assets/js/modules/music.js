@@ -23,6 +23,10 @@
 		saveCookies();	
 	}
 	function refreshMusic(){
+		if (tracks.length == 0){
+			return;
+		}
+
 		if(paused){
 			music().pause();
 		} else {
@@ -46,6 +50,9 @@
 		var c_song = _tools.getCookie('song');
 		if(c_song){
 			song = parseInt(c_song) % tracks.length;
+			if(isNaN(song)){
+				song = 0;
+			}
 		} //else 0
 		var c_paused = _tools.getCookie('paused');
 		if(c_paused && c_paused == "true"){
@@ -77,6 +84,11 @@
 		}
 		else {
 			$(_selectors.next).remove();		
+		}
+
+		if (tracks.length == 0){
+			$(_selectors.play).remove();
+			$(_selectors.pause).remove();
 		}
 
 		loadCookies();

@@ -21,7 +21,7 @@
 	}
 	
 	//manually change this for now
-	var seasonEnded = true;
+	var seasonEnded = false;
 	
 	_tools.isIndex = isIndex;
 	_tools.askForSuggestions = isIndex && (seasonEnded || src.savedForever);

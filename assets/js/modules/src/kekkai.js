@@ -4,8 +4,8 @@
 	
 	module.savedForever = false;
 	
-	module.name = 'Ore Monogatari';
-	module.code = 'oremonogatari';
+	module.name = 'Blood Blockade Battlefront';
+	module.code = 'kekkai';
 	
 	anime.module('src_links').addSource(module);
 
@@ -19,28 +19,24 @@
 	images.rightAnswerBookend = '';
 	var prefix = _tools.addPrefix(module.code);
 	images.waiting = [
-		'blush_pout.jpg',
-		'black.jpg',
-		'kingkong.jpg',
-		'ogre.jpg',
-		'op_faces.jpg'
+		'city.jpg',
 	].map(prefix);
-	images.success = images.waiting;
+	images.success = [
+		'zippo.jpg'
+	].map(prefix);
 	images.defaultMainImageTag = 'refresh pls';
 	
 	text.waiting = "not yet...";
-	text.waitingFollowup = "check back Wednesday afternoon";
+	text.waitingFollowup = "check back later this week";
 
-	music.tracks = [
-		'assets/oremonogatari/op_tv.mp3',
-	];
+	music.tracks = [];
 
 	feeds.feeds = [
 		_tools.rawFeed(
 			'HORRIBLE',
-			'http://www.nyaa.se/?page=rss&user=64513&term=Ore%20Monogatari',
+			'http://www.nyaa.se/?page=rss&user=64513&term=kekkai',
 			'http://horriblesubs.info/',
-			'http://www.nyaa.se/?page=search&cats=0_0&filter=0&user=64513&term=Ore%20Monogatari'
+			'http://www.nyaa.se/?page=search&cats=0_0&filter=0&user=64513&term=kekkai'
 		)
 	];
 
@@ -49,4 +45,4 @@
 	module.music = music;
 	module.feeds = feeds;
 
-})(anime.module('src_oremonogatari'));
+})(anime.module('src_kekkai'));

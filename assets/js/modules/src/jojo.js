@@ -18,10 +18,8 @@
 	images.leftAnswerBookend = 'http://i.imgur.com/CpXcYP4.gif'; //dio standing
 	images.rightAnswerBookend = 'http://i.imgur.com/vbsR9w0.gif'; //jotaro win
 
-	var addPrefix = function(str){
-		return 'assets/jojo/' + str;
-	}
-	var waitingNames = [
+	var prefix = _tools.addPrefix(module.code);
+	images.waiting = [
 		// 'iggy_hump.jpg'
 		'alessi_lick.jpg',
 		'darby_fear.jpg',
@@ -29,16 +27,14 @@
 		'mariah_angry.jpg',
 		'oh_my_god_1.jpg',
 		'oh_my_god_2.jpg'
-	];
-	images.waiting = waitingNames.map(addPrefix);
-	var successNames = [
+	].map(prefix);
+	images.success = [
 		// 'yes.gif',
 		'intro_leaping.jpg',
 		'intro_profile.jpg',
 		'intro_stands.jpg'
-	]
-	images.success = successNames.map(addPrefix);
-	
+	].map(prefix);
+
 	images.defaultMainImageTag = '<img src="http://i.imgur.com/OfD6OXd.png" style="width: 700px;">';
 		//jojo and dio face off
 	
@@ -50,7 +46,7 @@
 	music.tracks = [
 		'assets/jojo/last_train_home.mp3',
 		'assets/music/egyptian.mp3',
-		'assets/music/roundabout.mp3',
+		'assets/music/roundabout.mp3'
 	];
 
 	feeds.feeds = [
