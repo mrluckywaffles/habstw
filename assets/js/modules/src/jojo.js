@@ -46,7 +46,7 @@
 	music.tracks = [
 		'assets/jojo/last_train_home.mp3',
 		'assets/music/egyptian.mp3',
-		'assets/music/roundabout.mp3',
+		'assets/music/roundabout.mp3'
 	];
 
 	feeds.feeds = [

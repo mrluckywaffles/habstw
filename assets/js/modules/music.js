@@ -23,12 +23,14 @@
 		saveCookies();	
 	}
 	function refreshMusic(){
-		if (tracks.length > 0){
-			if(paused){
-				music().pause();
-			} else {
-				music().play();
-			}
+		if (tracks.length == 0){
+			return;
+		}
+		
+		if(paused){
+			music().pause();
+		} else {
+			music().play();
 		}
 	}
 	function setMusicAsPaused(pause){
