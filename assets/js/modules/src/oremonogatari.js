@@ -17,12 +17,15 @@
 	images.loadingRss = 'assets/image/bob_ryuko.gif'; //bobbing ryuko
 	images.leftAnswerBookend = '';
 	images.rightAnswerBookend = '';
+	var prefix = _tools.addPrefix(module.code);
 	images.waiting = [
-		'assets/oremonogatari/blush_pout.jpg'
-	];
-	images.success = [
-		'assets/oremonogatari/blush_pout.jpg'
-	];
+		'blush_pout.jpg',
+		'black.jpg',
+		'kingkong.jpg',
+		'ogre.jpg',
+		'op_faces.jpg'
+	].map(prefix);
+	images.success = images.waiting;
 	images.defaultMainImageTag = 'refresh pls';
 	
 	text.waiting = "not yet...";
