@@ -23,10 +23,12 @@
 		saveCookies();	
 	}
 	function refreshMusic(){
-		if(paused){
-			music().pause();
-		} else {
-			music().play();
+		if (tracks.length > 0){
+			if(paused){
+				music().pause();
+			} else {
+				music().play();
+			}
 		}
 	}
 	function setMusicAsPaused(pause){
@@ -77,6 +79,11 @@
 		}
 		else {
 			$(_selectors.next).remove();		
+		}
+
+		if (tracks.length == 0){
+			$(_selectors.play).remove();
+			$(_selectors.pause).remove();
 		}
 
 		loadCookies();
