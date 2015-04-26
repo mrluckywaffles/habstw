@@ -29,8 +29,7 @@
 	text.waiting = "not yet...";
 	text.waitingFollowup = "check back later this week";
 
-	music.tracks = [
-	];
+	music.tracks = [];
 
 	feeds.feeds = [
 		_tools.rawFeed(

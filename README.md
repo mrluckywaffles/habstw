@@ -16,5 +16,4 @@ TODO:
 	- http://www.crunchyroll.com/feed
 	- http://www.funimation.com/shows/ping-pong-the-animation/home
 - figure out solution to "the commie problem" (releasing so late it trigger next week)
-- adjust cookies to save songs based on show
-- swap out psycho for parasyte
+- adjust cookies to save songs based on show!!
