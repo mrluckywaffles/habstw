@@ -64,7 +64,7 @@ function updateContent (checkedFeeds) {
 		
 	if(_tools.askForSuggestions){
 		$('#image-followup').html(pageBreak
-			+ 'This season has ended! Any suggestions for what this site should track next?'
+			+ 'This season\'s just about over! Any suggestions for what this site should track next?'
 			+ lineBreak	+ 'Send them to ' + emailHtml
 		);
 	}
