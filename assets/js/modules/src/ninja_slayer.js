@@ -2,7 +2,7 @@
 
 	var _tools = anime.module('tools');
 	
-	module.savedForever = false;
+	module.savedForever = true;
 	
 	module.name = 'Ninja Slayer';
 	module.code = 'ninja_slayer';
