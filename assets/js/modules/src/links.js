@@ -40,6 +40,9 @@
 	};
 
 	module.getRandomAiring = function(){
+        if(airing.length == 0){
+            return archived[archived.length - 1];
+        }
 		var index = Math.floor(Math.random()*airing.length);
 		return airing[index];
 	}
