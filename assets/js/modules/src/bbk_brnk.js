@@ -23,7 +23,7 @@
 		'looking.jpg',
 	].map(prefix);
 	images.success = [
-		'grin.jpg'
+		'grin.jpg',
 	].map(prefix);
 	images.defaultMainImageTag = 'refresh pls';
 
@@ -31,6 +31,7 @@
 	text.waitingFollowup = "check back later this week";
 
 	music.tracks = [
+		'op_full.mp3',
 	].map(prefix);
 
 	feeds.feeds = [
