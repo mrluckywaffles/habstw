@@ -61,51 +61,51 @@ var _src = _src || anime.module('src');
 		}
 		return callback();
 	};
- 	
+
 	function checkRSS(feeds, callback, failureHandler) {
 		if(_src.savedForever){ return forceSetAllFeeds(true, callback); }
-		else  {
-			var feedToSet = feeds[0];
-			if(!feedToSet){
-				callback();
-				return;
-			}
-		
-			var processRSS = function (data){
-				var success = false;	
+		if(_tools.getParam('saved')){ return forceSetAllFeeds(true, callback); }
 
-				if(!data){
-					failureHandler();
-					return;
-				}
-		
-				var curr = new Date(); // get current date
-				curr.setDate(curr.getDate() - curr.getDay());  // should return most recent Sunday
-				var lastSunday = new Date(curr.getFullYear(), curr.getMonth(), curr.getDate());				
-
-				for(var i = 0; i < data.entries.length; i++){
-					var latestUpload = data.entries[i];			
-					var latestDate = new Date(latestUpload['publishedDate']);
-					success = success || lastSunday < latestDate;				
-				}
-		
-				feedToSet.success(success);
-		
-				//loop!
-				checkRSS(feeds.slice(1), callback, failureHandler);
-			};
-	
-			var param = _tools.getParam("rss");	
-			if(param === "false")
-			{
-				checkum(null);
-				return;
-			}
-
-			var urlToQuery = feedToSet.rss;
-			
-			return $.jQRSS(urlToQuery, { count: 100 }, processRSS);
+		var feedToSet = feeds[0];
+		if(!feedToSet){
+			callback();
+			return;
 		}
+
+		var processRSS = function (data){
+			var success = false;
+
+			if(!data){
+				failureHandler();
+				return;
+			}
+
+			var curr = new Date(); // get current date
+			curr.setDate(curr.getDate() - curr.getDay());  // should return most recent Sunday
+			var lastSunday = new Date(curr.getFullYear(), curr.getMonth(), curr.getDate());
+
+			for(var i = 0; i < data.entries.length; i++){
+				var latestUpload = data.entries[i];
+				var latestDate = new Date(latestUpload['publishedDate']);
+				success = success || lastSunday < latestDate;
+			}
+
+			feedToSet.success(success);
+
+			//loop!
+			checkRSS(feeds.slice(1), callback, failureHandler);
+		};
+
+		var param = _tools.getParam("rss");
+		if(param === "false")
+		{
+			checkum(null);
+			return;
+		}
+
+		var urlToQuery = feedToSet.rss;
+
+		return $.jQRSS(urlToQuery, { count: 100 }, processRSS);
 	}
 	
 	var allFeeds = _feeds.feeds.map(polishSrcFeed);

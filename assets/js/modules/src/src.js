@@ -15,7 +15,7 @@
 	
 	var src = anime.module(module.moduleName);
 
-	var paramSaved = _tools.getParam('saved');
+	var paramSaved = _tools.getParam('forever');
 	if(paramSaved){
 		src.savedForever = true;
 	}
